@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>R³ Space</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+        html,body{height:100%;margin:0}
+        #ui{position:fixed;top:12px;left:12px;z-index:10;background:rgba(20,20,24,.7);
+            color:#fff;padding:10px 12px;border-radius:10px;font-family:system-ui,Segoe UI,Roboto,Arial;
+            display:flex;gap:8px;align-items:center}
+        button,input[type="file"]{font-size:14px}
+        canvas{display:block}
+    </style>
+
+    <!-- Import map -->
+    <script type="importmap">
+        {
+          "imports": {
+            "three": "https://unpkg.com/three@0.165.0/build/three.module.js",
+            "three/addons/": "https://unpkg.com/three@0.165.0/examples/jsm/"
+          }
+        }
+    </script>
+</head>
+<body>
+    <div id="ui">
+        <button id="add-point" type="button">Add point</button>
+        <button id="delete-point" type="button">Delete selected</button>
+        <span id="status" style="opacity:.85"></span>
+    </div>
+
+<script type="module" src="./src/main.js"></script>
+</body>
+</html>
