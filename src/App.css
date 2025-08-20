@@ -1,22 +1,3 @@
-/* #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-}
-
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
 
 @keyframes logo-spin {
   from {
@@ -48,6 +29,36 @@ html, body, #root { height: 100%; margin: 0; }
 .panel-right { background: #0e0e12; }
 
 /* Simple top strip for Blocks panel */
+html, body, #root {
+    height: 100%;
+    margin: 0;
+}
+
+.root-split {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+}
+
+/* Panels split 50/50 */
+.panel {
+    flex: 1 1 50%;
+    height: 100%;
+}
+
+/* Left: blocks canvas (blank) */
+.panel-left {
+    background: #fffffd;           /* slightly off white */
+    border-right: 1px solid #ddd;
+}
+
+/* Panels split 50/50 */
+.panel {
+    flex: 1 1 50%;
+    height: 100%;
+}
+
+/* Toolbar at the top of BlocksCanvas */
 .blocks-toolbar {
     display: flex;
     align-items: center;
@@ -61,4 +72,8 @@ html, body, #root { height: 100%; margin: 0; }
 .blocks-content {
     flex: 1;
     overflow: hidden;
+    height: calc(100% - 40px); /* fills remaining height */
+    background: #ffffff;
 }
+
+// Will delete this file

@@ -2,6 +2,7 @@ import React, { useMemo } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
 import * as THREE from 'three'
+import './Scene3D.css'
 
 function Point({ x, y, z }) {
     return (
