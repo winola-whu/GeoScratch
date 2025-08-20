@@ -1,7 +1,16 @@
 import { useEffect, useRef } from 'react'
 import * as Blockly from 'blockly/core'
 import 'blockly/blocks' // built-ins (math/logic/etc.)
+import 'blockly/msg/en'
 import './BlocksCanvas.css'
+
+if (!Blockly.Msg["MATH_ADDITION_SYMBOL"]) {
+  Blockly.Msg["MATH_ADDITION_SYMBOL"] = "+";
+  Blockly.Msg["MATH_SUBTRACTION_SYMBOL"] = "-";
+  Blockly.Msg["MATH_MULTIPLICATION_SYMBOL"] = "×";
+  Blockly.Msg["MATH_DIVISION_SYMBOL"] = "÷";
+  Blockly.Msg["MATH_POWER_SYMBOL"] = "^";
+}
 
 const TOOLBOX_XML = `
 <xml id="toolbox" style="display: none">
