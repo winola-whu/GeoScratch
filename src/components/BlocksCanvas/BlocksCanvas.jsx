@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import * as Blockly from 'blockly/core'
 import 'blockly/blocks' // built-ins (math/logic/etc.)
+import './BlocksCanvas.css'
 
 const TOOLBOX_XML = `
 <xml id="toolbox" style="display: none">
