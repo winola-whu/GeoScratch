@@ -1,5 +1,7 @@
 import { useEffect, useRef } from 'react'
 import * as Blockly from 'blockly/core'
+import { javascriptGenerator, Order } from 'blockly/javascript'
+import * as mjs from 'mathjs'
 import 'blockly/blocks' // built-ins (math/logic/etc.)
 import 'blockly/msg/en'
 import './BlocksCanvas.css'
@@ -20,9 +22,16 @@ const TOOLBOX_XML = `
     <block type="geo_plane"></block>
     <block type="geo_vector"></block>
   </category>
-  <category name="Operators" categorystyle="logic_category">
-    <block type="math_number"></block>
-    <block type="math_arithmetic"></block>
+  <category name="Linear Algebra Primitives" categorystyle="text_category">
+    <block type="linalg_mat3x3"></block>
+    <block type="linalg_mat4x4"></block>
+  </category>
+  <category name="Linear Algebra Operators" categorystyle="logic_category">
+    <block type="dot_product"></block>
+    <block type="cross_product"></block>
+    <block type="multiply"></block>
+    <block type="inverse"></block>
+    <block type="determinant"></block>
   </category>
   <category name="Measurements" categorystyle="list_category">
     <!-- placeholder -->
@@ -31,6 +40,26 @@ const TOOLBOX_XML = `
 `
 
 function defineBlocks() {
+
+    Blockly.Blocks['vars_get'] = {
+        init: function () {
+            this.appendDummyInput()
+                .appendField(new Blockly.FieldVariable("variable_name"), "field_name");
+            this.setOutput(true, null);
+        }
+    }
+
+    Blockly.Blocks['vars_set'] = {
+        init: function () {
+            this.appendValueInput("NAME")
+                .setCheck(null)
+                .appendField("set")
+                .appendField(new Blockly.FieldVariable("variable_name"), "field_name")
+                .appendField("to");
+            this.setOutput(true, null);
+        }
+    }
+
     Blockly.Blocks['geo_point'] = {
         init() {
             this.appendDummyInput().appendField('Point')
@@ -92,6 +121,160 @@ function defineBlocks() {
             this.setMovable(true)
         }
     }
+
+    Blockly.Blocks['linalg_mat3x3'] = {
+        init() {
+            this.appendDummyInput().appendField('3x3 Matrix')
+            this.appendDummyInput().appendField(new Blockly.FieldNumber(1), 'r1c1')
+                .appendField(new Blockly.FieldNumber(1), 'r1c2')
+                .appendField(new Blockly.FieldNumber(1), 'r1c3')
+            this.appendDummyInput().appendField(new Blockly.FieldNumber(1), 'r2c1')
+                .appendField(new Blockly.FieldNumber(1), 'r2c2')
+                .appendField(new Blockly.FieldNumber(1), 'r2c3')
+            this.appendDummyInput().appendField(new Blockly.FieldNumber(1), 'r3c1')
+                .appendField(new Blockly.FieldNumber(1), 'r3c2')
+                .appendField(new Blockly.FieldNumber(1), 'r3c3')
+            this.setStyle('math_blocks')
+            this.setTooltip('3x3 Matrix')
+            this.setDeletable(true)
+            this.setMovable(true)
+            this.setOutput(true)
+        }
+    }
+
+    Blockly.Blocks['linalg_mat4x4'] = {
+        init() {
+            this.appendDummyInput().appendField('4x4 Matrix')
+            this.appendDummyInput().appendField(new Blockly.FieldNumber(1), 'r1c1')
+                .appendField(new Blockly.FieldNumber(1), 'r1c2')
+                .appendField(new Blockly.FieldNumber(1), 'r1c3')
+                .appendField(new Blockly.FieldNumber(1), 'r1c4')
+            this.appendDummyInput().appendField(new Blockly.FieldNumber(1), 'r2c1')
+                .appendField(new Blockly.FieldNumber(1), 'r2c2')
+                .appendField(new Blockly.FieldNumber(1), 'r2c3')
+                .appendField(new Blockly.FieldNumber(1), 'r2c4')
+            this.appendDummyInput().appendField(new Blockly.FieldNumber(1), 'r3c1')
+                .appendField(new Blockly.FieldNumber(1), 'r3c2')
+                .appendField(new Blockly.FieldNumber(1), 'r3c3')
+                .appendField(new Blockly.FieldNumber(1), 'r3c4')
+            this.appendDummyInput().appendField(new Blockly.FieldNumber(1), 'r4c1')
+                .appendField(new Blockly.FieldNumber(1), 'r4c2')
+                .appendField(new Blockly.FieldNumber(1), 'r4c3')
+                .appendField(new Blockly.FieldNumber(1), 'r4c4')
+            this.setStyle('math_blocks')
+            this.setTooltip('4x4 Matrix')
+            this.setDeletable(true)
+            this.setMovable(true)
+            this.setOutput(true)
+        }
+    }
+
+    Blockly.Blocks['dot_product'] = {
+        init() {
+            this.appendDummyInput().appendField('Dot product')
+            this.appendDummyInput().appendField(' ').appendField(new Blockly.FieldVariable(null), 'lhs')
+                .appendField(' · ').appendField(new Blockly.FieldVariable(null), 'rhs')
+            this.setStyle('math_blocks')
+            this.setTooltip('Take the dot (inner) product of two matrices.')
+            this.setDeletable(true)
+            this.setMovable(true)
+            this.setOutput(true)
+        }
+    }
+
+    Blockly.Blocks['cross_product'] = {
+        init() {
+            this.appendDummyInput().appendField('Cross product')
+            this.appendDummyInput().appendField(' ').appendField(new Blockly.FieldVariable(null), 'lhs')
+                .appendField(' × ').appendField(new Blockly.FieldVariable(null), 'rhs')
+            this.setStyle('math_blocks')
+            this.setTooltip('Take the cross product of two matrices.')
+            this.setDeletable(true)
+            this.setMovable(true)
+            this.setOutput(true)
+        }
+    }
+
+    Blockly.Blocks['multiply'] = {
+        init() {
+            this.appendDummyInput().appendField('Multiply')
+            this.appendDummyInput().appendField(' ').appendField(new Blockly.FieldVariable(null), 'lhs')
+                .appendField(' × ').appendField(new Blockly.FieldVariable(null), 'rhs')
+            this.setStyle('math_blocks')
+            this.setTooltip('Multiply two matrices.')
+            this.setDeletable(true)
+            this.setMovable(true)
+            this.setOutput(true)
+        }
+    }
+
+
+    Blockly.Blocks['determinant'] = {
+        init() {
+            this.appendDummyInput().appendField('Determinant')
+            this.appendDummyInput().appendField(' ').appendField(new Blockly.FieldVariable(null), 'mat')
+            this.setStyle('math_blocks')
+            this.setTooltip('Calculate the determinant of this matrix.')
+            this.setDeletable(true)
+            this.setMovable(true)
+            this.setOutput(true)
+        }
+    }
+
+    Blockly.Blocks['inverse'] = {
+        init() {
+            this.appendDummyInput().appendField('Inverse')
+            this.appendDummyInput().appendField(' ').appendField(new Blockly.FieldVariable(null), 'mat')
+            this.setStyle('math_blocks')
+            this.setTooltip('Calculate the inverse of this matrix.')
+            this.setDeletable(true)
+            this.setMovable(true)
+            this.setOutput(true)
+        }
+    }
+
+    //TODO:
+        //Eigenvalues/eigenvectors
+        //Diag
+}
+
+javascriptGenerator.forBlock['linalg_mat3x3'] = function (block, generator) {
+    const matString = `mjs.matrix([[${block.getFieldValue('r1c1')}, ${block.getFieldValue('r1c2')}, ${block.getFieldValue('r1c3')}], ` 
+                    +  `[${block.getFieldValue('r2c1')}, ${block.getFieldValue('r2c2')}, ${block.getFieldValue('r2c3')}], `
+                    +  `[${block.getFieldValue('r3c1')}, ${block.getFieldValue('r3c2')}, ${block.getFieldValue('r3c3')}]])`
+    return [matString, Order.ATOMIC]
+}
+
+javascriptGenerator.forBlock['linalg_mat4x4'] = function (block, generator) {
+    const matString = `mjs.matrix([[${block.getFieldValue('r1c1')}, ${block.getFieldValue('r1c2')}, ${block.getFieldValue('r1c3')}, ${block.getFieldValue('r1c4')}], `
+                    +  `[${block.getFieldValue('r2c1')}, ${block.getFieldValue('r2c2')}, ${block.getFieldValue('r2c3')}, ${block.getFieldValue('r2c4')}], `
+                    +  `[${block.getFieldValue('r3c1')}, ${block.getFieldValue('r3c2')}, ${block.getFieldValue('r3c3')}, ${block.getFieldValue('r3c4')}], `
+                    +  `[${block.getFieldValue('r4c1')}, ${block.getFieldValue('r4c2')}, ${block.getFieldValue('r4c3')}, ${block.getFieldValue('r4c4')}]])`
+    return [matString, Order.ATOMIC]
+}
+
+javascriptGenerator.forBlock['dot_product'] = function(block, generator){
+    const dotString = `mjs.dot(${generator.valueToCode(block, 'lhs', Order.FUNCTION_CALL)}, ${generator.valueToCode(block, 'rhs', Order.FUNCTION_CALL)})`
+    return [dotString, Order.FUNCTION_CALL]
+}
+
+javascriptGenerator.forBlock['cross_product'] = function (block, generator) {
+    const crossString = `mjs.cross(${generator.valueToCode(block, 'lhs', Order.FUNCTION_CALL)}, ${generator.valueToCode(block, 'rhs', Order.FUNCTION_CALL)})`
+    return [crossString, Order.FUNCTION_CALL]
+}
+
+javascriptGenerator.forBlock['multiply'] = function (block, generator) {
+    const multString = `mjs.multiply(${generator.valueToCode(block, 'lhs', Order.FUNCTION_CALL)}, ${generator.valueToCode(block, 'rhs', Order.FUNCTION_CALL)})`
+    return [multString, Order.FUNCTION_CALL]
+}
+javascriptGenerator.forBlock['determinant'] = function (block, generator) {
+    const detString = `mjs.det(${generator.valueToCode(block, 'mat', Order.FUNCTION_CALL)})`
+    return [detString, Order.FUNCTION_CALL]
+}
+
+javascriptGenerator.forBlock['inverse'] = function (block, generator) {
+    const invString = `mjs.inverse(${generator.valueToCode(block, 'mat', Order.FUNCTION_CALL)})`
+    return [invString, Order.FUNCTION_CALL]
 }
 
 export default function BlocksCanvas({ onObjectsChange }) {
@@ -170,6 +353,18 @@ export default function BlocksCanvas({ onObjectsChange }) {
                     console.log('[GeoScratch] Created', created.type)
                 }
             }
+            //GENERATE AND RUN THE CODE
+            javascriptGenerator.addReservedWords('generatedUserCode')
+            const generatedUserCode = javascriptGenerator.workspaceToCode(workspace)
+
+            try {
+                (function(mjs){
+                    eval(generatedUserCode)
+                })(mjs);
+            } catch (exception) {
+                alert(exception)
+            }
+
             syncObjects()
         }
 
