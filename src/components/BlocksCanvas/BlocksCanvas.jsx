@@ -10,7 +10,7 @@ if (!Blockly.Msg["MATH_ADDITION_SYMBOL"]) {
   Blockly.Msg["MATH_MULTIPLICATION_SYMBOL"] = "×";
   Blockly.Msg["MATH_DIVISION_SYMBOL"] = "÷";
   Blockly.Msg["MATH_POWER_SYMBOL"] = "^";
-}
+} //fixed symbol
 
 const TOOLBOX_XML = `
 <xml id="toolbox" style="display: none">
