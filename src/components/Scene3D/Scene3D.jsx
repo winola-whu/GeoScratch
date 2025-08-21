@@ -111,11 +111,12 @@ export default function Scene3D({ objects = [] }) {
     return (
         <div className="panel panel-right">
             <Canvas
-                camera={{ position: [6, 5, 8], fov: 60, near: 0.1, far: 5000 }}
+                camera={{ position: [20, 20, 8], fov: 50, near: 0.1, far: 5000 }}
                 dpr={[1, 2]}
                 style={{ width: '100%', height: '100%' }}
             >
                 <Scene objects={objects} />
+                <color attach="background" args={['#0e0e12']} />
             </Canvas>
         </div>
     )
