@@ -355,7 +355,7 @@ export default function BlocksCanvas({ onObjectsChange }) {
             }
             //GENERATE AND RUN THE CODE
             javascriptGenerator.addReservedWords('generatedUserCode')
-            const generatedUserCode = javascriptGenerator.workspaceToCode(workspace)
+            const generatedUserCode = javascriptGenerator.workspaceToCode(ws)
 
             try {
                 (function(mjs){
