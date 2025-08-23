@@ -94,7 +94,45 @@ html, body, #root {
     background: #ffffff;
 }
 
+
 /*hack to get rid of persistent scrollbar*/
 /*svg[display="none"] {
     display: none;
 }*/
+
+/* Show scrollbar only when needed */
+.blocklyToolboxDiv,
+.blocklyTreeRoot {
+  overflow-y: auto !important;  /* override Blockly's default scroll */
+}
+
+/* Hide the scrollbar but keep scrolling with mouse/trackpad */
+.blocklyToolboxDiv {
+  scrollbar-width: none !important; /* Firefox */
+}
+
+/* Chrome, Edge, Safari */
+.blocklyToolboxDiv::-webkit-scrollbar,
+.blocklyTreeRoot::-webkit-scrollbar {
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
+}
+
+#blocks-canvas .blocklyScrollbarVertical,
+#blocks-canvas .blocklyScrollbarHorizontal,
+#blocks-canvas .blocklyFlyoutScrollbar,
+#blocks-canvas .blocklyMainWorkspaceScrollbar,
+#blocks-canvas .blocklyScrollbarBackground,
+#blocks-canvas .blocklyScrollbarHandle,
+#blocks-canvas .blocklyScrollbarKnob {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
+#blocks-canvas .blocks-content,
+#blocks-canvas .injectionDiv,
+#blocks-canvas .blocklySvg {
+  overflow: hidden !important;
+}
