@@ -2,6 +2,7 @@ import * as Blockly from 'blockly/core'
 
 export function defineBlocks() {
 
+    //Debugs the output yielded by the evaluation of the input field
     Blockly.Blocks['debug'] = {
         init() {
             this.appendDummyInput().appendField('debug(')
@@ -16,84 +17,79 @@ export function defineBlocks() {
         }
     }
 
-    Blockly.Blocks['vars_get'] = {
+    //Gets the value of a variable
+    Blockly.Blocks['variables_get'] = {
         init: function () {
             this.appendDummyInput()
-                .appendField(new Blockly.FieldVariable("variable_name"), "field_name");
+                .appendField(new Blockly.FieldVariable("VALUE"), "VAR");
             this.setOutput(true, null);
         }
     }
 
-    Blockly.Blocks['vars_set'] = {
+    //Sets the value of a variable
+    Blockly.Blocks['variables_set'] = {
         init: function () {
-            this.appendValueInput("name")
+            this.appendValueInput("VALUE")
                 .setCheck(null)
                 .appendField("set")
-                .appendField(new Blockly.FieldVariable("variable_name"), "field_name")
+                .appendField(new Blockly.FieldVariable("VALUE"), "VAR")
                 .appendField("to");
             this.setOutput(true, null);
         }
     }
 
+    //Represents a point in 3d space as a small fixed-size sphere
     Blockly.Blocks['geo_point'] = {
         init() {
             this.appendDummyInput().appendField('Point')
-            this.appendDummyInput()
-                .appendField('x').appendField(new Blockly.FieldNumber(0, -1e6, 1e6, 0.1), 'X')
-                .appendField(' y').appendField(new Blockly.FieldNumber(0, -1e6, 1e6, 0.1), 'Y')
-                .appendField(' z').appendField(new Blockly.FieldNumber(0, -1e6, 1e6, 0.1), 'Z')
+            this.appendValueInput('pos').appendField('pos: ')
             this.setStyle('math_blocks')
-            this.setTooltip('3D Point (x,y,z)')
+            this.setTooltip('Point with position p.')
             this.setDeletable(true)
             this.setMovable(true)
+            this.setOutput(true)
         }
     }
 
-    Blockly.Blocks['geo_line'] = {
-        init() {
-            this.appendDummyInput().appendField('Line')
-            this.appendDummyInput()
-                .appendField('P1 x').appendField(new Blockly.FieldNumber(0), 'X1')
-                .appendField(' y').appendField(new Blockly.FieldNumber(0), 'Y1')
-                .appendField(' z').appendField(new Blockly.FieldNumber(0), 'Z1')
-            this.appendDummyInput()
-                .appendField('P2 x').appendField(new Blockly.FieldNumber(1), 'X2')
-                .appendField(' y').appendField(new Blockly.FieldNumber(0), 'Y2')
-                .appendField(' z').appendField(new Blockly.FieldNumber(0), 'Z2')
-            this.setStyle('math_blocks')
-            this.setTooltip('Line from P1 to P2')
-            this.setDeletable(true)
-            this.setMovable(true)
-        }
-    }
-
-    Blockly.Blocks['geo_plane'] = {
-        init() {
-            this.appendDummyInput().appendField('Plane (n·x = d)')
-            this.appendDummyInput()
-                .appendField('n.x').appendField(new Blockly.FieldNumber(0), 'NX')
-                .appendField(' n.y').appendField(new Blockly.FieldNumber(1), 'NY')
-                .appendField(' n.z').appendField(new Blockly.FieldNumber(0), 'NZ')
-            this.appendDummyInput()
-                .appendField('d').appendField(new Blockly.FieldNumber(0), 'D')
-            this.setStyle('math_blocks')
-            this.setTooltip('Plane with normal n and offset d')
-            this.setDeletable(true)
-            this.setMovable(true)
-        }
-    }
-
+    //Represents a vector in 3d space as an arrow
     Blockly.Blocks['geo_vector'] = {
         init() {
-            this.appendDummyInput().appendField('Vector (from origin)')
-            this.appendDummyInput()
-                .appendField('vx').appendField(new Blockly.FieldNumber(1), 'VX')
-                .appendField(' vy').appendField(new Blockly.FieldNumber(0), 'VY')
-                .appendField(' vz').appendField(new Blockly.FieldNumber(0), 'VZ')
+            this.appendDummyInput().appendField('Vector3')
+            this.appendValueInput('pos').appendField('pos:')
+            this.appendValueInput('dir').appendField('dir:')
             this.setStyle('math_blocks')
-            this.setTooltip('Vector from origin')
+            this.setTooltip('Vector with position pos and direction dir.')
             this.setDeletable(true)
             this.setMovable(true)
+            this.setOutput(true)
+        }
+    }
+
+    //Describes a plane in 3D space using the plane's equation in Hessian form
+    Blockly.Blocks['parametric_plane'] = {
+        init() {
+            this.appendDummyInput().appendField('Plane (Parametric)')
+            this.appendValueInput('norm').appendField('norm:')
+            this.appendValueInput('dist').appendField('dist:')
+            this.setStyle('math_blocks')
+            this.setTooltip('Plane with normal n, at distance d from the origin.')
+            this.setDeletable(true)
+            this.setMovable(true)
+            this.setOutput(true)
+        }
+    }
+
+    //Describes a plane in 3D space using a mesh representation
+    Blockly.Blocks['geo_plane'] = {
+        init() {
+            this.appendDummyInput().appendField('Plane (Geometric)')
+            this.appendValueInput('pos').appendField('pos:')
+            this.appendValueInput('side').appendField('side length:')
+            this.setStyle('math_blocks')
+            this.setTooltip('Plane at position p, with side length s.')
+            this.setDeletable(true)
+            this.setMovable(true)
+            this.setOutput(true)
         }
     }
 
@@ -173,24 +169,10 @@ export function defineBlocks() {
         }
     }
 
-    Blockly.Blocks['dot_product'] = {
+    Blockly.Blocks['cross_product_inplace'] = {
         init() {
             this.appendDummyInput()
-            this.appendValueInput('lhs')
-            this.appendValueInput('rhs').appendField('·')
-            this.setStyle('math_blocks')
-            this.setTooltip('Take the dot (inner) product of two matrices.')
-            this.setInputsInline(true)
-            this.setDeletable(true)
-            this.setMovable(true)
-            this.setOutput(true)
-        }
-    }
-
-    Blockly.Blocks['cross_product'] = {
-        init() {
-            this.appendDummyInput()
-            this.appendValueInput('lhs')
+                .appendField(new Blockly.FieldVariable("Vector"), "VAR")
             this.appendValueInput('rhs').appendField('×')
             this.setStyle('math_blocks')
             this.setTooltip('Take the cross product of two matrices.')
@@ -201,13 +183,55 @@ export function defineBlocks() {
         }
     }
 
-    Blockly.Blocks['multiply'] = {
+    Blockly.Blocks['multiply_inplace'] = {
         init() {
             this.appendDummyInput()
-            this.appendValueInput('lhs')
+                .appendField(new Blockly.FieldVariable("Matrix"), "VAR")
             this.appendValueInput('rhs').appendField('*')
             this.setStyle('math_blocks')
             this.setTooltip('Multiply two matrices.')
+            this.setInputsInline(true)
+            this.setDeletable(true)
+            this.setMovable(true)
+            this.setOutput(true)
+        }
+    }
+
+    Blockly.Blocks['inverse_inplace'] = {
+        init() {
+            this.appendDummyInput().appendField('inv(')
+                .appendField(new Blockly.FieldVariable("Matrix"), "VAR")
+            this.appendDummyInput('').appendField(')')
+            this.setStyle('math_blocks')
+            this.setTooltip('Calculate the inverse of this matrix.')
+            this.setInputsInline(true)
+            this.setDeletable(true)
+            this.setMovable(true)
+            this.setOutput(true)
+        }
+    }
+
+    Blockly.Blocks['norm_inplace'] = {
+        init() {
+            this.appendDummyInput().appendField('norm(')
+                .appendField(new Blockly.FieldVariable("Vector"), "VAR")
+            this.appendDummyInput('').appendField(')')
+            this.setStyle('math_blocks')
+            this.setTooltip('Normalize this vector in place.')
+            this.setInputsInline(true)
+            this.setDeletable(true)
+            this.setMovable(true)
+            this.setOutput(true)
+        }
+    }
+
+    Blockly.Blocks['dot_product'] = {
+        init() {
+            this.appendDummyInput()
+            this.appendValueInput('lhs')
+            this.appendValueInput('rhs').appendField('·')
+            this.setStyle('math_blocks')
+            this.setTooltip('Take the dot (inner) product of two vectors.')
             this.setInputsInline(true)
             this.setDeletable(true)
             this.setMovable(true)
@@ -228,36 +252,4 @@ export function defineBlocks() {
             this.setOutput(true)
         }
     }
-
-    Blockly.Blocks['inverse'] = {
-        init() {
-            this.appendDummyInput().appendField('inv(')
-            this.appendValueInput('mat')
-            this.appendDummyInput('').appendField(')')
-            this.setStyle('math_blocks')
-            this.setTooltip('Calculate the inverse of this matrix.')
-            this.setInputsInline(true)
-            this.setDeletable(true)
-            this.setMovable(true)
-            this.setOutput(true)
-        }
-    }
-
-    Blockly.Blocks['norm'] = {
-        init() {
-            this.appendDummyInput().appendField('norm(')
-            this.appendValueInput('mat')
-            this.appendDummyInput('').appendField(')')
-            this.setStyle('math_blocks')
-            this.setTooltip('Calculate the euclidean norm (length) of this vector.')
-            this.setInputsInline(true)
-            this.setDeletable(true)
-            this.setMovable(true)
-            this.setOutput(true)
-        }
-    }
-
-    //TODO:
-        //Eigenvalues/eigenvectors
-        //Diag
 }
