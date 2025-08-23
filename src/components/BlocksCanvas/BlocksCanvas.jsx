@@ -2,46 +2,12 @@ import { useEffect, useRef } from 'react'
 import * as Blockly from 'blockly/core'
 import { defineBlocks } from './BlocksDefinition'
 import { generateAndRun } from './BlocksCodeGen'
-import 'blockly/blocks' // built-ins (math/logic/etc.)
-import 'blockly/msg/en'
+import { TOOLBOX_XML } from './BlocksToolboxDefinition'
+//import 'blockly/blocks' // built-ins (math/logic/etc.)
+import * as en from 'blockly/msg/en';
 import './BlocksCanvas.css'
 
-if (!Blockly.Msg["MATH_ADDITION_SYMBOL"]) {
-  Blockly.Msg["MATH_ADDITION_SYMBOL"] = "+";
-  Blockly.Msg["MATH_SUBTRACTION_SYMBOL"] = "-";
-  Blockly.Msg["MATH_MULTIPLICATION_SYMBOL"] = "×";
-  Blockly.Msg["MATH_DIVISION_SYMBOL"] = "÷";
-  Blockly.Msg["MATH_POWER_SYMBOL"] = "^";
-} //fixed symbol
-
-const TOOLBOX_XML = `
-<xml id="toolbox" style="display: none">
-  <category name="Geometric Objects" categorystyle="math_category">
-    <block type="geo_point"></block>
-    <block type="geo_line"></block>
-    <block type="geo_plane"></block>
-    <block type="geo_vector"></block>
-  </category>
-  <category name="Linear Algebra Primitives" categorystyle="text_category">
-    <block type="linalg_vec3"></block>
-    <block type="linalg_vec4"></block>
-    <block type="linalg_mat3x3"></block>
-    <block type="linalg_mat4x4"></block>
-  </category>
-  <category name="Linear Algebra Operators" categorystyle="logic_category">
-    <block type="dot_product"></block>
-    <block type="cross_product"></block>
-    <block type="multiply"></block>
-    <block type="inverse"></block>
-    <block type="determinant"></block>
-    <block type="norm"></block>
-  </category>
-  <category name="Measurements" categorystyle="list_category">
-    <block type="debug"></block>
-    <!-- placeholder -->
-  </category>
-</xml>
-`
+Blockly.setLocale(en); //fixes formatting
 
 export default function BlocksCanvas({ onObjectsChange }) {
     const hostRef = useRef(null)

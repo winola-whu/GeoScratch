@@ -1,5 +1,3 @@
-
-
 html, body, #root {
     height: 100%;
     margin: 0;
@@ -95,3 +93,8 @@ html, body, #root {
     height: calc(100% - 40px); /* fills remaining height */
     background: #ffffff;
 }
+
+/*hack to get rid of persistent scrollbar*/
+/*svg[display="none"] {
+    display: none;
+}*/
