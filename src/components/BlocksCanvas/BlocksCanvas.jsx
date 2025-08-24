@@ -1,13 +1,51 @@
 import { useEffect, useRef } from 'react'
-import * as Blockly from 'blockly/core'
 import { defineBlocks } from './BlocksDefinition'
 import { generateAndRun } from './BlocksCodeGen'
 import { TOOLBOX_XML } from './BlocksToolboxDefinition'
-//import 'blockly/blocks' // built-ins (math/logic/etc.)
+import * as Blockly from 'blockly/core'
 import * as en from 'blockly/msg/en';
+import 'blockly/blocks' // built-ins (math/logic/etc.)
 import './BlocksCanvas.css'
 
-Blockly.setLocale(en); //fixes formatting
+Blockly.setLocale(en); //fixes string formatting
+
+var obj3DFlyoutCallback = function (workspace) {
+    var blockList = []
+    const objs = workspace.getVariableMap().getVariablesOfType('obj3D')
+
+    //create button to declare obj3Ds   
+    const createObj3DButton = document.createElement('button')
+    createObj3DButton.setAttribute('text', 'Create 3D Object...')
+    createObj3DButton.setAttribute('callbackKey', 'createObj3DButtonCallback')
+    blockList.push(createObj3DButton)
+
+    if(objs.length != 0){
+
+        //add setter for obj3D variables
+        const blockSet = Blockly.utils.xml.createElement('block')
+        const fieldSetVal = Blockly.utils.xml.createElement('field')
+        const fieldSetVar = Blockly.utils.xml.createElement('field')
+        blockSet.setAttribute('type', 'variables_set_obj3D')
+        fieldSetVal.setAttribute('name', 'VALUE')
+        fieldSetVar.setAttribute('name', 'VAR')
+        blockSet.appendChild(fieldSetVal)
+        blockSet.appendChild(fieldSetVar)
+        blockList.push(blockSet)
+
+        for (const obj of objs) {
+            //add getters for each variable declared
+            const blockGet = Blockly.utils.xml.createElement('block')
+            const fieldGet = Blockly.utils.xml.createElement('field')
+            blockGet.setAttribute('type', 'variables_get_obj3D')
+            fieldGet.setAttribute('name', 'VAR');
+
+            blockGet.appendChild(fieldGet);
+            blockList.push(blockGet);
+        }
+    }
+
+    return blockList;
+};
 
 export default function BlocksCanvas({ onObjectsChange }) {
     const hostRef = useRef(null)
@@ -26,7 +64,13 @@ export default function BlocksCanvas({ onObjectsChange }) {
             theme: Blockly.Themes.Classic,
             move: { scrollbars: true, drag: true, wheel: true },
         })
+
         workspaceRef.current = ws
+
+        ws.registerButtonCallback('createObj3DButtonCallback', (b) => {
+            Blockly.Variables.createVariableButtonHandler(b.getTargetWorkspace(), null, 'obj3D');
+        })
+        ws.registerToolboxCategoryCallback('OBJS_3D', obj3DFlyoutCallback)
 
         // Compute objects from top-level blocks
         const syncObjects = () => {

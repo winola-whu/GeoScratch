@@ -10,11 +10,15 @@ import * as THREE from 'three'
         //These should maybe be in separate sections in the flyout menu?
     //Compile generated code before running it to give users access to compile-time feedback?
 
+
+//Dev utility
 javascriptGenerator.forBlock['debug'] = function (block, generator) {
     const debugString = `console.log(${generator.valueToCode(block, 'exp', Order.FUNCTION_CALL)});`
     return [debugString, Order.FUNCTION_CALL]
 }
 
+
+//Anything that outputs an obj3D type
 javascriptGenerator.forBlock['geo_point'] = function (block, generator) {
     const pointDec = `(new THREE.Mesh(new THREE.SphereGeometry(0.08, 8, 8), new THREE.MeshStandardMaterial({color:0xffff00, roughness:0.4, metalness:0.1})))
             .position.copy(${generator.valueToCode(block, 'pos', Order.FUNCTION_CALL)})`
@@ -42,6 +46,7 @@ javascriptGenerator.forBlock['geo_vector'] = function (block, generator) {
 }
 
 
+//Linalg primitives
 javascriptGenerator.forBlock['linalg_vec3'] = function (block, generator) {
     const vecString = `new THREE.Vector3(${block.getFieldValue('X')}, ${block.getFieldValue('Y')}, ${block.getFieldValue('Z')})`
     return [vecString, Order.ATOMIC]
@@ -67,28 +72,26 @@ javascriptGenerator.forBlock['linalg_mat4x4'] = function (block, generator) {
     return [matString, Order.ATOMIC]
 }
 
-//LHS must be a variable input, cross operates in place
+
+//Linalg methods
 javascriptGenerator.forBlock['cross_product_inplace'] = function (block, generator) {
     var varName = generator.getVariableName(block.getFieldValue('VAR'));
     const crossString = varName + `.cross(${generator.valueToCode(block, 'rhs', Order.FUNCTION_CALL)});`
     return [crossString, Order.FUNCTION_CALL]
 }
 
-//LHS must be a variable input, multiply operates in place
 javascriptGenerator.forBlock['multiply_inplace'] = function (block, generator) {
     var varName = generator.getVariableName(block.getFieldValue('VAR'));
     const multString = varName + `.multiply(${generator.valueToCode(block, 'rhs', Order.FUNCTION_CALL)});`
     return [multString, Order.FUNCTION_CALL]
 }
 
-//mat must be a variable input, inverse operates in place
 javascriptGenerator.forBlock['inverse_inplace'] = function (block, generator) {
     var varName = generator.getVariableName(block.getFieldValue('VAR'));
     const invString = varName + `.invert();`
     return [invString, Order.FUNCTION_CALL]
 }
 
-//vec must be a variable input, normalize operates in place
 javascriptGenerator.forBlock['norm_inplace'] = function (block, generator) {
     var varName = generator.getVariableName(block.getFieldValue('VAR'));
     const normString = varName + `.normalize();`
@@ -125,16 +128,34 @@ javascriptGenerator.forBlock['determinant'] = function (block, generator) {
     return [detString, Order.FUNCTION_CALL]
 }
 
+
+//get/set pulled directly from Google's implementation, the block ensures that renderable objects are typed as "obj3D" on creation.
+//this allows us to get all renderable objects via tag later and add them to the scene.
+javascriptGenerator.forBlock['variables_get_obj3D'] = function (block, generator) {
+    const code = generator.getVariableName(block.getFieldValue('VAR'));
+    return [code, Order.ATOMIC];
+}
+
+javascriptGenerator.forBlock['variables_set_obj3D'] = function(block, generator) {
+    const varName = generator.getVariableName(block.getFieldValue('VAR'));
+    const argument0 = generator.valueToCode(block, 'VALUE', Order.NONE) || 'null';
+    generator.definitions_[varName] = `let ${varName};`;
+    return `${varName} = ${argument0};\n`;
+}
+
+
+//Actual code gen
 export function generateAndRun(workspace){
     javascriptGenerator.addReservedWords('generatedUserCode')
     const generatedUserCode = javascriptGenerator.workspaceToCode(workspace)
 
     try {
+        eval(generatedUserCode)
         //Create eval scope containing Threejs, so generated code can access it
         //Do we need to do this?
-        (function(THREE){
+        /*(function(THREE){
             eval(generatedUserCode)
-        })(THREE);
+        })(THREE);*/
     } catch (exception) {
         //
         console.log(exception);
