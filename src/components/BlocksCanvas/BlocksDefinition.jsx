@@ -38,6 +38,34 @@ export function defineBlocks() {
         }
     }
 
+    Blockly.Blocks['variables_get_obj3D'] = {
+        init: function () {
+            this.appendDummyInput()
+                .appendField(new Blockly.FieldDropdown(() => {
+                    const variables = this.workspace.getVariablesOfType('obj3D')
+                    return variables.map(v => [v.name, v.name])
+                }), "VAR");
+            this.setOutput(true, 'obj3D');
+            this.setColour(330);
+        },
+    }
+
+    Blockly.Blocks['variables_set_obj3D'] = {
+        init: function () {
+            this.appendValueInput("VALUE")
+                .setCheck('obj3D')
+                .appendField("set")
+                .appendField(new Blockly.FieldDropdown(() => {
+                    const variables = this.workspace.getVariablesOfType('obj3D')
+                    return variables.map(v => [v.name, v.name])
+                }), "VAR")
+                .appendField("to");
+            this.setPreviousStatement(true, null)
+            this.setNextStatement(true, null)
+            this.setColour(330)
+        },
+    }
+
     //Represents a point in 3d space as a small fixed-size sphere
     Blockly.Blocks['geo_point'] = {
         init() {
@@ -47,7 +75,7 @@ export function defineBlocks() {
             this.setTooltip('Point with position p.')
             this.setDeletable(true)
             this.setMovable(true)
-            this.setOutput(true)
+            this.setOutput(true, 'obj3D')
         }
     }
 
@@ -61,7 +89,7 @@ export function defineBlocks() {
             this.setTooltip('Vector with position pos and direction dir.')
             this.setDeletable(true)
             this.setMovable(true)
-            this.setOutput(true)
+            this.setOutput(true, 'obj3D')
         }
     }
 
@@ -75,7 +103,7 @@ export function defineBlocks() {
             this.setTooltip('Plane with normal n, at distance d from the origin.')
             this.setDeletable(true)
             this.setMovable(true)
-            this.setOutput(true)
+            this.setOutput(true, 'obj3D')
         }
     }
 
@@ -89,7 +117,7 @@ export function defineBlocks() {
             this.setTooltip('Plane at position p, with side length s.')
             this.setDeletable(true)
             this.setMovable(true)
-            this.setOutput(true)
+            this.setOutput(true, 'obj3D')
         }
     }
 
