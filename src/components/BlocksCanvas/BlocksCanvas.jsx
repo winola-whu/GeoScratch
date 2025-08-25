@@ -63,8 +63,10 @@ export default function BlocksCanvas({ onObjectsChange }) {
             zoom: { controls: true, wheel: true, startScale: 0.9 },
             trashcan: true,
             theme: Blockly.Themes.Classic,
-            move: { scrollbars: false, drag: true, wheel: true },
+            move: { scrollbars: true, drag: true, wheel: true },
         })
+
+        
 
         workspaceRef.current = ws
 
