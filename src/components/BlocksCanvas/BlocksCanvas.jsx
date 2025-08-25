@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { defineBlocks } from './BlocksDefinition'
-import { generateAndRun } from './BlocksCodeGen'
+import { generateAndRun, threeObjStore } from './BlocksCodeGen'
 import { TOOLBOX_XML } from './BlocksToolboxDefinition'
 import * as Blockly from 'blockly/core'
 import * as en from 'blockly/msg/en';
@@ -38,6 +38,7 @@ var obj3DFlyoutCallback = function (workspace) {
             const fieldGet = Blockly.utils.xml.createElement('field')
             blockGet.setAttribute('type', 'variables_get_obj3D')
             fieldGet.setAttribute('name', 'VAR');
+            fieldGet.textContent = obj.name
 
             blockGet.appendChild(fieldGet);
             blockList.push(blockGet);
@@ -73,50 +74,63 @@ export default function BlocksCanvas({ onObjectsChange }) {
         ws.registerToolboxCategoryCallback('OBJS_3D', obj3DFlyoutCallback)
 
         // Compute objects from top-level blocks
-        const syncObjects = () => {
-            const blocks = ws.getTopBlocks(false)
-            const objs = []
+        // const syncObjects = () => {
+        //     const blocks = ws.getTopBlocks(false)
+        //     const objs = []
 
-            for (const b of blocks) {
-                switch (b.type) {
-                    case 'geo_point': {
-                        const X = +b.getFieldValue('X') || 0
-                        const Y = +b.getFieldValue('Y') || 0
-                        const Z = +b.getFieldValue('Z') || 0
-                        objs.push({ type: 'point', params: { x: X, y: Y, z: Z } })
-                        break
-                    }
-                    case 'geo_line': {
-                        const X1 = +b.getFieldValue('X1') || 0
-                        const Y1 = +b.getFieldValue('Y1') || 0
-                        const Z1 = +b.getFieldValue('Z1') || 0
-                        const X2 = +b.getFieldValue('X2') || 0
-                        const Y2 = +b.getFieldValue('Y2') || 0
-                        const Z2 = +b.getFieldValue('Z2') || 0
-                        objs.push({ type: 'line', params: { x1:X1,y1:Y1,z1:Z1,x2:X2,y2:Y2,z2:Z2 } })
-                        break
-                    }
-                    case 'geo_plane': {
-                        const NX = +b.getFieldValue('NX') || 0
-                        const NY = +b.getFieldValue('NY') || 1
-                        const NZ = +b.getFieldValue('NZ') || 0
-                        const D  = +b.getFieldValue('D')  || 0
-                        objs.push({ type: 'plane', params: { nx:NX, ny:NY, nz:NZ, d:D } })
-                        break
-                    }
-                    case 'geo_vector': {
-                        const VX = +b.getFieldValue('VX') || 1
-                        const VY = +b.getFieldValue('VY') || 0
-                        const VZ = +b.getFieldValue('VZ') || 0
-                        objs.push({ type: 'vector', params: { vx:VX, vy:VY, vz:VZ } })
-                        break
-                    }
-                    default:
-                        break
+        //     for (const b of blocks) {
+        //         switch (b.type) {
+        //             case 'geo_point': {
+        //                 const X = +b.getFieldValue('X') || 0
+        //                 const Y = +b.getFieldValue('Y') || 0
+        //                 const Z = +b.getFieldValue('Z') || 0
+        //                 objs.push({ type: 'point', params: { x: X, y: Y, z: Z } })
+        //                 break
+        //             }
+        //             case 'geo_line': {
+        //                 const X1 = +b.getFieldValue('X1') || 0
+        //                 const Y1 = +b.getFieldValue('Y1') || 0
+        //                 const Z1 = +b.getFieldValue('Z1') || 0
+        //                 const X2 = +b.getFieldValue('X2') || 0
+        //                 const Y2 = +b.getFieldValue('Y2') || 0
+        //                 const Z2 = +b.getFieldValue('Z2') || 0
+        //                 objs.push({ type: 'line', params: { x1:X1,y1:Y1,z1:Z1,x2:X2,y2:Y2,z2:Z2 } })
+        //                 break
+        //             }
+        //             case 'geo_plane': {
+        //                 const NX = +b.getFieldValue('NX') || 0
+        //                 const NY = +b.getFieldValue('NY') || 1
+        //                 const NZ = +b.getFieldValue('NZ') || 0
+        //                 const D  = +b.getFieldValue('D')  || 0
+        //                 objs.push({ type: 'plane', params: { nx:NX, ny:NY, nz:NZ, d:D } })
+        //                 break
+        //             }
+        //             case 'geo_vector': {
+        //                 const VX = +b.getFieldValue('VX') || 1
+        //                 const VY = +b.getFieldValue('VY') || 0
+        //                 const VZ = +b.getFieldValue('VZ') || 0
+        //                 objs.push({ type: 'vector', params: { vx:VX, vy:VY, vz:VZ } })
+        //                 break
+        //             }
+        //             default:
+        //                 break
+        //         }
+        //     }
+
+        //     onObjectsChange?.(objs)
+        // }
+
+        const syncObjects = () => {
+            const varMap = ws.getVariableMap().getVariablesOfType('obj3D')
+            for(const o of Object.keys(threeObjStore)){
+                if(!varMap.some(v => v.name == o)){ //if our obj store contains THREE objects no longer referenced in code,
+
+                    //then they are garbage and we remove them
+                    //in practice this never happens, because there is no functionality right now to delete declared obj3D variables
+                    delete threeObjStore[o]
                 }
             }
-
-            onObjectsChange?.(objs)
+            onObjectsChange?.(Object.values(threeObjStore))
         }
 
         // Sync on ANY change (create, delete, move, field edit)
