@@ -93,12 +93,8 @@ function Scene({ objects = [] }) {
 
             {/* Render objects from Blockly */}
             {objects.map((o, i) => {
-                switch (o.type) {
-                    case 'point':  return <Point key={i} {...o.params} />
-                    case 'line':   return <Line key={i} {...o.params} />
-                    case 'plane':  return <Plane key={i} {...o.params} />
-                    case 'vector': return <Vector key={i} {...o.params} />
-                    default:       return null
+                if(o){
+                    return <primitive key={i} object={o}/>
                 }
             })}
 

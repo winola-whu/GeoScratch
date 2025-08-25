@@ -10,6 +10,10 @@ import * as THREE from 'three'
         //These should maybe be in separate sections in the flyout menu?
     //Compile generated code before running it to give users access to compile-time feedback?
 
+//for storing persistent THREE objects declared only in eval scope, so our scene can access them
+//we cross-reference this with the variableMap each time our code runs and garbage collect objects that are no longer referenced
+export const threeObjStore = {}
+
 
 //Dev utility
 javascriptGenerator.forBlock['debug'] = function (block, generator) {
@@ -20,8 +24,8 @@ javascriptGenerator.forBlock['debug'] = function (block, generator) {
 
 //Anything that outputs an obj3D type
 javascriptGenerator.forBlock['geo_point'] = function (block, generator) {
-    const pointDec = `(new THREE.Mesh(new THREE.SphereGeometry(0.08, 8, 8), new THREE.MeshStandardMaterial({color:0xffff00, roughness:0.4, metalness:0.1})))
-            .position.copy(${generator.valueToCode(block, 'pos', Order.FUNCTION_CALL)})`
+    const pointDec = `(new THREE.Mesh(new THREE.SphereGeometry(0.08, 8, 8), new THREE.MeshStandardMaterial({color:0xffff00, roughness:0.4, metalness:0.1})))`
+            //.position.copy(${generator.valueToCode(block, 'pos', Order.FUNCTION_CALL)})`
 
     return [pointDec, Order.ATOMIC]
 }
@@ -29,8 +33,8 @@ javascriptGenerator.forBlock['geo_point'] = function (block, generator) {
 javascriptGenerator.forBlock['geo_plane'] = function (block, generator) {
     const planeDec = `(new THREE.Mesh(new THREE.PlaneGeometry(
                 ${generator.valueToCode(block, 'side', Order.FUNCTION_CALL)}, ${generator.valueToCode(block, 'side', Order.FUNCTION_CALL)}), 
-                new THREE.MeshStandardMaterial({color: 0xffff00, roughness: 0.4, metalness:0.1})))
-            .position.copy(${generator.valueToCode(block, 'pos', Order.FUNCTION_CALL)})`
+                new THREE.MeshStandardMaterial({color: 0xffff00, roughness: 0.4, metalness:0.1})))`
+            //.position.copy(${generator.valueToCode(block, 'pos', Order.FUNCTION_CALL)})`
     return [planeDec, Order.ATOMIC]
 }
 
@@ -132,15 +136,27 @@ javascriptGenerator.forBlock['determinant'] = function (block, generator) {
 //get/set pulled directly from Google's implementation, the block ensures that renderable objects are typed as "obj3D" on creation.
 //this allows us to get all renderable objects via tag later and add them to the scene.
 javascriptGenerator.forBlock['variables_get_obj3D'] = function (block, generator) {
-    const code = generator.getVariableName(block.getFieldValue('VAR'));
-    return [code, Order.ATOMIC];
+    const code = generator.getVariableName(block.getFieldValue('VAR'))
+    return [code, Order.ATOMIC]
 }
 
 javascriptGenerator.forBlock['variables_set_obj3D'] = function(block, generator) {
-    const varName = generator.getVariableName(block.getFieldValue('VAR'));
-    const argument0 = generator.valueToCode(block, 'VALUE', Order.NONE) || 'null';
-    generator.definitions_[varName] = `let ${varName};`;
-    return `${varName} = ${argument0};\n`;
+    const varName = generator.getVariableName(block.getFieldValue('VAR'))
+    const argument0 = generator.valueToCode(block, 'VALUE', Order.NONE) || 'null'
+
+    //persist places the actual THREE object into a global store that we can use to directly render objects
+    //also lets us modify existing objects later 
+    const persist = `threeObjStore["${varName}"] = ${argument0};\n`
+
+    //declare the actual variable so we can modify it in eval scope
+    //all changes must propagate to the referenced object in threeObjStore
+    const let_var = `let ${varName};`
+
+    //set the variable in local scope once it is declared
+    const set_var = `${varName} = ${argument0};\n`
+
+    generator.definitions_[varName] = let_var
+    return set_var + persist
 }
 
 
@@ -150,12 +166,8 @@ export function generateAndRun(workspace){
     const generatedUserCode = javascriptGenerator.workspaceToCode(workspace)
 
     try {
+        //may need to pass in threeObjStore
         eval(generatedUserCode)
-        //Create eval scope containing Threejs, so generated code can access it
-        //Do we need to do this?
-        /*(function(THREE){
-            eval(generatedUserCode)
-        })(THREE);*/
     } catch (exception) {
         //
         console.log(exception);
