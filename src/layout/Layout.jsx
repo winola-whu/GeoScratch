@@ -13,7 +13,10 @@ const Layout = () => {
           <Header />
         </div>
 
-        <div className="flex h-[90%]">
+        {/* width >= 1536px : 2xl  */}
+        {/* width >= 1280px : xl  */}
+        {/* width >= 1024px : lg  */}
+        <div className="grid 2xl:grid-cols-[40%_60%] xl:grid-cols-[40%_60%] lg:grid-cols-[50%_50%]  h-[90%]">
           <BlocksCanvas onObjectsChange={setObjects} />
           <Scene3D objects={objects} />
         </div>
