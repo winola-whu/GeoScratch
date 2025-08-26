@@ -14,7 +14,7 @@ If you are developing a production application, we recommend using TypeScript wi
 ## How to run
 
 ```shell
-pnpm install
-pnpm dev
+npm install
+npm run dev
 ```
 
