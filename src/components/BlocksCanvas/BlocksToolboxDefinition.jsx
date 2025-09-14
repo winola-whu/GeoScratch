@@ -7,6 +7,7 @@ export const TOOLBOX_XML = `
             <block type="geo_vector"></block>
             <block type="parametric_plane"></block>
             <block type="geo_plane"></block>
+            <block type="geo_sphere"></block>
         </category>
         <category name="Geometric Object Variables" custom="OBJS_3D" colour=140>
             <button text="Create 3D Object..." callbackKey="createObj3DButtonCallback"></button>
@@ -18,8 +19,15 @@ export const TOOLBOX_XML = `
             <block type="linalg_vec4"></block>
             <block type="linalg_mat3x3"></block>
             <block type="linalg_mat4x4"></block>
+            <block type="rot_matrix"></block>
+            <block type="trans_matrix"></block>
+            <block type="scale_matrix"></block>
+            <block type="scalar"></block>
         </category>
         <category name="Linear Algebra Operators" categorystyle="logic_category">
+            <block type="object_transform"></block>    
+            <block type="vector_transform"></block>   
+<!--            <block type="vector_arithmetic"></block>     --> 
             <block type="dot_product"></block>
             <block type="cross_product_inplace"></block>
             <block type="multiply_inplace"></block>
