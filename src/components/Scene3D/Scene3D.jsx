@@ -1,83 +1,42 @@
 import React, { useMemo } from 'react'
 import { Canvas } from '@react-three/fiber'
-import { OrbitControls } from '@react-three/drei'
+import { OrbitControls, Text, Billboard } from '@react-three/drei'
 import * as THREE from 'three'
 import './Scene3D.css'
 
-function Point({ x, y, z }) {
+
+function AxisArrow({ dir = [1,0,0], color = 'red', length = 3 }) {
+    // Build a THREE.ArrowHelper once
+    const arrow = useMemo(() => {
+        const direction = new THREE.Vector3(...dir).normalize()
+        const origin = new THREE.Vector3(0, 0, 0)
+        const helper = new THREE.ArrowHelper(direction, origin, length, new THREE.Color(color), 0.1, 0.1)
+        return helper
+    }, [dir, color, length])
+
+    const tip = useMemo(() => {
+        const d = new THREE.Vector3(...dir).normalize()
+        return d.multiplyScalar(length + 0.25)
+    }, [dir, length])
+
     return (
-        <mesh position={[x, y, z]}>
-            <sphereGeometry args={[0.08, 16, 16]} />
-            <meshStandardMaterial roughness={0.4} metalness={0.1} />
-        </mesh>
+        <group>
+            <primitive object={arrow} />
+            <Billboard position={[tip.x, tip.y, tip.z]}>
+                <Text fontSize={0.35} color={color} anchorX="center" anchorY="middle">
+                    {dir[0] ? 'X' : dir[1] ? 'Y' : 'Z'}
+                </Text>
+            </Billboard>
+        </group>
     )
 }
 
-function Line({ x1, y1, z1, x2, y2, z2 }) {
-    const geom = useMemo(() => {
-        const pts = [new THREE.Vector3(x1, y1, z1), new THREE.Vector3(x2, y2, z2)]
-        return new THREE.BufferGeometry().setFromPoints(pts)
-    }, [x1, y1, z1, x2, y2, z2])
-
+function Axes({ length = 3 }) {
     return (
-        <line geometry={geom}>
-            <lineBasicMaterial />
-        </line>
-    )
-}
-
-function Vector({ vx, vy, vz }) {
-    const { dir, len } = useMemo(() => {
-        const d = new THREE.Vector3(vx, vy, vz)
-        const L = d.length() || 1
-        if (L === 0) d.set(1, 0, 0)
-        d.normalize()
-        return { dir: d, len: L }
-    }, [vx, vy, vz])
-
-    return <arrowHelper args={[dir, new THREE.Vector3(0, 0, 0), len, 0x8888ff]} />
-}
-
-function Plane({ nx, ny, nz, d }) {
-    // Render a finite square patch of the plane (size S x S) whose normal is n and offset is d, i.e., n·x = d
-    const { center, quat } = useMemo(() => {
-        const n = new THREE.Vector3(nx, ny, nz)
-        if (n.lengthSq() < 1e-8) n.set(0, 1, 0) // fallback
-        n.normalize()
-        const center = n.clone().multiplyScalar(d)
-        // planeGeometry's normal is +Z; rotate +Z to n
-        const quat = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 0, 1), n)
-        return { center, quat }
-    }, [nx, ny, nz, d])
-
-    const S = 4 // plane patch size
-
-    return (
-        <group position={center.toArray()} quaternion={quat}>
-            <mesh>
-                <planeGeometry args={[S, S]} />
-                <meshStandardMaterial transparent opacity={0.15} />
-            </mesh>
-            {/* Optional outline */}
-            <line>
-                <bufferGeometry
-                    attach="geometry"
-                    {...(() => {
-                        const hw = S / 2
-                        const positions = new Float32Array([
-                            -hw, -hw, 0,
-                            hw, -hw, 0,
-                            hw,  hw, 0,
-                            -hw,  hw, 0,
-                            -hw, -hw, 0,
-                        ])
-                        const geom = new THREE.BufferGeometry()
-                        geom.setAttribute('position', new THREE.BufferAttribute(positions, 3))
-                        return { }
-                    })()}
-                />
-                <lineBasicMaterial />
-            </line>
+        <group>
+            <AxisArrow dir={[1,0,0]} color="#ef4444" length={length} /> {/* X - red */}
+            <AxisArrow dir={[0,1,0]} color="#22c55e" length={length} /> {/* Y - green */}
+            <AxisArrow dir={[0,0,1]} color="#3b82f6" length={length} /> {/* Z - blue */}
         </group>
     )
 }
@@ -89,7 +48,7 @@ function Scene({ objects = [] }) {
             <ambientLight intensity={0.6} />
             <directionalLight position={[3, 5, 2]} intensity={1} />
             <gridHelper args={[20, 20, 0x444444, 0x222222]} />
-            <axesHelper args={[1.5]} position={[-9.5, 0.01, -9.5]} />
+            <Axes length={10} />
 
             {/* Render objects from Blockly */}
             {objects.map((o, i) => {

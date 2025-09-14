@@ -24,10 +24,16 @@ javascriptGenerator.forBlock['debug'] = function (block, generator) {
 
 //Anything that outputs an obj3D type
 javascriptGenerator.forBlock['geo_point'] = function (block, generator) {
-    const pointDec = `(new THREE.Mesh(new THREE.SphereGeometry(0.08, 8, 8), new THREE.MeshStandardMaterial({color:0xffff00, roughness:0.4, metalness:0.1})))`
-            //.position.copy(${generator.valueToCode(block, 'pos', Order.FUNCTION_CALL)})`
-
-    return [pointDec, Order.ATOMIC]
+    const pos = generator.valueToCode(block, 'pos', Order.FUNCTION_CALL) || 'new THREE.Vector3()';
+    const pointDec = `(function(){
+    const m = new THREE.Mesh(
+      new THREE.SphereGeometry(0.08, 8, 8),
+      new THREE.MeshStandardMaterial({color:0xffff00, roughness:0.4, metalness:0.1})
+    );
+    m.position.copy(${pos});
+    return m;
+  })()`;
+    return [pointDec, Order.ATOMIC];
 }
 
 javascriptGenerator.forBlock['geo_plane'] = function (block, generator) {
@@ -44,11 +50,56 @@ javascriptGenerator.forBlock['parametric_plane'] = function (block, generator) {
 }
 
 javascriptGenerator.forBlock['geo_vector'] = function (block, generator) {
-    const planeDec = `new THREE.Line3(${generator.valueToCode(block, 'pos', Order.FUNCTION_CALL)}, 
-        ${generator.valueToCode(block, 'pos', Order.FUNCTION_CALL)}.add(${generator.valueToCode(block, 'dir', Order.FUNCTION_CALL)}))`
-    return [planeDec, Order.ATOMIC]
+    const vecPos = generator.valueToCode(block, 'pos', Order.FUNCTION_CALL) || 'new THREE.Vector3()'
+    const vecDir = generator.valueToCode(block, 'dir', Order.FUNCTION_CALL) || 'new THREE.Vector3(1,0,0)'
+    const vecScale = generator.valueToCode(block, 'scale', Order.FUNCTION_CALL) || '1'
+    const code = `(function(){
+    const origin = (${vecPos}).clone();
+    let dir = (${vecDir}).clone();
+    let len = Number(${vecScale});
+    if (!isFinite(len) || len <= 0) len = 1;      // default length
+
+    if (!isFinite(dir.length()) || dir.length() === 0) {
+      dir = new THREE.Vector3(1,0,0);            // default direction
+    }
+    const norm = dir.clone().normalize();
+
+    // head sizes proportional to length
+    const headLenRatio   = 0.25;
+    const headWidthRatio = 0.10;
+    const arrow = new THREE.ArrowHelper(
+      norm, origin, len, 0x7c3aed,
+      headLenRatio * len, headWidthRatio * len
+    );
+    arrow.userData.geoType         = 'geo_vector';
+    arrow.userData.length          = len;
+    arrow.userData.headLenRatio    = headLenRatio;
+    arrow.userData.headWidthRatio  = headWidthRatio;
+    return arrow;
+  })()`;
+    return [code, Order.ATOMIC];
 }
 
+javascriptGenerator.forBlock['geo_sphere'] = function (block, generator) {
+    const pos = generator.valueToCode(block, 'pos', Order.FUNCTION_CALL) || 'new THREE.Vector3()';
+    const r   = Number(block.getFieldValue('R')) || 1;
+
+    const code = `(function(){
+    const centre = (${pos}).clone();
+    const radius = Math.max(0.01, ${r});
+    const geom = new THREE.SphereGeometry(radius, 32, 16);
+    const mat  = new THREE.MeshStandardMaterial({ color: 0x3b82f6, roughness: 0.5, metalness: 0.1, opacity:0.8, transparent:true });
+    const mesh = new THREE.Mesh(geom, mat);
+    mesh.position.copy(centre);
+
+    mesh.userData.geoType = 'geo_sphere';
+    mesh.userData.radius  = radius;
+
+    return mesh;
+  })()`;
+
+    return [code, Order.ATOMIC];
+};
 
 //Linalg primitives
 javascriptGenerator.forBlock['linalg_vec3'] = function (block, generator) {
@@ -158,6 +209,190 @@ javascriptGenerator.forBlock['variables_set_obj3D'] = function(block, generator)
     generator.definitions_[varName] = let_var
     return set_var + persist
 }
+
+javascriptGenerator.forBlock['rot_matrix'] = function (block, generator) {
+    const vals = [
+        block.getFieldValue('r1c1'), block.getFieldValue('r1c2'), block.getFieldValue('r1c3'), 0,
+        block.getFieldValue('r2c1'), block.getFieldValue('r2c2'), block.getFieldValue('r2c3'), 0,
+        block.getFieldValue('r3c1'), block.getFieldValue('r3c2'), block.getFieldValue('r3c3'), 0,
+        0, 0, 0, 1
+    ];
+    const code = `(function(){
+    const M = new THREE.Matrix4();
+    M.set(${vals.join(',')});
+    return M;
+  })()`;
+    return [code, Order.ATOMIC];
+}
+
+javascriptGenerator.forBlock['trans_matrix'] = function (block, generator) {
+    const vals = [
+        1, 0, 0, block.getFieldValue('r1c4'),
+        0, 1, 0, block.getFieldValue('r2c4'),
+        0, 0, 1, block.getFieldValue('r3c4'),
+        0, 0, 0, 1
+    ];
+    const code = `(function(){
+    const M = new THREE.Matrix4();
+    M.set(${vals.join(',')});
+    return M;
+  })()`;
+    return [code, Order.ATOMIC];
+}
+
+javascriptGenerator.forBlock['scale_matrix'] = function (block, generator) {
+    const vals = [
+        block.getFieldValue('r1c1'), 0, 0, 0,
+        0, block.getFieldValue('r2c2'), 0, 0,
+        0, 0, block.getFieldValue('r3c3'), 0,
+        0, 0, 0, 1
+    ];
+    const code = `(function(){
+    const M = new THREE.Matrix4();
+    M.set(${vals.join(',')});
+    return M;
+  })()`;
+    return [code, Order.ATOMIC];
+}
+
+javascriptGenerator.forBlock['scalar'] = function (block, generator) {
+    const v = Number(block.getFieldValue('scalar'));
+    return [String(isFinite(v) ? v : 1), Order.ATOMIC];
+}
+
+javascriptGenerator.forBlock['object_transform'] = function (block, generator) {
+    const rot   = generator.valueToCode(block, 'rot',   Order.FUNCTION_CALL) || 'null';
+    const trans = generator.valueToCode(block, 'trans', Order.FUNCTION_CALL) || 'null';
+    const scale = generator.valueToCode(block, 'scale', Order.FUNCTION_CALL) || 'null';
+
+    // Find the nearest previous 'variables_set_obj3D' in the chain
+    let prev = block.getPreviousBlock();
+    let varName = null;
+    while (prev) {
+        if (prev.type === 'variables_set_obj3D') {
+            const varId = prev.getFieldValue('VAR');
+            varName = generator.getVariableName(varId);
+            break;
+        }
+        prev = prev.getPreviousBlock();
+    }
+
+    if (!varName) {
+        return `/* transform: no previous obj3D setter found — skipping */\n`;
+    }
+
+    return `
+  (function(){
+    const obj = ${varName};
+    if(!obj || !obj.isObject3D){ return; }
+
+    const _rot = ${rot};
+    if (_rot && _rot.isMatrix4) {
+      const _q = new THREE.Quaternion().setFromRotationMatrix(_rot);
+      obj.quaternion.premultiply(_q);
+    }
+
+    const _t = ${trans};
+    if (_t && _t.isMatrix4) {
+      const _p = new THREE.Vector3().setFromMatrixPosition(_t);
+      obj.position.add(_p);
+    }
+    
+    const _s = ${scale};
+    if (_s && _s.isMatrix4) {
+      const e = _s.elements
+      obj.scale.multiply(new THREE.Vector3(
+        isFinite(e[0])  && e[0]  !== 0 ? e[0]  : 1,
+        isFinite(e[5])  && e[5]  !== 0 ? e[5]  : 1,
+        isFinite(e[10]) && e[10] !== 0 ? e[10] : 1
+        ))
+    }
+    
+    obj.updateMatrixWorld(true);
+    threeObjStore["${varName}"] = obj;
+  })();\n`;
+}
+
+javascriptGenerator.forBlock['vector_transform'] = function (block, generator) {
+    const rot   = generator.valueToCode(block, 'rot',   Order.FUNCTION_CALL) || 'null';
+    const trans = generator.valueToCode(block, 'trans', Order.FUNCTION_CALL) || 'null';
+    const scale = generator.valueToCode(block, 'scale', Order.FUNCTION_CALL) || 'null';
+
+    let prev = block.getPreviousBlock();
+    let varName = null;
+    while (prev) {
+        if (prev.type === 'variables_set_obj3D') {
+            const varId = prev.getFieldValue('VAR');
+            varName = generator.getVariableName(varId);
+            break;
+        }
+        prev = prev.getPreviousBlock();
+    }
+
+    if (!varName) {
+        return `/* transform: no previous geo_vector setter found — skipping */\n`;
+    }
+
+    return `
+  (function(){
+    const obj = ${varName};
+    if(!obj || !obj.isObject3D){ return; }
+
+    const _rot = ${rot};
+    if (_rot && _rot.isMatrix4) {
+      const _q = new THREE.Quaternion().setFromRotationMatrix(_rot);
+      obj.quaternion.premultiply(_q);
+    }
+
+    const _t = ${trans};
+    if (_t && _t.isMatrix4) {
+      const _p = new THREE.Vector3().setFromMatrixPosition(_t);
+      obj.position.add(_p);
+    }
+    
+    const _s = ${scale};
+    if (typeof _s === 'number' && isFinite(_s)) {
+      const curr = obj.userData.length ?? 1;
+      const newLen = Math.max(0, curr * _s);
+      obj.userData.length = newLen;
+      const hlr = obj.userData.headLenRatio ?? 0.25;
+      const hwr = obj.userData.headWidthRatio ?? 0.10;
+      obj.setLength(newLen, hlr * newLen, hwr * newLen);
+    }
+    
+    obj.updateMatrixWorld(true);
+    threeObjStore["${varName}"] = obj;
+  })();\n`;
+}
+
+javascriptGenerator.forBlock['vector_arithmetic'] = function (block, generator) {
+    const op     = block.getFieldValue('OP') || 'add';
+    const u      = generator.valueToCode(block, 'u', Order.FUNCTION_CALL) || 'new THREE.Vector3()';
+    const v      = generator.valueToCode(block, 'v', Order.FUNCTION_CALL) || 'new THREE.Vector3()';
+
+    return `
+  (function(){
+    const a = (${u}).clone();
+    const b = (${v}).clone();
+    const origin = new THREE.Vector3();
+
+    const dir = (('${op}'==='add') ? a.add(b) : a.sub(b));
+    let len = dir.length();
+
+    if (!isFinite(len) || len <= 0) return;               // nothing to render
+    if (!isFinite(dir.length()) || dir.length() === 0) return;
+
+    const norm = dir.clone().normalize();
+    const headLenRatio = 0.25, headWidthRatio = 0.10;
+
+    const arrow = new THREE.ArrowHelper(
+      norm, origin, len, 0x7c3aed,
+      headLenRatio * len, headWidthRatio * len
+    );
+    const _id = 'vec_tmp_' + Date.now().toString(36) + '_' + Math.floor(Math.random()*1e6).toString(36);
+    threeObjStore[_id] = arrow;
+  })();\n`;
+};
 
 
 //Actual code gen
