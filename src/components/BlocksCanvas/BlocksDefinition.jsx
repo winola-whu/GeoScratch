@@ -419,4 +419,41 @@ export function defineBlocks() {
             this.setInputsInline(true)
         }
     }
+
+    Blockly.Blocks['math_sin'] = {
+        init: function() {
+            this.appendValueInput("ANGLE")
+                .setCheck("Number")
+                .appendField("sin");
+            this.setOutput(true, "Number");
+            this.setColour(230);
+            this.setTooltip("Returns the sine of an angle (in degrees).");
+            this.setHelpUrl("");
+        }
+    };
+
+    Blockly.Blocks['math_cos'] = {
+        init: function() {
+            this.appendValueInput("ANGLE")
+                .setCheck("Number")
+                .appendField("cos");
+            this.setOutput(true, "Number");
+            this.setColour(230);
+            this.setTooltip("Returns the cosine of an angle (in degrees).");
+            this.setHelpUrl("");
+        }
+    };
+
+    Blockly.Blocks['math_tan'] = {
+        init: function() {
+            this.appendValueInput("ANGLE")
+                .setCheck("Number")
+                .appendField("tan");
+            this.setOutput(true, "Number");
+            this.setColour(230);
+            this.setTooltip("Returns the tangent of an angle (in degrees).");
+            this.setHelpUrl("");
+        }
+    };
+
 }

@@ -27,7 +27,7 @@ export const TOOLBOX_XML = `
         <category name="Linear Algebra Operators" categorystyle="logic_category">
             <block type="object_transform"></block>    
             <block type="vector_transform"></block>   
-<!--            <block type="vector_arithmetic"></block>     --> 
+            <block type="vector_arithmetic"></block>
             <block type="dot_product"></block>
             <block type="cross_product_inplace"></block>
             <block type="multiply_inplace"></block>
@@ -37,8 +37,15 @@ export const TOOLBOX_XML = `
         </category>
         <category name="Variables" custom="VARIABLE" colour=330>
         </category>
+        <category name="Math Functions" categorystyle="math_category">
+    <block type="math_sin"></block>
+    <block type="math_cos"></block>
+    <block type="math_tan"></block>
+</category>
         <category name="Measurements" categorystyle="list_category">
             <block type="debug"></block>
         </category>
     </xml>
     `
+
+

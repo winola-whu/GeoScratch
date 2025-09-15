@@ -395,6 +395,27 @@ javascriptGenerator.forBlock['vector_arithmetic'] = function (block, generator) 
 };
 
 
+//Math functions
+javascriptGenerator.forBlock['math_sin'] = function(block, generator) {
+    const value_angle = generator.valueToCode(block, 'ANGLE', Order.FUNCTION_CALL) || '0';
+    // Converts degrees to radians
+    const code = `Math.sin((${value_angle}) * Math.PI / 180)`;
+    return [code, Order.FUNCTION_CALL];
+};
+
+javascriptGenerator.forBlock['math_cos'] = function(block, generator) {
+    const value_angle = generator.valueToCode(block, 'ANGLE', Order.FUNCTION_CALL) || '0';
+    const code = `Math.cos((${value_angle}) * Math.PI / 180)`;
+    return [code, Order.FUNCTION_CALL];
+};
+
+javascriptGenerator.forBlock['math_tan'] = function(block, generator) {
+    const value_angle = generator.valueToCode(block, 'ANGLE', Order.FUNCTION_CALL) || '0';
+    const code = `Math.tan((${value_angle}) * Math.PI / 180)`;
+    return [code, Order.FUNCTION_CALL];
+};
+
+
 //Actual code gen
 export function generateAndRun(workspace){
     javascriptGenerator.addReservedWords('generatedUserCode')

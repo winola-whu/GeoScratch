@@ -1,5 +1,6 @@
 # JetBrains IDE settings
 .idea/
+dist/
 node_modules/
 .DS_Store
 .vscode
