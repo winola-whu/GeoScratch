@@ -38,14 +38,12 @@ export const TOOLBOX_XML = `
         <category name="Variables" custom="VARIABLE" colour=330>
         </category>
         <category name="Math Functions" categorystyle="math_category">
-    <block type="math_sin"></block>
-    <block type="math_cos"></block>
-    <block type="math_tan"></block>
-</category>
+          <block type="math_sin"></block>
+          <block type="math_cos"></block>
+          <block type="math_tan"></block>
+        </category>
         <category name="Measurements" categorystyle="list_category">
             <block type="debug"></block>
         </category>
     </xml>
     `
-
-
