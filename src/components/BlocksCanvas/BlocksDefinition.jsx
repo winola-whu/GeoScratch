@@ -3,19 +3,19 @@ import * as Blockly from 'blockly/core'
 export function defineBlocks() {
 
     //Debugs the output yielded by the evaluation of the input field
-    Blockly.Blocks['debug'] = {
-        init() {
-            this.appendDummyInput().appendField('debug(')
-            this.appendValueInput('exp')
-            this.appendDummyInput('').appendField(')')
-            this.setStyle('math_blocks')
-            this.setTooltip('Prints the output of this expression to the web console.')
-            this.setInputsInline(true)
-            this.setDeletable(true)
-            this.setMovable(true)
-            this.setOutput(true)
-        }
-    }
+    // Blockly.Blocks['debug'] = {
+    //     init() {
+    //         this.appendDummyInput().appendField('debug(')
+    //         this.appendValueInput('exp')
+    //         this.appendDummyInput('').appendField(')')
+    //         this.setStyle('math_blocks')
+    //         this.setTooltip('Prints the output of this expression to the web console.')
+    //         this.setInputsInline(true)
+    //         this.setDeletable(true)
+    //         this.setMovable(true)
+    //         this.setOutput(true)
+    //     }
+    // }
 
     //Gets the value of a variable
     Blockly.Blocks['variables_get'] = {
@@ -213,100 +213,100 @@ export function defineBlocks() {
         }
     }
 
-    Blockly.Blocks['scalar'] = {
-        init() {
-            this.appendDummyInput().appendField('Scalar').appendField(new Blockly.FieldNumber(1), 'scalar')
-            this.setStyle('math_blocks')
-            this.setTooltip('Vector Scalar')
-            this.setDeletable(true)
-            this.setMovable(true)
-            this.setOutput(true, 'scalar')
-        }
-    }
+    // Blockly.Blocks['scalar'] = {
+    //     init() {
+    //         this.appendDummyInput().appendField('Scalar').appendField(new Blockly.FieldNumber(1), 'scalar')
+    //         this.setStyle('math_blocks')
+    //         this.setTooltip('Vector Scalar')
+    //         this.setDeletable(true)
+    //         this.setMovable(true)
+    //         this.setOutput(true, 'scalar')
+    //     }
+    // }
 
-    Blockly.Blocks['cross_product_inplace'] = {
-        init() {
-            this.appendDummyInput()
-                .appendField(new Blockly.FieldVariable("Vector"), "VAR")
-            this.appendValueInput('rhs').appendField('×')
-            this.setStyle('math_blocks')
-            this.setTooltip('Take the cross product of two matrices.')
-            this.setInputsInline(true)
-            this.setDeletable(true)
-            this.setMovable(true)
-            this.setOutput(true)
-        }
-    }
+    // Blockly.Blocks['cross_product_inplace'] = {
+    //     init() {
+    //         this.appendDummyInput()
+    //             .appendField(new Blockly.FieldVariable("Vector"), "VAR")
+    //         this.appendValueInput('rhs').appendField('×')
+    //         this.setStyle('math_blocks')
+    //         this.setTooltip('Take the cross product of two matrices.')
+    //         this.setInputsInline(true)
+    //         this.setDeletable(true)
+    //         this.setMovable(true)
+    //         this.setOutput(true)
+    //     }
+    // }
 
-    Blockly.Blocks['multiply_inplace'] = {
-        init() {
-            this.appendDummyInput()
-                .appendField(new Blockly.FieldVariable("Matrix"), "VAR")
-            this.appendValueInput('rhs').appendField('*')
-            this.setStyle('math_blocks')
-            this.setTooltip('Multiply two matrices.')
-            this.setInputsInline(true)
-            this.setDeletable(true)
-            this.setMovable(true)
-            this.setOutput(true)
-        }
-    }
+    // Blockly.Blocks['multiply_inplace'] = {
+    //     init() {
+    //         this.appendDummyInput()
+    //             .appendField(new Blockly.FieldVariable("Matrix"), "VAR")
+    //         this.appendValueInput('rhs').appendField('*')
+    //         this.setStyle('math_blocks')
+    //         this.setTooltip('Multiply two matrices.')
+    //         this.setInputsInline(true)
+    //         this.setDeletable(true)
+    //         this.setMovable(true)
+    //         this.setOutput(true)
+    //     }
+    // }
 
-    Blockly.Blocks['inverse_inplace'] = {
-        init() {
-            this.appendDummyInput().appendField('inv(')
-                .appendField(new Blockly.FieldVariable("Matrix"), "VAR")
-            this.appendDummyInput('').appendField(')')
-            this.setStyle('math_blocks')
-            this.setTooltip('Calculate the inverse of this matrix.')
-            this.setInputsInline(true)
-            this.setDeletable(true)
-            this.setMovable(true)
-            this.setOutput(true)
-        }
-    }
+    // Blockly.Blocks['inverse_inplace'] = {
+    //     init() {
+    //         this.appendDummyInput().appendField('inv(')
+    //             .appendField(new Blockly.FieldVariable("Matrix"), "VAR")
+    //         this.appendDummyInput('').appendField(')')
+    //         this.setStyle('math_blocks')
+    //         this.setTooltip('Calculate the inverse of this matrix.')
+    //         this.setInputsInline(true)
+    //         this.setDeletable(true)
+    //         this.setMovable(true)
+    //         this.setOutput(true)
+    //     }
+    // }
 
-    Blockly.Blocks['norm_inplace'] = {
-        init() {
-            this.appendDummyInput().appendField('norm(')
-                .appendField(new Blockly.FieldVariable("Vector"), "VAR")
-            this.appendDummyInput('').appendField(')')
-            this.setStyle('math_blocks')
-            this.setTooltip('Normalize this vector in place.')
-            this.setInputsInline(true)
-            this.setDeletable(true)
-            this.setMovable(true)
-            this.setOutput(true)
-        }
-    }
+    // Blockly.Blocks['norm_inplace'] = {
+    //     init() {
+    //         this.appendDummyInput().appendField('norm(')
+    //             .appendField(new Blockly.FieldVariable("Vector"), "VAR")
+    //         this.appendDummyInput('').appendField(')')
+    //         this.setStyle('math_blocks')
+    //         this.setTooltip('Normalize this vector in place.')
+    //         this.setInputsInline(true)
+    //         this.setDeletable(true)
+    //         this.setMovable(true)
+    //         this.setOutput(true)
+    //     }
+    // }
 
-    Blockly.Blocks['dot_product'] = {
-        init() {
-            this.appendDummyInput()
-            this.appendValueInput('lhs')
-            this.appendValueInput('rhs').appendField('·')
-            this.setStyle('math_blocks')
-            this.setTooltip('Take the dot (inner) product of two vectors.')
-            this.setInputsInline(true)
-            this.setDeletable(true)
-            this.setMovable(true)
-            this.setOutput(true)
-        }
-    }
+    // Blockly.Blocks['dot_product'] = {
+    //     init() {
+    //         this.appendDummyInput()
+    //         this.appendValueInput('lhs')
+    //         this.appendValueInput('rhs').appendField('·')
+    //         this.setStyle('math_blocks')
+    //         this.setTooltip('Take the dot (inner) product of two vectors.')
+    //         this.setInputsInline(true)
+    //         this.setDeletable(true)
+    //         this.setMovable(true)
+    //         this.setOutput(true)
+    //     }
+    // }
 
-    Blockly.Blocks['determinant'] = {
-        init() {
-            this.appendDummyInput().appendField('det(')
-            this.appendValueInput('mat')
-            this.appendDummyInput('').appendField(')')
-            this.setStyle('math_blocks')
-            this.setTooltip('Calculate the determinant of this matrix.')
-            this.setInputsInline(true)
-            this.setDeletable(true)
-            this.setMovable(true)
-            this.setOutput(true)
-        }
-    }
+    // Blockly.Blocks['determinant'] = {
+    //     init() {
+    //         this.appendDummyInput().appendField('det(')
+    //         this.appendValueInput('mat')
+    //         this.appendDummyInput('').appendField(')')
+    //         this.setStyle('math_blocks')
+    //         this.setTooltip('Calculate the determinant of this matrix.')
+    //         this.setInputsInline(true)
+    //         this.setDeletable(true)
+    //         this.setMovable(true)
+    //         this.setOutput(true)
+    //     }
+    // }
 
     Blockly.Blocks['rot_matrix'] = {
         init() {
@@ -332,93 +332,93 @@ export function defineBlocks() {
         }
     }
 
-    Blockly.Blocks['trans_matrix'] = {
-        init() {
-            this.appendDummyInput().appendField('Translation Matrix')
-            this.appendDummyInput().appendField('1').appendField('0').appendField('0')
-                    .appendField(new Blockly.FieldNumber(0), 'r1c4')
-                this.appendDummyInput().appendField('0').appendField('1').appendField('0')
-                    .appendField(new Blockly.FieldNumber(0), 'r2c4')
-                this.appendDummyInput().appendField('0').appendField('0').appendField('1')
-                    .appendField(new Blockly.FieldNumber(0), 'r3c4')
-                this.appendDummyInput().appendField('0').appendField('0')
-                    .appendField('0').appendField('1')
-            this.setStyle('math_blocks')
-            this.setTooltip('Homogeneous Translation Matrix')
-            this.setDeletable(true)
-            this.setMovable(true)
-            this.setOutput(true, 'transMat')
-        }
-    }
+    // Blockly.Blocks['trans_matrix'] = {
+    //     init() {
+    //         this.appendDummyInput().appendField('Translation Matrix')
+    //         this.appendDummyInput().appendField('1').appendField('0').appendField('0')
+    //                 .appendField(new Blockly.FieldNumber(0), 'r1c4')
+    //             this.appendDummyInput().appendField('0').appendField('1').appendField('0')
+    //                 .appendField(new Blockly.FieldNumber(0), 'r2c4')
+    //             this.appendDummyInput().appendField('0').appendField('0').appendField('1')
+    //                 .appendField(new Blockly.FieldNumber(0), 'r3c4')
+    //             this.appendDummyInput().appendField('0').appendField('0')
+    //                 .appendField('0').appendField('1')
+    //         this.setStyle('math_blocks')
+    //         this.setTooltip('Homogeneous Translation Matrix')
+    //         this.setDeletable(true)
+    //         this.setMovable(true)
+    //         this.setOutput(true, 'transMat')
+    //     }
+    // }
 
-    Blockly.Blocks['scale_matrix'] = {
-        init() {
-        this.appendDummyInput().appendField('Scaling Matrix')
-            this.appendDummyInput().appendField(new Blockly.FieldNumber(1), 'r1c1')
-                .appendField('0')
-                .appendField('0')
-                .appendField('0')
-            this.appendDummyInput().appendField('0')
-                .appendField(new Blockly.FieldNumber(1), 'r2c2')
-                .appendField('0')
-                .appendField('0')
-            this.appendDummyInput().appendField('0')
-                .appendField('0')
-                .appendField(new Blockly.FieldNumber(1), 'r3c3')
-                .appendField('0')
-            this.appendDummyInput().appendField('0').appendField('0')
-                .appendField('0').appendField('1')
-        this.setStyle('math_blocks')
-        this.setTooltip('Homogeneous Scaling Matrix')
-        this.setDeletable(true)
-        this.setMovable(true)
-        this.setOutput(true, 'scaleMat')
-        }
-    }
+    // Blockly.Blocks['scale_matrix'] = {
+    //     init() {
+    //     this.appendDummyInput().appendField('Scaling Matrix')
+    //         this.appendDummyInput().appendField(new Blockly.FieldNumber(1), 'r1c1')
+    //             .appendField('0')
+    //             .appendField('0')
+    //             .appendField('0')
+    //         this.appendDummyInput().appendField('0')
+    //             .appendField(new Blockly.FieldNumber(1), 'r2c2')
+    //             .appendField('0')
+    //             .appendField('0')
+    //         this.appendDummyInput().appendField('0')
+    //             .appendField('0')
+    //             .appendField(new Blockly.FieldNumber(1), 'r3c3')
+    //             .appendField('0')
+    //         this.appendDummyInput().appendField('0').appendField('0')
+    //             .appendField('0').appendField('1')
+    //     this.setStyle('math_blocks')
+    //     this.setTooltip('Homogeneous Scaling Matrix')
+    //     this.setDeletable(true)
+    //     this.setMovable(true)
+    //     this.setOutput(true, 'scaleMat')
+    //     }
+    // }
 
-    Blockly.Blocks['object_transform'] = {
-        init() {
-            this.appendDummyInput().appendField('Object Transform')
-            this.setPreviousStatement(true)
-            this.setNextStatement(true)
-            this.appendValueInput('rot').appendField('Rotate:').setCheck('rotMat')
-            this.appendValueInput('trans').appendField('Translate:').setCheck('transMat')
-            this.appendValueInput('scale').appendField('Scaling:').setCheck('scaleMat')
-            this.setStyle('math_blocks')
-            this.setTooltip('Translate / rotate object in R3')
-            this.setDeletable(true)
-            this.setMovable(true)
-        }
-    }
+    // Blockly.Blocks['object_transform'] = {
+    //     init() {
+    //         this.appendDummyInput().appendField('Object Transform')
+    //         this.setPreviousStatement(true)
+    //         this.setNextStatement(true)
+    //         this.appendValueInput('rot').appendField('Rotate:').setCheck('rotMat')
+    //         this.appendValueInput('trans').appendField('Translate:').setCheck('transMat')
+    //         this.appendValueInput('scale').appendField('Scaling:').setCheck('scaleMat')
+    //         this.setStyle('math_blocks')
+    //         this.setTooltip('Translate / rotate object in R3')
+    //         this.setDeletable(true)
+    //         this.setMovable(true)
+    //     }
+    // }
 
-    Blockly.Blocks['vector_transform'] = {
-        init() {
-            this.appendDummyInput().appendField('Vector Transform')
-            this.setPreviousStatement(true)
-            this.setNextStatement(true)
-            this.appendValueInput('rot').appendField('Rotate:').setCheck('rotMat')
-            this.appendValueInput('trans').appendField('Translate:').setCheck('transMat')
-            this.appendValueInput('scale').appendField('Scaling:').setCheck('scalar')
-            this.setStyle('math_blocks')
-            this.setTooltip('Translate / rotate vector in R3')
-            this.setDeletable(true)
-            this.setMovable(true)
-        }
-    }
+    // Blockly.Blocks['vector_transform'] = {
+    //     init() {
+    //         this.appendDummyInput().appendField('Vector Transform')
+    //         this.setPreviousStatement(true)
+    //         this.setNextStatement(true)
+    //         this.appendValueInput('rot').appendField('Rotate:').setCheck('rotMat')
+    //         this.appendValueInput('trans').appendField('Translate:').setCheck('transMat')
+    //         this.appendValueInput('scale').appendField('Scaling:').setCheck('scalar')
+    //         this.setStyle('math_blocks')
+    //         this.setTooltip('Translate / rotate vector in R3')
+    //         this.setDeletable(true)
+    //         this.setMovable(true)
+    //     }
+    // }
 
-    Blockly.Blocks['vector_arithmetic'] = {
-        init() {
-            this.appendValueInput('u').setCheck('vector3')
-            this.appendValueInput('v').setCheck('vector3').appendField(new Blockly.FieldDropdown([['u + v', 'add'], ['u - v', 'subtract']]), 'OP')
-            this.setPreviousStatement(true);
-            this.setNextStatement(true);
-            this.setStyle('math_blocks');
-            this.setTooltip('Computes u ± v and renders the result');
-            this.setDeletable(true);
-            this.setMovable(true);
-            this.setInputsInline(true)
-        }
-    }
+    // Blockly.Blocks['vector_arithmetic'] = {
+    //     init() {
+    //         this.appendValueInput('u').setCheck('vector3')
+    //         this.appendValueInput('v').setCheck('vector3').appendField(new Blockly.FieldDropdown([['u + v', 'add'], ['u - v', 'subtract']]), 'OP')
+    //         this.setPreviousStatement(true);
+    //         this.setNextStatement(true);
+    //         this.setStyle('math_blocks');
+    //         this.setTooltip('Computes u ± v and renders the result');
+    //         this.setDeletable(true);
+    //         this.setMovable(true);
+    //         this.setInputsInline(true)
+    //     }
+    // }
 
     Blockly.Blocks['math_sin'] = {
         init: function() {

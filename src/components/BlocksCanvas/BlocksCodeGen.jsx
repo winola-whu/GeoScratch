@@ -16,10 +16,10 @@ export const threeObjStore = {}
 
 
 //Dev utility
-javascriptGenerator.forBlock['debug'] = function (block, generator) {
-    const debugString = `console.log(${generator.valueToCode(block, 'exp', Order.FUNCTION_CALL)});`
-    return [debugString, Order.FUNCTION_CALL]
-}
+// javascriptGenerator.forBlock['debug'] = function (block, generator) {
+//     const debugString = `console.log(${generator.valueToCode(block, 'exp', Order.FUNCTION_CALL)});`
+//     return [debugString, Order.FUNCTION_CALL]
+// }
 
 
 //Anything that outputs an obj3D type
@@ -129,29 +129,29 @@ javascriptGenerator.forBlock['debug'] = function (block, generator) {
 
 
 //Linalg methods
-javascriptGenerator.forBlock['cross_product_inplace'] = function (block, generator) {
-    var varName = generator.getVariableName(block.getFieldValue('VAR'));
-    const crossString = varName + `.cross(${generator.valueToCode(block, 'rhs', Order.FUNCTION_CALL)});`
-    return [crossString, Order.FUNCTION_CALL]
-}
+// javascriptGenerator.forBlock['cross_product_inplace'] = function (block, generator) {
+//     var varName = generator.getVariableName(block.getFieldValue('VAR'));
+//     const crossString = varName + `.cross(${generator.valueToCode(block, 'rhs', Order.FUNCTION_CALL)});`
+//     return [crossString, Order.FUNCTION_CALL]
+// }
 
-javascriptGenerator.forBlock['multiply_inplace'] = function (block, generator) {
-    var varName = generator.getVariableName(block.getFieldValue('VAR'));
-    const multString = varName + `.multiply(${generator.valueToCode(block, 'rhs', Order.FUNCTION_CALL)});`
-    return [multString, Order.FUNCTION_CALL]
-}
+// javascriptGenerator.forBlock['multiply_inplace'] = function (block, generator) {
+//     var varName = generator.getVariableName(block.getFieldValue('VAR'));
+//     const multString = varName + `.multiply(${generator.valueToCode(block, 'rhs', Order.FUNCTION_CALL)});`
+//     return [multString, Order.FUNCTION_CALL]
+// }
 
-javascriptGenerator.forBlock['inverse_inplace'] = function (block, generator) {
-    var varName = generator.getVariableName(block.getFieldValue('VAR'));
-    const invString = varName + `.invert();`
-    return [invString, Order.FUNCTION_CALL]
-}
+// javascriptGenerator.forBlock['inverse_inplace'] = function (block, generator) {
+//     var varName = generator.getVariableName(block.getFieldValue('VAR'));
+//     const invString = varName + `.invert();`
+//     return [invString, Order.FUNCTION_CALL]
+// }
 
-javascriptGenerator.forBlock['norm_inplace'] = function (block, generator) {
-    var varName = generator.getVariableName(block.getFieldValue('VAR'));
-    const normString = varName + `.normalize();`
-    return [normString, Order.FUNCTION_CALL]
-}
+// javascriptGenerator.forBlock['norm_inplace'] = function (block, generator) {
+//     var varName = generator.getVariableName(block.getFieldValue('VAR'));
+//     const normString = varName + `.normalize();`
+//     return [normString, Order.FUNCTION_CALL]
+// }
 
 javascriptGenerator.forBlock['cross_product'] = function (block, generator) {
     const crossString = `(${generator.valueToCode(block, 'lhs', Order.FUNCTION_CALL)}).clone().cross(${generator.valueToCode(block, 'rhs', Order.FUNCTION_CALL)})`
@@ -173,15 +173,15 @@ javascriptGenerator.forBlock['norm'] = function (block, generator) {
     return [normString, Order.FUNCTION_CALL]
 }
 
-javascriptGenerator.forBlock['dot_product'] = function (block, generator) {
-    const dotString = `(${generator.valueToCode(block, 'lhs', Order.FUNCTION_CALL)}).dot(${generator.valueToCode(block, 'rhs', Order.FUNCTION_CALL)})`
-    return [dotString, Order.FUNCTION_CALL]
-}
+// javascriptGenerator.forBlock['dot_product'] = function (block, generator) {
+//     const dotString = `(${generator.valueToCode(block, 'lhs', Order.FUNCTION_CALL)}).dot(${generator.valueToCode(block, 'rhs', Order.FUNCTION_CALL)})`
+//     return [dotString, Order.FUNCTION_CALL]
+// }
 
-javascriptGenerator.forBlock['determinant'] = function (block, generator) {
-    const detString = `(${generator.valueToCode(block, 'mat', Order.FUNCTION_CALL)}).determinant()`
-    return [detString, Order.FUNCTION_CALL]
-}
+// javascriptGenerator.forBlock['determinant'] = function (block, generator) {
+//     const detString = `(${generator.valueToCode(block, 'mat', Order.FUNCTION_CALL)}).determinant()`
+//     return [detString, Order.FUNCTION_CALL]
+// }
 
 
 //get/set pulled directly from Google's implementation, the block ensures that renderable objects are typed as "obj3D" on creation.
@@ -225,174 +225,174 @@ javascriptGenerator.forBlock['rot_matrix'] = function (block, generator) {
     return [code, Order.ATOMIC];
 }
 
-javascriptGenerator.forBlock['trans_matrix'] = function (block, generator) {
-    const vals = [
-        1, 0, 0, block.getFieldValue('r1c4'),
-        0, 1, 0, block.getFieldValue('r2c4'),
-        0, 0, 1, block.getFieldValue('r3c4'),
-        0, 0, 0, 1
-    ];
-    const code = `(function(){
-    const M = new THREE.Matrix4();
-    M.set(${vals.join(',')});
-    return M;
-  })()`;
-    return [code, Order.ATOMIC];
-}
+// javascriptGenerator.forBlock['trans_matrix'] = function (block, generator) {
+//     const vals = [
+//         1, 0, 0, block.getFieldValue('r1c4'),
+//         0, 1, 0, block.getFieldValue('r2c4'),
+//         0, 0, 1, block.getFieldValue('r3c4'),
+//         0, 0, 0, 1
+//     ];
+//     const code = `(function(){
+//     const M = new THREE.Matrix4();
+//     M.set(${vals.join(',')});
+//     return M;
+//   })()`;
+//     return [code, Order.ATOMIC];
+// }
 
-javascriptGenerator.forBlock['scale_matrix'] = function (block, generator) {
-    const vals = [
-        block.getFieldValue('r1c1'), 0, 0, 0,
-        0, block.getFieldValue('r2c2'), 0, 0,
-        0, 0, block.getFieldValue('r3c3'), 0,
-        0, 0, 0, 1
-    ];
-    const code = `(function(){
-    const M = new THREE.Matrix4();
-    M.set(${vals.join(',')});
-    return M;
-  })()`;
-    return [code, Order.ATOMIC];
-}
+// javascriptGenerator.forBlock['scale_matrix'] = function (block, generator) {
+//     const vals = [
+//         block.getFieldValue('r1c1'), 0, 0, 0,
+//         0, block.getFieldValue('r2c2'), 0, 0,
+//         0, 0, block.getFieldValue('r3c3'), 0,
+//         0, 0, 0, 1
+//     ];
+//     const code = `(function(){
+//     const M = new THREE.Matrix4();
+//     M.set(${vals.join(',')});
+//     return M;
+//   })()`;
+//     return [code, Order.ATOMIC];
+// }
 
-javascriptGenerator.forBlock['scalar'] = function (block, generator) {
-    const v = Number(block.getFieldValue('scalar'));
-    return [String(isFinite(v) ? v : 1), Order.ATOMIC];
-}
+// javascriptGenerator.forBlock['scalar'] = function (block, generator) {
+//     const v = Number(block.getFieldValue('scalar'));
+//     return [String(isFinite(v) ? v : 1), Order.ATOMIC];
+// }
 
-javascriptGenerator.forBlock['object_transform'] = function (block, generator) {
-    const rot   = generator.valueToCode(block, 'rot',   Order.FUNCTION_CALL) || 'null';
-    const trans = generator.valueToCode(block, 'trans', Order.FUNCTION_CALL) || 'null';
-    const scale = generator.valueToCode(block, 'scale', Order.FUNCTION_CALL) || 'null';
+// javascriptGenerator.forBlock['object_transform'] = function (block, generator) {
+//     const rot   = generator.valueToCode(block, 'rot',   Order.FUNCTION_CALL) || 'null';
+//     const trans = generator.valueToCode(block, 'trans', Order.FUNCTION_CALL) || 'null';
+//     const scale = generator.valueToCode(block, 'scale', Order.FUNCTION_CALL) || 'null';
 
-    // Find the nearest previous 'variables_set_obj3D' in the chain
-    let prev = block.getPreviousBlock();
-    let varName = null;
-    while (prev) {
-        if (prev.type === 'variables_set_obj3D') {
-            const varId = prev.getFieldValue('VAR');
-            varName = generator.getVariableName(varId);
-            break;
-        }
-        prev = prev.getPreviousBlock();
-    }
+//     // Find the nearest previous 'variables_set_obj3D' in the chain
+//     let prev = block.getPreviousBlock();
+//     let varName = null;
+//     while (prev) {
+//         if (prev.type === 'variables_set_obj3D') {
+//             const varId = prev.getFieldValue('VAR');
+//             varName = generator.getVariableName(varId);
+//             break;
+//         }
+//         prev = prev.getPreviousBlock();
+//     }
 
-    if (!varName) {
-        return `/* transform: no previous obj3D setter found — skipping */\n`;
-    }
+//     if (!varName) {
+//         return `/* transform: no previous obj3D setter found — skipping */\n`;
+//     }
 
-    return `
-  (function(){
-    const obj = ${varName};
-    if(!obj || !obj.isObject3D){ return; }
+//     return `
+//   (function(){
+//     const obj = ${varName};
+//     if(!obj || !obj.isObject3D){ return; }
 
-    const _rot = ${rot};
-    if (_rot && _rot.isMatrix4) {
-      const _q = new THREE.Quaternion().setFromRotationMatrix(_rot);
-      obj.quaternion.premultiply(_q);
-    }
+//     const _rot = ${rot};
+//     if (_rot && _rot.isMatrix4) {
+//       const _q = new THREE.Quaternion().setFromRotationMatrix(_rot);
+//       obj.quaternion.premultiply(_q);
+//     }
 
-    const _t = ${trans};
-    if (_t && _t.isMatrix4) {
-      const _p = new THREE.Vector3().setFromMatrixPosition(_t);
-      obj.position.add(_p);
-    }
+//     const _t = ${trans};
+//     if (_t && _t.isMatrix4) {
+//       const _p = new THREE.Vector3().setFromMatrixPosition(_t);
+//       obj.position.add(_p);
+//     }
     
-    const _s = ${scale};
-    if (_s && _s.isMatrix4) {
-      const e = _s.elements
-      obj.scale.multiply(new THREE.Vector3(
-        isFinite(e[0])  && e[0]  !== 0 ? e[0]  : 1,
-        isFinite(e[5])  && e[5]  !== 0 ? e[5]  : 1,
-        isFinite(e[10]) && e[10] !== 0 ? e[10] : 1
-        ))
-    }
+//     const _s = ${scale};
+//     if (_s && _s.isMatrix4) {
+//       const e = _s.elements
+//       obj.scale.multiply(new THREE.Vector3(
+//         isFinite(e[0])  && e[0]  !== 0 ? e[0]  : 1,
+//         isFinite(e[5])  && e[5]  !== 0 ? e[5]  : 1,
+//         isFinite(e[10]) && e[10] !== 0 ? e[10] : 1
+//         ))
+//     }
     
-    obj.updateMatrixWorld(true);
-    threeObjStore["${varName}"] = obj;
-  })();\n`;
-}
+//     obj.updateMatrixWorld(true);
+//     threeObjStore["${varName}"] = obj;
+//   })();\n`;
+// }
 
-javascriptGenerator.forBlock['vector_transform'] = function (block, generator) {
-    const rot   = generator.valueToCode(block, 'rot',   Order.FUNCTION_CALL) || 'null';
-    const trans = generator.valueToCode(block, 'trans', Order.FUNCTION_CALL) || 'null';
-    const scale = generator.valueToCode(block, 'scale', Order.FUNCTION_CALL) || 'null';
+// javascriptGenerator.forBlock['vector_transform'] = function (block, generator) {
+//     const rot   = generator.valueToCode(block, 'rot',   Order.FUNCTION_CALL) || 'null';
+//     const trans = generator.valueToCode(block, 'trans', Order.FUNCTION_CALL) || 'null';
+//     const scale = generator.valueToCode(block, 'scale', Order.FUNCTION_CALL) || 'null';
 
-    let prev = block.getPreviousBlock();
-    let varName = null;
-    while (prev) {
-        if (prev.type === 'variables_set_obj3D') {
-            const varId = prev.getFieldValue('VAR');
-            varName = generator.getVariableName(varId);
-            break;
-        }
-        prev = prev.getPreviousBlock();
-    }
+//     let prev = block.getPreviousBlock();
+//     let varName = null;
+//     while (prev) {
+//         if (prev.type === 'variables_set_obj3D') {
+//             const varId = prev.getFieldValue('VAR');
+//             varName = generator.getVariableName(varId);
+//             break;
+//         }
+//         prev = prev.getPreviousBlock();
+//     }
 
-    if (!varName) {
-        return `/* transform: no previous geo_vector setter found — skipping */\n`;
-    }
+//     if (!varName) {
+//         return `/* transform: no previous geo_vector setter found — skipping */\n`;
+//     }
 
-    return `
-  (function(){
-    const obj = ${varName};
-    if(!obj || !obj.isObject3D){ return; }
+//     return `
+//   (function(){
+//     const obj = ${varName};
+//     if(!obj || !obj.isObject3D){ return; }
 
-    const _rot = ${rot};
-    if (_rot && _rot.isMatrix4) {
-      const _q = new THREE.Quaternion().setFromRotationMatrix(_rot);
-      obj.quaternion.premultiply(_q);
-    }
+//     const _rot = ${rot};
+//     if (_rot && _rot.isMatrix4) {
+//       const _q = new THREE.Quaternion().setFromRotationMatrix(_rot);
+//       obj.quaternion.premultiply(_q);
+//     }
 
-    const _t = ${trans};
-    if (_t && _t.isMatrix4) {
-      const _p = new THREE.Vector3().setFromMatrixPosition(_t);
-      obj.position.add(_p);
-    }
+//     const _t = ${trans};
+//     if (_t && _t.isMatrix4) {
+//       const _p = new THREE.Vector3().setFromMatrixPosition(_t);
+//       obj.position.add(_p);
+//     }
     
-    const _s = ${scale};
-    if (typeof _s === 'number' && isFinite(_s)) {
-      const curr = obj.userData.length ?? 1;
-      const newLen = Math.max(0, curr * _s);
-      obj.userData.length = newLen;
-      const hlr = obj.userData.headLenRatio ?? 0.25;
-      const hwr = obj.userData.headWidthRatio ?? 0.10;
-      obj.setLength(newLen, hlr * newLen, hwr * newLen);
-    }
+//     const _s = ${scale};
+//     if (typeof _s === 'number' && isFinite(_s)) {
+//       const curr = obj.userData.length ?? 1;
+//       const newLen = Math.max(0, curr * _s);
+//       obj.userData.length = newLen;
+//       const hlr = obj.userData.headLenRatio ?? 0.25;
+//       const hwr = obj.userData.headWidthRatio ?? 0.10;
+//       obj.setLength(newLen, hlr * newLen, hwr * newLen);
+//     }
     
-    obj.updateMatrixWorld(true);
-    threeObjStore["${varName}"] = obj;
-  })();\n`;
-}
+//     obj.updateMatrixWorld(true);
+//     threeObjStore["${varName}"] = obj;
+//   })();\n`;
+// }
 
-javascriptGenerator.forBlock['vector_arithmetic'] = function (block, generator) {
-    const op     = block.getFieldValue('OP') || 'add';
-    const u      = generator.valueToCode(block, 'u', Order.FUNCTION_CALL) || 'new THREE.Vector3()';
-    const v      = generator.valueToCode(block, 'v', Order.FUNCTION_CALL) || 'new THREE.Vector3()';
+// javascriptGenerator.forBlock['vector_arithmetic'] = function (block, generator) {
+//     const op     = block.getFieldValue('OP') || 'add';
+//     const u      = generator.valueToCode(block, 'u', Order.FUNCTION_CALL) || 'new THREE.Vector3()';
+//     const v      = generator.valueToCode(block, 'v', Order.FUNCTION_CALL) || 'new THREE.Vector3()';
 
-    return `
-  (function(){
-    const a = (${u}).clone();
-    const b = (${v}).clone();
-    const origin = new THREE.Vector3();
+//     return `
+//   (function(){
+//     const a = (${u}).clone();
+//     const b = (${v}).clone();
+//     const origin = new THREE.Vector3();
 
-    const dir = (('${op}'==='add') ? a.add(b) : a.sub(b));
-    let len = dir.length();
+//     const dir = (('${op}'==='add') ? a.add(b) : a.sub(b));
+//     let len = dir.length();
 
-    if (!isFinite(len) || len <= 0) return;               // nothing to render
-    if (!isFinite(dir.length()) || dir.length() === 0) return;
+//     if (!isFinite(len) || len <= 0) return;               // nothing to render
+//     if (!isFinite(dir.length()) || dir.length() === 0) return;
 
-    const norm = dir.clone().normalize();
-    const headLenRatio = 0.25, headWidthRatio = 0.10;
+//     const norm = dir.clone().normalize();
+//     const headLenRatio = 0.25, headWidthRatio = 0.10;
 
-    const arrow = new THREE.ArrowHelper(
-      norm, origin, len, 0x7c3aed,
-      headLenRatio * len, headWidthRatio * len
-    );
-    const _id = 'vec_tmp_' + Date.now().toString(36) + '_' + Math.floor(Math.random()*1e6).toString(36);
-    threeObjStore[_id] = arrow;
-  })();\n`;
-};
+//     const arrow = new THREE.ArrowHelper(
+//       norm, origin, len, 0x7c3aed,
+//       headLenRatio * len, headWidthRatio * len
+//     );
+//     const _id = 'vec_tmp_' + Date.now().toString(36) + '_' + Math.floor(Math.random()*1e6).toString(36);
+//     threeObjStore[_id] = arrow;
+//   })();\n`;
+// };
 
 
 //Math functions

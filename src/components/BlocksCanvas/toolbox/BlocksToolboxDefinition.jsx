@@ -37,11 +37,6 @@
 //         </category>
 //         <category name="Variables" custom="VARIABLE" colour=330>
 //         </category>
-//         <category name="Math Functions" categorystyle="math_category">
-//           <block type="math_sin"></block>
-//           <block type="math_cos"></block>
-//           <block type="math_tan"></block>
-//         </category>
 //         <category name="Measurements" categorystyle="list_category">
 //             <block type="debug"></block>
 //         </category>
@@ -68,6 +63,25 @@ const TOOLBOX_XML = `
             <block type="linalg_mat3x3"></block>
             <block type="linalg_mat4x4"></block>
             <block type="rot_matrix"></block>
+            <block type="trans_matrix"></block>
+            <block type="scale_matrix"></block>
+            <block type="scalar"></block>
+        </category>
+        <category name="Linear Algebra Operators" categorystyle="logic_category">
+            <block type="object_transform"></block>
+            <block type="vector_transform"></block>      
+            <block type="vector_arithmetic"></block>
+            <block type="dot_product"></block>
+            <block type="cross_product_inplace"></block>
+            <block type="multiply_inplace"></block>
+            <block type="inverse_inplace"></block>
+            <block type="determinant"></block>
+            <block type="norm_inplace"></block>
+        </category>
+        <category name="Variables" custom="VARIABLE" colour=330>
+        </category>
+        <category name="Measurements" categorystyle="list_category">
+            <block type="debug"></block>
         </category>
     </xml>
     `
