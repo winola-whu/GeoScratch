@@ -23,109 +23,109 @@ javascriptGenerator.forBlock['debug'] = function (block, generator) {
 
 
 //Anything that outputs an obj3D type
-javascriptGenerator.forBlock['geo_point'] = function (block, generator) {
-    const pos = generator.valueToCode(block, 'pos', Order.FUNCTION_CALL) || 'new THREE.Vector3()';
-    const pointDec = `(function(){
-    const m = new THREE.Mesh(
-      new THREE.SphereGeometry(0.08, 8, 8),
-      new THREE.MeshStandardMaterial({color:0xffff00, roughness:0.4, metalness:0.1})
-    );
-    m.position.copy(${pos});
-    return m;
-  })()`;
-    return [pointDec, Order.ATOMIC];
-}
+// javascriptGenerator.forBlock['geo_point'] = function (block, generator) {
+//     const pos = generator.valueToCode(block, 'pos', Order.FUNCTION_CALL) || 'new THREE.Vector3()';
+//     const pointDec = `(function(){
+//     const m = new THREE.Mesh(
+//       new THREE.SphereGeometry(0.08, 8, 8),
+//       new THREE.MeshStandardMaterial({color:0xffff00, roughness:0.4, metalness:0.1})
+//     );
+//     m.position.copy(${pos});
+//     return m;
+//   })()`;
+//     return [pointDec, Order.ATOMIC];
+// }
 
-javascriptGenerator.forBlock['geo_plane'] = function (block, generator) {
-    const planeDec = `(new THREE.Mesh(new THREE.PlaneGeometry(
-                ${generator.valueToCode(block, 'side', Order.FUNCTION_CALL)}, ${generator.valueToCode(block, 'side', Order.FUNCTION_CALL)}), 
-                new THREE.MeshStandardMaterial({color: 0xffff00, roughness: 0.4, metalness:0.1})))`
-            //.position.copy(${generator.valueToCode(block, 'pos', Order.FUNCTION_CALL)})`
-    return [planeDec, Order.ATOMIC]
-}
+// javascriptGenerator.forBlock['geo_plane'] = function (block, generator) {
+//     const planeDec = `(new THREE.Mesh(new THREE.PlaneGeometry(
+//                 ${generator.valueToCode(block, 'side', Order.FUNCTION_CALL)}, ${generator.valueToCode(block, 'side', Order.FUNCTION_CALL)}), 
+//                 new THREE.MeshStandardMaterial({color: 0xffff00, roughness: 0.4, metalness:0.1})))`
+//             //.position.copy(${generator.valueToCode(block, 'pos', Order.FUNCTION_CALL)})`
+//     return [planeDec, Order.ATOMIC]
+// }
 
-javascriptGenerator.forBlock['parametric_plane'] = function (block, generator) {
-    const planeDec = `new THREE.Plane(${generator.valueToCode(block, 'norm', Order.FUNCTION_CALL)}, ${generator.valueToCode(block, 'dist', Order.FUNCTION_CALL)})`
-    return [planeDec, Order.ATOMIC]
-}
+// javascriptGenerator.forBlock['parametric_plane'] = function (block, generator) {
+//     const planeDec = `new THREE.Plane(${generator.valueToCode(block, 'norm', Order.FUNCTION_CALL)}, ${generator.valueToCode(block, 'dist', Order.FUNCTION_CALL)})`
+//     return [planeDec, Order.ATOMIC]
+// }
 
-javascriptGenerator.forBlock['geo_vector'] = function (block, generator) {
-    const vecPos = generator.valueToCode(block, 'pos', Order.FUNCTION_CALL) || 'new THREE.Vector3()'
-    const vecDir = generator.valueToCode(block, 'dir', Order.FUNCTION_CALL) || 'new THREE.Vector3(1,0,0)'
-    const vecScale = generator.valueToCode(block, 'scale', Order.FUNCTION_CALL) || '1'
-    const code = `(function(){
-    const origin = (${vecPos}).clone();
-    let dir = (${vecDir}).clone();
-    let len = Number(${vecScale});
-    if (!isFinite(len) || len <= 0) len = 1;      // default length
+// javascriptGenerator.forBlock['geo_vector'] = function (block, generator) {
+//     const vecPos = generator.valueToCode(block, 'pos', Order.FUNCTION_CALL) || 'new THREE.Vector3()'
+//     const vecDir = generator.valueToCode(block, 'dir', Order.FUNCTION_CALL) || 'new THREE.Vector3(1,0,0)'
+//     const vecScale = generator.valueToCode(block, 'scale', Order.FUNCTION_CALL) || '1'
+//     const code = `(function(){
+//     const origin = (${vecPos}).clone();
+//     let dir = (${vecDir}).clone();
+//     let len = Number(${vecScale});
+//     if (!isFinite(len) || len <= 0) len = 1;      // default length
 
-    if (!isFinite(dir.length()) || dir.length() === 0) {
-      dir = new THREE.Vector3(1,0,0);            // default direction
-    }
-    const norm = dir.clone().normalize();
+//     if (!isFinite(dir.length()) || dir.length() === 0) {
+//       dir = new THREE.Vector3(1,0,0);            // default direction
+//     }
+//     const norm = dir.clone().normalize();
 
-    // head sizes proportional to length
-    const headLenRatio   = 0.25;
-    const headWidthRatio = 0.10;
-    const arrow = new THREE.ArrowHelper(
-      norm, origin, len, 0x7c3aed,
-      headLenRatio * len, headWidthRatio * len
-    );
-    arrow.userData.geoType         = 'geo_vector';
-    arrow.userData.length          = len;
-    arrow.userData.headLenRatio    = headLenRatio;
-    arrow.userData.headWidthRatio  = headWidthRatio;
-    return arrow;
-  })()`;
-    return [code, Order.ATOMIC];
-}
+//     // head sizes proportional to length
+//     const headLenRatio   = 0.25;
+//     const headWidthRatio = 0.10;
+//     const arrow = new THREE.ArrowHelper(
+//       norm, origin, len, 0x7c3aed,
+//       headLenRatio * len, headWidthRatio * len
+//     );
+//     arrow.userData.geoType         = 'geo_vector';
+//     arrow.userData.length          = len;
+//     arrow.userData.headLenRatio    = headLenRatio;
+//     arrow.userData.headWidthRatio  = headWidthRatio;
+//     return arrow;
+//   })()`;
+//     return [code, Order.ATOMIC];
+// }
 
-javascriptGenerator.forBlock['geo_sphere'] = function (block, generator) {
-    const pos = generator.valueToCode(block, 'pos', Order.FUNCTION_CALL) || 'new THREE.Vector3()';
-    const r   = Number(block.getFieldValue('R')) || 1;
+// javascriptGenerator.forBlock['geo_sphere'] = function (block, generator) {
+//     const pos = generator.valueToCode(block, 'pos', Order.FUNCTION_CALL) || 'new THREE.Vector3()';
+//     const r   = Number(block.getFieldValue('R')) || 1;
 
-    const code = `(function(){
-    const centre = (${pos}).clone();
-    const radius = Math.max(0.01, ${r});
-    const geom = new THREE.SphereGeometry(radius, 32, 16);
-    const mat  = new THREE.MeshStandardMaterial({ color: 0x3b82f6, roughness: 0.5, metalness: 0.1, opacity:0.8, transparent:true });
-    const mesh = new THREE.Mesh(geom, mat);
-    mesh.position.copy(centre);
+//     const code = `(function(){
+//     const centre = (${pos}).clone();
+//     const radius = Math.max(0.01, ${r});
+//     const geom = new THREE.SphereGeometry(radius, 32, 16);
+//     const mat  = new THREE.MeshStandardMaterial({ color: 0x3b82f6, roughness: 0.5, metalness: 0.1, opacity:0.8, transparent:true });
+//     const mesh = new THREE.Mesh(geom, mat);
+//     mesh.position.copy(centre);
 
-    mesh.userData.geoType = 'geo_sphere';
-    mesh.userData.radius  = radius;
+//     mesh.userData.geoType = 'geo_sphere';
+//     mesh.userData.radius  = radius;
 
-    return mesh;
-  })()`;
+//     return mesh;
+//   })()`;
 
-    return [code, Order.ATOMIC];
-};
+//     return [code, Order.ATOMIC];
+// };
 
 //Linalg primitives
-javascriptGenerator.forBlock['linalg_vec3'] = function (block, generator) {
-    const vecString = `new THREE.Vector3(${block.getFieldValue('X')}, ${block.getFieldValue('Y')}, ${block.getFieldValue('Z')})`
-    return [vecString, Order.ATOMIC]
-}
+// javascriptGenerator.forBlock['linalg_vec3'] = function (block, generator) {
+//     const vecString = `new THREE.Vector3(${block.getFieldValue('X')}, ${block.getFieldValue('Y')}, ${block.getFieldValue('Z')})`
+//     return [vecString, Order.ATOMIC]
+// }
 
-javascriptGenerator.forBlock['linalg_vec4'] = function (block, generator) {
-    const vecString = `new THREE.Vector4(${block.getFieldValue('W')}, ${block.getFieldValue('X')}, ${block.getFieldValue('Y')}, ${block.getFieldValue('Z')})`
-    return [vecString, Order.ATOMIC]
-}
+// javascriptGenerator.forBlock['linalg_vec4'] = function (block, generator) {
+//     const vecString = `new THREE.Vector4(${block.getFieldValue('W')}, ${block.getFieldValue('X')}, ${block.getFieldValue('Y')}, ${block.getFieldValue('Z')})`
+//     return [vecString, Order.ATOMIC]
+// }
 
-javascriptGenerator.forBlock['linalg_mat3x3'] = function (block, generator) {
-    const matString = `new THREE.Matrix3(${block.getFieldValue('r1c1')}, ${block.getFieldValue('r1c2')}, ${block.getFieldValue('r1c3')}, ` 
-                    +  `${block.getFieldValue('r2c1')}, ${block.getFieldValue('r2c2')}, ${block.getFieldValue('r2c3')}, `
-                    +  `${block.getFieldValue('r3c1')}, ${block.getFieldValue('r3c2')}, ${block.getFieldValue('r3c3')})`
-    return [matString, Order.ATOMIC]
-}
+// javascriptGenerator.forBlock['linalg_mat3x3'] = function (block, generator) {
+//     const matString = `new THREE.Matrix3(${block.getFieldValue('r1c1')}, ${block.getFieldValue('r1c2')}, ${block.getFieldValue('r1c3')}, ` 
+//                     +  `${block.getFieldValue('r2c1')}, ${block.getFieldValue('r2c2')}, ${block.getFieldValue('r2c3')}, `
+//                     +  `${block.getFieldValue('r3c1')}, ${block.getFieldValue('r3c2')}, ${block.getFieldValue('r3c3')})`
+//     return [matString, Order.ATOMIC]
+// }
 
-javascriptGenerator.forBlock['linalg_mat4x4'] = function (block, generator) {
-    const matString = `new THREE.Matrix4(${block.getFieldValue('r1c1')}, ${block.getFieldValue('r1c2')}, ${block.getFieldValue('r1c3')}, ${block.getFieldValue('r1c4')},`
-                    +  `${block.getFieldValue('r2c1')}, ${block.getFieldValue('r2c2')}, ${block.getFieldValue('r2c3')}, ${block.getFieldValue('r2c4')}, `
-                    +  `${block.getFieldValue('r3c1')}, ${block.getFieldValue('r3c2')}, ${block.getFieldValue('r3c3')}, ${block.getFieldValue('r3c4')}, `
-                    +  `${block.getFieldValue('r4c1')}, ${block.getFieldValue('r4c2')}, ${block.getFieldValue('r4c3')}, ${block.getFieldValue('r4c4')})`
-    return [matString, Order.ATOMIC]
-}
+// javascriptGenerator.forBlock['linalg_mat4x4'] = function (block, generator) {
+//     const matString = `new THREE.Matrix4(${block.getFieldValue('r1c1')}, ${block.getFieldValue('r1c2')}, ${block.getFieldValue('r1c3')}, ${block.getFieldValue('r1c4')},`
+//                     +  `${block.getFieldValue('r2c1')}, ${block.getFieldValue('r2c2')}, ${block.getFieldValue('r2c3')}, ${block.getFieldValue('r2c4')}, `
+//                     +  `${block.getFieldValue('r3c1')}, ${block.getFieldValue('r3c2')}, ${block.getFieldValue('r3c3')}, ${block.getFieldValue('r3c4')}, `
+//                     +  `${block.getFieldValue('r4c1')}, ${block.getFieldValue('r4c2')}, ${block.getFieldValue('r4c3')}, ${block.getFieldValue('r4c4')})`
+//     return [matString, Order.ATOMIC]
+// }
 
 
 //Linalg methods

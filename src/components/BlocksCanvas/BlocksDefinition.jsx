@@ -67,124 +67,124 @@ export function defineBlocks() {
     }
 
     //Represents a point in 3d space as a small fixed-size sphere
-    Blockly.Blocks['geo_point'] = {
-        init() {
-            this.appendDummyInput().appendField('Point')
-            this.appendValueInput('pos').appendField('pos: ').setCheck('vector3')
-            this.setStyle('math_blocks')
-            this.setTooltip('Point with position p.')
-            this.setDeletable(true)
-            this.setMovable(true)
-            this.setOutput(true, 'obj3D')
-        }
-    }
+    // Blockly.Blocks['geo_point'] = {
+    //     init() {
+    //         this.appendDummyInput().appendField('Point')
+    //         this.appendValueInput('pos').appendField('pos: ').setCheck('vector3')
+    //         this.setStyle('math_blocks')
+    //         this.setTooltip('Point with position p.')
+    //         this.setDeletable(true)
+    //         this.setMovable(true)
+    //         this.setOutput(true, 'obj3D')
+    //     }
+    // }
 
     //Represents a vector in 3d space as an arrow
-    Blockly.Blocks['geo_vector'] = {
-        init() {
-            this.appendDummyInput().appendField('Vector')
-            this.appendValueInput('pos').appendField('Position:')
-            this.appendValueInput('dir').appendField('Direction:')
-            this.appendValueInput('scale').appendField('Scale:')
-            this.setStyle('math_blocks')
-            this.setTooltip('Vector with position pos and direction dir.')
-            this.setDeletable(true)
-            this.setMovable(true)
-            this.setOutput(true, 'obj3D')
-        }
-    }
+    // Blockly.Blocks['geo_vector'] = {
+    //     init() {
+    //         this.appendDummyInput().appendField('Vector')
+    //         this.appendValueInput('pos').appendField('Position:')
+    //         this.appendValueInput('dir').appendField('Direction:')
+    //         this.appendValueInput('scale').appendField('Scale:')
+    //         this.setStyle('math_blocks')
+    //         this.setTooltip('Vector with position pos and direction dir.')
+    //         this.setDeletable(true)
+    //         this.setMovable(true)
+    //         this.setOutput(true, 'obj3D')
+    //     }
+    // }
 
-    Blockly.Blocks['geo_sphere'] = {
-        init() {
-            this.appendDummyInput().appendField('Sphere')
-            this.setStyle('math_blocks')
-            this.setTooltip('Geometric Sphere Object')
-            this.setDeletable(true)
-            this.setMovable(true)
-            this.setOutput(true, 'obj3D')
-            this.appendDummyInput()
-                .appendField('Radius:')
-                .appendField(new Blockly.FieldNumber(1, 0.01, Infinity, 0.1), 'R');
-            this.appendValueInput('pos').appendField('Centre:').setCheck('vector3')
-        }
-    }
+    // Blockly.Blocks['geo_sphere'] = {
+    //     init() {
+    //         this.appendDummyInput().appendField('Sphere')
+    //         this.setStyle('math_blocks')
+    //         this.setTooltip('Geometric Sphere Object')
+    //         this.setDeletable(true)
+    //         this.setMovable(true)
+    //         this.setOutput(true, 'obj3D')
+    //         this.appendDummyInput()
+    //             .appendField('Radius:')
+    //             .appendField(new Blockly.FieldNumber(1, 0.01, Infinity, 0.1), 'R');
+    //         this.appendValueInput('pos').appendField('Centre:').setCheck('vector3')
+    //     }
+    // }
 
     //Describes a plane in 3D space using the plane's equation in Hessian form
-    Blockly.Blocks['parametric_plane'] = {
-        init() {
-            this.appendDummyInput().appendField('Plane (Parametric)')
-            this.appendValueInput('norm').appendField('norm:')
-            this.appendValueInput('dist').appendField('dist:')
-            this.setStyle('math_blocks')
-            this.setTooltip('Plane with normal n, at distance d from the origin.')
-            this.setDeletable(true)
-            this.setMovable(true)
-            this.setOutput(true, 'obj3D')
-        }
-    }
+    // Blockly.Blocks['parametric_plane'] = {
+    //     init() {
+    //         this.appendDummyInput().appendField('Plane (Parametric)')
+    //         this.appendValueInput('norm').appendField('norm:')
+    //         this.appendValueInput('dist').appendField('dist:')
+    //         this.setStyle('math_blocks')
+    //         this.setTooltip('Plane with normal n, at distance d from the origin.')
+    //         this.setDeletable(true)
+    //         this.setMovable(true)
+    //         this.setOutput(true, 'obj3D')
+    //     }
+    // }
 
     //Describes a plane in 3D space using a mesh representation
-    Blockly.Blocks['geo_plane'] = {
-        init() {
-            this.appendDummyInput().appendField('Plane (Geometric)')
-            this.appendValueInput('pos').appendField('pos:')
-            this.appendValueInput('side').appendField('side length:')
-            this.setStyle('math_blocks')
-            this.setTooltip('Plane at position p, with side length s.')
-            this.setDeletable(true)
-            this.setMovable(true)
-            this.setOutput(true, 'obj3D')
-        }
-    }
+    // Blockly.Blocks['geo_plane'] = {
+    //     init() {
+    //         this.appendDummyInput().appendField('Plane (Geometric)')
+    //         this.appendValueInput('pos').appendField('pos:')
+    //         this.appendValueInput('side').appendField('side length:')
+    //         this.setStyle('math_blocks')
+    //         this.setTooltip('Plane at position p, with side length s.')
+    //         this.setDeletable(true)
+    //         this.setMovable(true)
+    //         this.setOutput(true, 'obj3D')
+    //     }
+    // }
 
-    Blockly.Blocks['linalg_vec3'] = {
-        init() {
-            this.appendDummyInput().appendField('Vector3: (')
-                .appendField(new Blockly.FieldNumber(1), 'X').appendField(',')
-                .appendField(new Blockly.FieldNumber(1), 'Y').appendField(',')
-                .appendField(new Blockly.FieldNumber(1), 'Z').appendField(')')
-            this.setStyle('math_blocks')
-            this.setTooltip('3D Vector')
-            this.setDeletable(true)
-            this.setMovable(true)
-            this.setOutput(true, 'vector3')
-        }
-    }
+    // Blockly.Blocks['linalg_vec3'] = {
+    //     init() {
+    //         this.appendDummyInput().appendField('Vector3: (')
+    //             .appendField(new Blockly.FieldNumber(1), 'X').appendField(',')
+    //             .appendField(new Blockly.FieldNumber(1), 'Y').appendField(',')
+    //             .appendField(new Blockly.FieldNumber(1), 'Z').appendField(')')
+    //         this.setStyle('math_blocks')
+    //         this.setTooltip('3D Vector')
+    //         this.setDeletable(true)
+    //         this.setMovable(true)
+    //         this.setOutput(true, 'vector3')
+    //     }
+    // }
 
-    Blockly.Blocks['linalg_vec4'] = {
-        init() {
-            this.appendDummyInput().appendField('Vector4: (')
-                .appendField(new Blockly.FieldNumber(1), 'W').appendField(',')
-                .appendField(new Blockly.FieldNumber(1), 'X').appendField(',')
-                .appendField(new Blockly.FieldNumber(1), 'Y').appendField(',')
-                .appendField(new Blockly.FieldNumber(1), 'Z').appendField(')')
-            this.setStyle('math_blocks')
-            this.setTooltip('4D Vector')
-            this.setDeletable(true)
-            this.setMovable(true)
-            this.setOutput(true, 'vector4')
-        }
-    }
+    // Blockly.Blocks['linalg_vec4'] = {
+    //     init() {
+    //         this.appendDummyInput().appendField('Vector4: (')
+    //             .appendField(new Blockly.FieldNumber(1), 'W').appendField(',')
+    //             .appendField(new Blockly.FieldNumber(1), 'X').appendField(',')
+    //             .appendField(new Blockly.FieldNumber(1), 'Y').appendField(',')
+    //             .appendField(new Blockly.FieldNumber(1), 'Z').appendField(')')
+    //         this.setStyle('math_blocks')
+    //         this.setTooltip('4D Vector')
+    //         this.setDeletable(true)
+    //         this.setMovable(true)
+    //         this.setOutput(true, 'vector4')
+    //     }
+    // }
 
-    Blockly.Blocks['linalg_mat3x3'] = {
-        init() {
-            this.appendDummyInput().appendField('3x3 Matrix')
-            this.appendDummyInput().appendField(new Blockly.FieldNumber(1), 'r1c1')
-                .appendField(new Blockly.FieldNumber(1), 'r1c2')
-                .appendField(new Blockly.FieldNumber(1), 'r1c3')
-            this.appendDummyInput().appendField(new Blockly.FieldNumber(1), 'r2c1')
-                .appendField(new Blockly.FieldNumber(1), 'r2c2')
-                .appendField(new Blockly.FieldNumber(1), 'r2c3')
-            this.appendDummyInput().appendField(new Blockly.FieldNumber(1), 'r3c1')
-                .appendField(new Blockly.FieldNumber(1), 'r3c2')
-                .appendField(new Blockly.FieldNumber(1), 'r3c3')
-            this.setStyle('math_blocks')
-            this.setTooltip('3x3 Matrix')
-            this.setDeletable(true)
-            this.setMovable(true)
-            this.setOutput(true, 'matrix3')
-        }
-    }
+    // Blockly.Blocks['linalg_mat3x3'] = {
+    //     init() {
+    //         this.appendDummyInput().appendField('3x3 Matrix')
+    //         this.appendDummyInput().appendField(new Blockly.FieldNumber(1), 'r1c1')
+    //             .appendField(new Blockly.FieldNumber(1), 'r1c2')
+    //             .appendField(new Blockly.FieldNumber(1), 'r1c3')
+    //         this.appendDummyInput().appendField(new Blockly.FieldNumber(1), 'r2c1')
+    //             .appendField(new Blockly.FieldNumber(1), 'r2c2')
+    //             .appendField(new Blockly.FieldNumber(1), 'r2c3')
+    //         this.appendDummyInput().appendField(new Blockly.FieldNumber(1), 'r3c1')
+    //             .appendField(new Blockly.FieldNumber(1), 'r3c2')
+    //             .appendField(new Blockly.FieldNumber(1), 'r3c3')
+    //         this.setStyle('math_blocks')
+    //         this.setTooltip('3x3 Matrix')
+    //         this.setDeletable(true)
+    //         this.setMovable(true)
+    //         this.setOutput(true, 'matrix3')
+    //     }
+    // }
 
     Blockly.Blocks['linalg_mat4x4'] = {
         init() {
