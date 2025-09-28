@@ -10,8 +10,10 @@ export function initObjectTransformBlock() {
   Blockly.Blocks['object_transform'] = {
     init() {
       this.appendDummyInput().appendField('Object Transform')
-      this.setPreviousStatement(true)
-      this.setNextStatement(true)
+      this.appendValueInput('TARGET')
+        .setCheck('obj3D')
+        .appendField('Target Object:')
+
       this.appendValueInput('rot').appendField('Rotate:').setCheck('rotMat')
       this.appendValueInput('trans')
         .appendField('Translate:')
@@ -23,6 +25,8 @@ export function initObjectTransformBlock() {
       this.setTooltip('Translate / rotate object in R3')
       this.setDeletable(true)
       this.setMovable(true)
+      this.setInputsInline(false)
+      this.setOutput(true, 'obj3D')
     },
   }
   
@@ -30,6 +34,7 @@ export function initObjectTransformBlock() {
     block,
     generator
   ) {
+    const tgt   = generator.valueToCode(block, 'TARGET', Order.FUNCTION_CALL) || 'null'
     const rot =
       generator.valueToCode(block, 'rot', Order.FUNCTION_CALL) || 'null'
     const trans =
@@ -37,51 +42,34 @@ export function initObjectTransformBlock() {
     const scale =
       generator.valueToCode(block, 'scale', Order.FUNCTION_CALL) || 'null'
 
-    // Find the nearest previous 'variables_set_obj3D' in the chain
-    let prev = block.getPreviousBlock()
-    let varName = null
-    while (prev) {
-      if (prev.type === 'variables_set_obj3D') {
-        const varId = prev.getFieldValue('VAR')
-        varName = generator.getVariableName(varId)
-        break
+    const code = `(function(){
+      const obj = ${tgt};
+      if (!obj || !obj.isObject3D) return obj;
+
+      const R = ${rot};
+      if (R && R.isMatrix4) {
+        const q = new THREE.Quaternion().setFromRotationMatrix(R);
+        obj.quaternion.premultiply(q);
       }
-      prev = prev.getPreviousBlock()
-    }
 
-    if (!varName) {
-      return `/* transform: no previous obj3D setter found — skipping */\n`
-    }
+      const T = ${trans};
+      if (T && T.isMatrix4) {
+        const p = new THREE.Vector3().setFromMatrixPosition(T);
+        obj.position.add(p);
+      }
 
-    return `
-  (function(){
-    const obj = ${varName};
-    if(!obj || !obj.isObject3D){ return; }
+      const S = ${scale};
+      if (S && S.isMatrix4) {
+        const e = S.elements;
+        const sx = (isFinite(e[0])  && e[0]  !== 0) ? e[0]  : 1;
+        const sy = (isFinite(e[5])  && e[5]  !== 0) ? e[5]  : 1;
+        const sz = (isFinite(e[10]) && e[10] !== 0) ? e[10] : 1;
+        obj.scale.multiply(new THREE.Vector3(sx, sy, sz));
+      }
 
-    const _rot = ${rot};
-    if (_rot && _rot.isMatrix4) {
-      const _q = new THREE.Quaternion().setFromRotationMatrix(_rot);
-      obj.quaternion.premultiply(_q);
-    }
-
-    const _t = ${trans};
-    if (_t && _t.isMatrix4) {
-      const _p = new THREE.Vector3().setFromMatrixPosition(_t);
-      obj.position.add(_p);
-    }
-    
-    const _s = ${scale};
-    if (_s && _s.isMatrix4) {
-      const e = _s.elements
-      obj.scale.multiply(new THREE.Vector3(
-        isFinite(e[0])  && e[0]  !== 0 ? e[0]  : 1,
-        isFinite(e[5])  && e[5]  !== 0 ? e[5]  : 1,
-        isFinite(e[10]) && e[10] !== 0 ? e[10] : 1
-        ))
-    }
-    
-    obj.updateMatrixWorld(true);
-    threeObjStore["${varName}"] = obj;
-  })();\n`
+      obj.updateMatrixWorld(true);
+      return obj;
+    })()`
+    return [code, Order.FUNCTION_CALL]
   }
 }
