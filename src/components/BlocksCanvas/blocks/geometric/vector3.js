@@ -11,9 +11,9 @@ export function initVector3Block() {
   Blockly.Blocks['geo_vector'] = {
     init() {
       this.appendDummyInput().appendField('Vector')
-      this.appendValueInput('pos').appendField('Position:')
-      this.appendValueInput('dir').appendField('Direction:')
-      this.appendValueInput('scale').appendField('Scale:')
+      this.appendValueInput('pos').appendField('Position:').setCheck('vector3')
+      this.appendValueInput('dir').appendField('Direction:').setCheck('vector3')
+      this.appendValueInput('scale').appendField('Scale:').setCheck('scalar')
       this.setStyle('math_blocks')
       this.setTooltip('Vector with position pos and direction dir.')
       this.setDeletable(true)
@@ -54,6 +54,8 @@ export function initVector3Block() {
     arrow.userData.length          = len;
     arrow.userData.headLenRatio    = headLenRatio;
     arrow.userData.headWidthRatio  = headWidthRatio;
+    arrow.userData.srcBlockId = ${JSON.stringify(block.id)}
+    threeObjStore[${JSON.stringify(block.id)}] = arrow 
     return arrow;
   })()`
     return [code, Order.ATOMIC]

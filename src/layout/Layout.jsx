@@ -1,33 +1,43 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import Header from '@/components/Header/Header'
 import BlocksCanvas from '@/components/BlocksCanvas/BlocksCanvas'
 import Scene3D from '@/components/Scene3D/Scene3D'
-import { threeObjStore } from '@/components/BlocksCanvas/BlocksCodeGen'
 
 const Layout = () => {
   const [objects, setObjects] = useState([])
   const [pendingObjects, setPendingObjects] = useState([])
   const [exampleXml, setExampleXml] = useState(null)
+  const [autoRender, setAutoRender] = useState(true)
 
-  const handleRun = () => {
-    const currentObjects = Object.values(threeObjStore)
-    setPendingObjects(currentObjects)
-    setObjects(currentObjects)
-  }
+  // Stable callback so BlocksCanvas doesn't remount the workspace
+  const handleObjectsChange = useCallback((objs) => {
+    setPendingObjects(objs)
+    if (autoRender) setObjects(objs)
+  }, [autoRender])
+
+  // Run commits the last pending scene only when autoRender is OFF
+  const handleRun = useCallback(() => {
+    if (!autoRender) setObjects(pendingObjects)
+  }, [autoRender, pendingObjects])
 
   return (
     <div className="h-full w-full">
       <div className="h-[10%] w-full">
-        <Header onRun={handleRun} onLoadExample={setExampleXml} />
+        <Header
+          onRun={handleRun}
+          onLoadExample={setExampleXml}
+          autoRender={autoRender}
+          onToggleAutoRender={() => setAutoRender(v => !v)}
+        />
       </div>
 
       <div className="grid 2xl:grid-cols-[40%_60%] xl:grid-cols-[40%_60%] lg:grid-cols-[50%_50%] h-[90%]">
         <BlocksCanvas
-          onObjectsChange={setPendingObjects}
+          onObjectsChange={handleObjectsChange}
           exampleXml={exampleXml}
           onExampleConsumed={() => setExampleXml(null)}
         />
-        <Scene3D objects={objects} />                                                                                                                 
+        <Scene3D objects={objects} />
       </div>
     </div>
   )

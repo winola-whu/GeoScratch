@@ -41,7 +41,8 @@ export function initGeoSphereBlock() {
 
   mesh.userData.geoType = 'geo_sphere';
   mesh.userData.radius  = radius;
-
+  mesh.userData.srcBlockId = ${JSON.stringify(block.id)}
+  threeObjStore[${JSON.stringify(block.id)}] = mesh   
   return mesh;
 })()`
 

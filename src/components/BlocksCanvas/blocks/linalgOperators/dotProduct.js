@@ -10,8 +10,8 @@ export function initDotProductBlock() {
   Blockly.Blocks['dot_product'] = {
     init() {
       this.appendDummyInput()
-      this.appendValueInput('lhs')
-      this.appendValueInput('rhs').appendField('·')
+      this.appendValueInput('lhs').setCheck('vector3')
+      this.appendValueInput('rhs').setCheck('vector3').appendField('·')
       this.setStyle('math_blocks')
       this.setTooltip('Take the dot (inner) product of two vectors.')
       this.setInputsInline(true)

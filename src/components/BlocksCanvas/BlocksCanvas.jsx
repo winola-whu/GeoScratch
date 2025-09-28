@@ -2,10 +2,10 @@ import { useEffect, useRef } from 'react'
 // import { defineBlocks } from './BlocksDefinition'
 import defineBlocks from '@/components/BlocksCanvas/blocks/index'
 // import { generateAndRun, threeObjStore } from './BlocksCodeGen'
-
+import { BlockRegistry } from '@/components/BlocksCanvas/state/BlockRegistry' // NOTE: use the shared state path
 import 'blockly/blocks'
 
-import { createObj3DButtonHandler, obj3DFlyoutCallback } from "@/utils/callbacks"
+import { createObj3DButtonHandler, obj3DFlyoutCallback } from '@/utils/callbacks'
 import setupChangeListener from '@/utils/setupChangeListener'
 import initWorkSpace from '@/components/BlocksCanvas/core/Workspace'
 import attachResizeObserver from '@/utils/attachResizeOberver'
@@ -23,12 +23,17 @@ import './BlocksCanvas.css'
  * - Adaptive
  */
 export default function BlocksCanvas({
-  onObjectsChange,
-  exampleXml,
-  onExampleConsumed,
-}) {
+                                       onObjectsChange,
+                                       exampleXml,
+                                       onExampleConsumed,
+                                     }) {
   const hostRef = useRef(null)
   const workspaceRef = useRef(null)
+  const registryRef = useRef(null)
+
+  // Keep the latest onObjectsChange without causing re-init
+  const onChangeRef = useRef(onObjectsChange)
+  useEffect(() => { onChangeRef.current = onObjectsChange }, [onObjectsChange])
 
   // Register Callbacks
   const registerCallbacks = (ws) => {
@@ -36,21 +41,24 @@ export default function BlocksCanvas({
     ws.registerToolboxCategoryCallback('OBJS_3D', obj3DFlyoutCallback)
   }
 
+  // Initialize Blockly once
   useEffect(() => {
     defineBlocks()
+    if (!registryRef.current) registryRef.current = new BlockRegistry()
 
     const ws = initWorkSpace(hostRef.current)
     workspaceRef.current = ws
 
-
     // Register Callbacks
     registerCallbacks(ws)
 
-    // Merge high-frequency events and then trigger run and sync
-    const cleanupListener = setupChangeListener(ws, (w) => runAndSync(w, onObjectsChange))
+    // Change listener -> run + sync (use ref to avoid re-init on parent renders)
+    const cleanupListener = setupChangeListener(ws, (w) =>
+      runAndSync(w, (objs) => onChangeRef.current?.(objs), registryRef.current)
+    )
 
-    // Synchronize once for the first time (let the upper layer get the initial object)
-    runAndSync(ws, onObjectsChange)
+    // Initial run
+    runAndSync(ws, (objs) => onChangeRef.current?.(objs), registryRef.current)
 
     // Adaptive size
     const cleanupResize = attachResizeObserver(hostRef.current, ws)
@@ -60,29 +68,20 @@ export default function BlocksCanvas({
       cleanupResize()
       ws.dispose()
     }
-  }, [onObjectsChange])
+    // IMPORTANT: empty deps => init once; onObjectsChange updates via ref
+  }, [])
 
-  // Sample XML mount (initialization independent)
+  // Load example XML without re-initializing workspace
   useEffect(() => {
     const ws = workspaceRef.current
     if (!ws || !exampleXml) return
 
     const ok = applyExampleXml(ws, exampleXml)
-    if (ok) runAndSync(ws, onObjectsChange)
-    
+    if (ok) {
+      runAndSync(ws, (objs) => onChangeRef.current?.(objs), registryRef.current)
+    }
     onExampleConsumed?.()
-    // try {
-    //   const dom = Blockly.utils.xml.textToDom(exampleXml)
-    //   ws.clear()
-    //   Blockly.Xml.domToWorkspace(dom, ws)
-    //   generateAndRun(ws)
-    //   onObjectsChange?.(Object.values(threeObjStore))
-    // } catch (err) {
-    //   console.error('[GeoScratch] failed to load example', err)
-    // } finally {
-    //   onExampleConsumed?.()
-    // }
-  }, [exampleXml, onObjectsChange, onExampleConsumed])
+  }, [exampleXml, onExampleConsumed])
 
   return (
     <div className="panel panel-left" id="blocks-canvas">
