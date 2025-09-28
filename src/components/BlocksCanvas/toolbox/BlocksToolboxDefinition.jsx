@@ -26,12 +26,13 @@ const TOOLBOX_XML = `
             <block type="object_transform"></block>
             <block type="vector_transform"></block>      
             <block type="vector_arithmetic"></block>
-            <block type="dot_product"></block>
             <block type="vector_cross_product"></block>
+            <block type="vector_normalise"></block>
+            <block type="vector_project"></block>
             <block type="multiply_inplace"></block>
             <block type="inverse_inplace"></block>
             <block type="determinant"></block>
-            <block type="vector_normalise"></block>
+            <block type="dot_product"></block>            
         </category>
         <category name="Variables" custom="VARIABLE" colour=330>
         </category>
