@@ -19,20 +19,22 @@ const initPointBlock = () => {
   }
 
   // Block Code Generation
-  javascriptGenerator.forBlock['geo_point'] = function (block, generator) {
-    const pos =
-      generator.valueToCode(block, 'pos', Order.FUNCTION_CALL) ||
-      'new THREE.Vector3()'
-    const code = `(function(){
-      const m = new THREE.Mesh(
-        new THREE.SphereGeometry(0.08, 8, 8),
-        new THREE.MeshStandardMaterial({ color: 0xffff00, roughness: 0.4, metalness: 0.1 })
-      );
-      m.position.copy(${pos});
-      m.userData.geoType = 'geo_point';
-      return m;
-    })()`
-    return [code, Order.ATOMIC]
+    javascriptGenerator.forBlock['geo_point'] = function (block, generator) {
+        const pos =
+            generator.valueToCode(block, 'pos', Order.FUNCTION_CALL) ||
+            'new THREE.Vector3()'
+        const code = `(function(){
+    const m = new THREE.Mesh(
+      new THREE.SphereGeometry(0.08, 8, 8),
+      new THREE.MeshStandardMaterial({ color: 0xffff00, roughness: 0.4, metalness: 0.1 })
+    );
+    m.position.copy(${pos});
+    m.userData.geoType     = 'geo_point';
+    m.userData.srcBlockId = ${JSON.stringify(block.id)} 
+    threeObjStore[${JSON.stringify(block.id)}] = m 
+    return m;
+  })()`
+        return [code, Order.ATOMIC]
   }
 }
 
