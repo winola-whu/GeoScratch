@@ -10,8 +10,9 @@ export function initVectorTransformBlock() {
   Blockly.Blocks['vector_transform'] = {
     init() {
       this.appendDummyInput().appendField('Vector Transform')
-      this.setPreviousStatement(true)
-      this.setNextStatement(true)
+      this.appendValueInput('TARGET')
+        .setCheck('obj3D')
+        .appendField('Target Vector:')
       this.appendValueInput('rot').appendField('Rotate:').setCheck('rotMat')
       this.appendValueInput('trans')
         .appendField('Translate:')
@@ -21,6 +22,8 @@ export function initVectorTransformBlock() {
       this.setTooltip('Translate / rotate vector in R3')
       this.setDeletable(true)
       this.setMovable(true)
+      this.setInputsInline(false)
+      this.setOutput(true, 'obj3D')
     },
   }
 
@@ -28,6 +31,7 @@ export function initVectorTransformBlock() {
     block,
     generator
   ) {
+    const tgt = generator.valueToCode(block, 'TARGET', Order.FUNCTION_CALL) || 'null'
     const rot =
       generator.valueToCode(block, 'rot', Order.FUNCTION_CALL) || 'null'
     const trans =
@@ -35,50 +39,43 @@ export function initVectorTransformBlock() {
     const scale =
       generator.valueToCode(block, 'scale', Order.FUNCTION_CALL) || 'null'
 
-    let prev = block.getPreviousBlock()
-    let varName = null
-    while (prev) {
-      if (prev.type === 'variables_set_obj3D') {
-        const varId = prev.getFieldValue('VAR')
-        varName = generator.getVariableName(varId)
-        break
+    const code = `(function(){
+      const obj = ${tgt};
+      if (!obj || !obj.isObject3D) return obj;
+
+      // Allow obj to be the ArrowHelper itself or a group containing it
+      const arrow = obj.isArrowHelper ? obj
+                   : (obj.children || []).find(c => c.isArrowHelper);
+
+      const R = ${rot};
+      if (R && R.isMatrix4) {
+        const q = new THREE.Quaternion().setFromRotationMatrix(R);
+        obj.quaternion.premultiply(q);
       }
-      prev = prev.getPreviousBlock()
-    }
 
-    if (!varName) {
-      return `/* transform: no previous geo_vector setter found — skipping */\n`
-    }
+      const T = ${trans};
+      if (T && T.isMatrix4) {
+        const p = new THREE.Vector3().setFromMatrixPosition(T);
+        obj.position.add(p);
+      }
 
-    return `
-  (function(){
-    const obj = ${varName};
-    if(!obj || !obj.isObject3D){ return; }
+      const s = ${scale};
+      if (typeof s === 'number' && isFinite(s)) {
+        if (arrow && arrow.isArrowHelper) {
+          const currLen = arrow.userData.length ?? arrow.length ?? 1;
+          const newLen = Math.max(0, currLen * s);
+          arrow.userData.length = newLen;
+          const hlr = arrow.userData.headLenRatio ?? 0.25;
+          const hwr = arrow.userData.headWidthRatio ?? 0.10;
+          arrow.setLength(newLen, hlr * newLen, hwr * newLen);
+        } else {
+          obj.scale.multiplyScalar(s);
+        }
+      }
 
-    const _rot = ${rot};
-    if (_rot && _rot.isMatrix4) {
-      const _q = new THREE.Quaternion().setFromRotationMatrix(_rot);
-      obj.quaternion.premultiply(_q);
-    }
-
-    const _t = ${trans};
-    if (_t && _t.isMatrix4) {
-      const _p = new THREE.Vector3().setFromMatrixPosition(_t);
-      obj.position.add(_p);
-    }
-    
-    const _s = ${scale};
-    if (typeof _s === 'number' && isFinite(_s)) {
-      const curr = obj.userData.length ?? 1;
-      const newLen = Math.max(0, curr * _s);
-      obj.userData.length = newLen;
-      const hlr = obj.userData.headLenRatio ?? 0.25;
-      const hwr = obj.userData.headWidthRatio ?? 0.10;
-      obj.setLength(newLen, hlr * newLen, hwr * newLen);
-    }
-    
-    obj.updateMatrixWorld(true);
-    threeObjStore["${varName}"] = obj;
-  })();\n`
+      obj.updateMatrixWorld(true);
+      return obj;
+    })()`
+    return [code, Order.FUNCTION_CALL]
   }
 }

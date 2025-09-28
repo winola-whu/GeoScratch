@@ -22,7 +22,7 @@ export function initVector3Block() {
     },
   }
 
-  // 
+  //
   javascriptGenerator.forBlock['geo_vector'] = function (block, generator) {
     const vecPos =
       generator.valueToCode(block, 'pos', Order.FUNCTION_CALL) ||
@@ -55,7 +55,9 @@ export function initVector3Block() {
     arrow.userData.headLenRatio    = headLenRatio;
     arrow.userData.headWidthRatio  = headWidthRatio;
     arrow.userData.srcBlockId = ${JSON.stringify(block.id)}
-    threeObjStore[${JSON.stringify(block.id)}] = arrow 
+    if (typeof threeObjStore === 'object' && threeObjStore) {
+        threeObjStore[${JSON.stringify(block.id)}] = arrow;
+      }
     return arrow;
   })()`
     return [code, Order.ATOMIC]

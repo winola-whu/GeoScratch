@@ -9,8 +9,9 @@ export function initVectorArithmeticBlock() {
 
   Blockly.Blocks['vector_arithmetic'] = {
     init() {
-      this.appendValueInput('u').setCheck('vector3')
-      this.appendValueInput('v')
+      this.appendDummyInput().appendField('Vector Arithmetic')
+      this.appendValueInput('U').setCheck('vector3').appendField('u:')
+      this.appendValueInput('V')
         .setCheck('vector3')
         .appendField(
           new Blockly.FieldDropdown([
@@ -19,49 +20,108 @@ export function initVectorArithmeticBlock() {
           ]),
           'OP'
         )
-      this.setPreviousStatement(true)
-      this.setNextStatement(true)
+
+      // Value block output (like cross product), not a statement block
+      this.setOutput(true, 'obj3D')
+      this.setInputsInline(true)
       this.setStyle('math_blocks')
-      this.setTooltip('Computes u ± v and renders the result')
+      this.setTooltip('Compute u ± v and return a group with arrows for u, v, and the result (registered).')
       this.setDeletable(true)
       this.setMovable(true)
-      this.setInputsInline(true)
     },
   }
 
-  javascriptGenerator.forBlock['vector_arithmetic'] = function (
-    block,
-    generator
-  ) {
+  javascriptGenerator.forBlock['vector_arithmetic'] = function (block, g) {
     const op = block.getFieldValue('OP') || 'add'
-    const u =
-      generator.valueToCode(block, 'u', Order.FUNCTION_CALL) ||
-      'new THREE.Vector3()'
-    const v =
-      generator.valueToCode(block, 'v', Order.FUNCTION_CALL) ||
-      'new THREE.Vector3()'
+    const u = g.valueToCode(block, 'U', Order.FUNCTION_CALL) || 'null'
+    const v = g.valueToCode(block, 'V', Order.FUNCTION_CALL) || 'null'
 
-    return `
-  (function(){
-    const a = (${u}).clone();
-    const b = (${v}).clone();
-    const origin = new THREE.Vector3();
+    const code = `(function(){
+      const uVal = ${u};
+      const vVal = ${v};
 
-    const dir = (('${op}'==='add') ? a.add(b) : a.sub(b));
-    let len = dir.length();
+      if (!uVal || !vVal || !uVal.isVector3 || !vVal.isVector3) return null;
 
-    if (!isFinite(len) || len <= 0) return;               // nothing to render
-    if (!isFinite(dir.length()) || dir.length() === 0) return;
+      const origin = new THREE.Vector3();
+      const headLenRatio = 0.25, headWidthRatio = 0.10;
 
-    const norm = dir.clone().normalize();
-    const headLenRatio = 0.25, headWidthRatio = 0.10;
+      const safeLen = (x) => (isFinite(x) && x > 0 ? x : 1);
 
-    const arrow = new THREE.ArrowHelper(
-      norm, origin, len, 0x7c3aed,
-      headLenRatio * len, headWidthRatio * len
-    );
-    const _id = 'vec_tmp_' + Date.now().toString(36) + '_' + Math.floor(Math.random()*1e6).toString(36);
-    threeObjStore[_id] = arrow;
-  })();\n`
+      // Build input arrows (from origin)
+      const lenU = uVal.length();
+      const lenV = vVal.length();
+
+      const arrowU = new THREE.ArrowHelper(
+        uVal.clone().normalize(),
+        origin.clone(),
+        safeLen(lenU),
+        0x1d4ed8,
+        headLenRatio,
+        headWidthRatio
+      );
+
+      const arrowV = new THREE.ArrowHelper(
+        vVal.clone().normalize(),
+        origin.clone(),
+        safeLen(lenV),
+        0xdc2626,
+        headLenRatio,
+        headWidthRatio
+      );
+
+      // Compute result vector
+      const res = uVal.clone()[${op === 'add' ? `'add'` : `'sub'`}](vVal);
+      const lenR = res.length();
+
+      // Result: arrow if non-zero, yellow sphere if zero
+      let resObj;
+      if (lenR > 1e-8) {
+        resObj = new THREE.ArrowHelper(
+          res.clone().normalize(),
+          origin.clone(),
+          safeLen(lenR),
+          0x7c3aed,
+          headLenRatio,
+          headWidthRatio
+        );
+      } else {
+        resObj = new THREE.Mesh(
+          new THREE.SphereGeometry(0.08, 8, 8),
+          new THREE.MeshStandardMaterial({ color: 0xffff00, roughness: 0.4, metalness: 0.1 })
+        );
+      }
+
+      // Tag like geo_vector
+      const tag = (obj, len) => {
+        obj.userData.geoType        = 'geo_vector';
+        obj.userData.length         = safeLen(len);
+        obj.userData.headLenRatio   = headLenRatio;
+        obj.userData.headWidthRatio = headWidthRatio;
+        obj.userData.srcBlockId     = ${JSON.stringify(block.id)};
+        return obj;
+      };
+      tag(arrowU, lenU);
+      tag(arrowV, lenV);
+      tag(resObj, lenR);
+
+      // Group so the block returns a single Object3D (matches 'obj3D')
+      const group = new THREE.Group();
+      group.add(arrowU, arrowV, resObj);
+      group.userData.geoType    = 'geo_vector_group';
+      group.userData.srcBlockId = ${JSON.stringify(block.id)};
+
+      // Register: each separately + the group under base id
+      if (typeof threeObjStore === 'object' && threeObjStore) {
+        const base = ${JSON.stringify(block.id)};
+        threeObjStore[base + '_u'] = arrowU;
+        threeObjStore[base + '_v'] = arrowV;
+        threeObjStore[base + '_r'] = resObj;
+        threeObjStore[base]        = group;
+      }
+
+      return group;
+    })()`
+
+    return [code, Order.FUNCTION_CALL]
   }
 }
