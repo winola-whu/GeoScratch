@@ -2,11 +2,12 @@ import { initObjectTransformBlock } from "./objectTransform"
 import { initVectorTransformBlock } from "./vectorTransform"
 import { initVectorArithmeticBlock } from "./vectorArithmetic"
 import { initDotProductBlock } from "./dotProduct"
-import { initCrossProductBlock } from "./crossProduct.js"
+import { initCrossProductBlock } from "./vectorCross.js"
 import { initMultiplyInplaceBlock } from "./multiplyInplace"
 import { initInverseInplaceBlock } from "./inverseInplace"
 import { initDeterminantBlock } from "./determinant"
 import { initNormInplaceBlock } from "./vectorNormalise.js"
+import { initVectorProjectBlock } from "./vectorProject.js"
 
 export function initLinalgOperatorsBlocks() {
   initObjectTransformBlock()
@@ -18,4 +19,5 @@ export function initLinalgOperatorsBlocks() {
   initInverseInplaceBlock()
   initDeterminantBlock()
   initNormInplaceBlock()
+  initVectorProjectBlock()
 }
