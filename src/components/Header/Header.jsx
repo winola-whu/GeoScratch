@@ -162,11 +162,11 @@ export default function Header({ onRun, onLoadExample, autoRender, onToggleAutoR
         </div>
 
         {/* Run Button */}
-        <FontAwesomeIcon
+        {/* <FontAwesomeIcon
           icon="fa-solid fa-play"
           className="text-2xl cursor-pointer hover:text-sky-700"
           onClick={() => onRun?.()}
-        />
+        /> */}
 
         <FontAwesomeIcon icon="fa-solid fa-gear" className="text-2xl cursor-pointer hover:text-sky-700" />
         <FontAwesomeIcon icon="fa-solid fa-circle-info" className="text-2xl cursor-pointer hover:text-sky-700" />
