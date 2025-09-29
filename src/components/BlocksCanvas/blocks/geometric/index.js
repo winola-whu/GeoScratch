@@ -1,6 +1,6 @@
 import initPointBlock  from './geoPoint.js'
 import { initVector3Block } from './geoVector3.js'
-import { initGeoPlaneBlock } from './geoPlane'
+import initGeoPlaneBlock from './geoPlane'
 import { initParametricPlaneBlock } from './parametricPlane'
 import { initGeoSphereBlock } from './geoSphere'
 
