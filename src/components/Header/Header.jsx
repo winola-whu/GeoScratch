@@ -117,7 +117,8 @@ export default function Header({ onRun, onLoadExample, autoRender, onToggleAutoR
           <input
             type="checkbox"
             checked={autoRender}
-            onChange={onToggleAutoRender}
+            onChange={(e) => onToggleAutoRender?.(e.target.checked)}
+            className="cursor-pointer"
           />
           Auto Render
         </label>
