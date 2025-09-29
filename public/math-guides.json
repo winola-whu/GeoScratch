@@ -1,0 +1,27 @@
+[
+  {
+    "label": "Point",
+    "content": "A point represents a position in 3D space, defined by coordinates (x, y, z).",
+    "link": "https://mathworld.wolfram.com/Point.html"
+  },
+  {
+    "label": "Vector",
+    "content": "A vector has both direction and magnitude. Often written as (x, y, z).",
+    "link": "https://mathinsight.org/vector_introduction"
+  },
+  {
+    "label": "Plane (Parametric)",
+    "content": "A plane can be defined by a normal vector n and distance d: n·x = d.",
+    "link": "https://mathworld.wolfram.com/Plane.html"
+  },
+  {
+    "label": "Plane (Geometric)",
+    "content": "A plane can also be defined by a point and its side length in geometry.",
+    "link": "https://en.wikipedia.org/wiki/Plane_(geometry)"
+  },
+  {
+    "label": "Sphere",
+    "content": "A sphere is the set of all points equidistant from a center. Formula: (x-a)^2+(y-b)^2+(z-c)^2=r^2.",
+    "link": "https://mathworld.wolfram.com/Sphere.html"
+  }
+]
