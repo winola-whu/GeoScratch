@@ -1,51 +1,36 @@
-import { useEffect, useRef, useState } from 'react'
-// import { defineBlocks } from './BlocksDefinition'
+import { useEffect, useRef } from 'react'
 import defineBlocks from '@/components/BlocksCanvas/blocks/index'
-// import { generateAndRun, threeObjStore } from './BlocksCodeGen'
-import { BlockRegistry } from '@/components/BlocksCanvas/state/BlockRegistry' // NOTE: use the shared state path
+import { BlockRegistry } from '@/components/BlocksCanvas/state/BlockRegistry'
+import useWorkspaceStore from '@/store/useWorkspaceStore'
+import useThreeStore from '@/store/useThreeStore'
 import 'blockly/blocks'
-
 import {
   createObj3DButtonHandler,
   obj3DFlyoutCallback,
 } from '@/utils/callbacks'
+import Obj3DDialog from '../CreateObj3DDiaglog'
+import runAndSync from '../../utils/runAndSync'
+import attachResizeObserver from '@/utils/attachResizeOberver'
 import setupChangeListener from '@/utils/setupChangeListener'
 import initWorkSpace from '@/components/BlocksCanvas/core/Workspace'
-import attachResizeObserver from '@/utils/attachResizeOberver'
-import applyExampleXml from '@/utils/applyExampleXml'
 
-// import UI
-import Obj3DDialog from '@/components/CreateObj3DDiaglog'
-
-import runAndSync from '@/utils/runAndSync'
 import './BlocksCanvas.css'
 
-/**
- * BlocksCanvas: Only responsible for "assembly"
- * - Initialize workspace
- * - Register a callback
- * - Listen to changes and run
- * - Loading example XML
- * - Adaptive
- */
-export default function BlocksCanvas({
-  onObjectsChange,
-  exampleXml,
-  onExampleConsumed,
-}) {
+export default function BlocksCanvas({ onObjectsChange }) {
   const hostRef = useRef(null)
   const workspaceRef = useRef(null)
   const registryRef = useRef(null)
 
-  // React State Management Dialog and Workspace
-  const [dialogOpen, setDialogOpen] = useState(false)
-  const [workspace, setWorkspace] = useState(null)
+  const {
+    workspace,
+    dialogOpen,
+    setWorkspace,
+    setDialogOpen,
+    exampleXml,
+    clearExampleXml,
+  } = useWorkspaceStore()
 
-  // Keep the latest onObjectsChange without causing re-init
-  const onChangeRef = useRef(onObjectsChange)
-  useEffect(() => {
-    onChangeRef.current = onObjectsChange
-  }, [onObjectsChange])
+  const { clearObjects } = useThreeStore()
 
   // Register Callbacks
   const registerCallbacks = (ws) => {
@@ -67,18 +52,19 @@ export default function BlocksCanvas({
     if (!registryRef.current) registryRef.current = new BlockRegistry()
 
     const ws = initWorkSpace(hostRef.current)
-    workspaceRef.current = ws
+    setWorkspace(ws)
 
     // Register Callbacks
     registerCallbacks(ws)
 
-    // Change listener -> run + sync (use ref to avoid re-init on parent renders)
-    const cleanupListener = setupChangeListener(ws, (w) =>
-      runAndSync(w, (objs) => onChangeRef.current?.(objs), registryRef.current)
-    )
+    // Change listener -> run + sync
+    const cleanupListener = setupChangeListener(ws, (w) => {
+      clearObjects() // 清理旧对象
+      runAndSync(w, onObjectsChange, registryRef.current)
+    })
 
     // Initial run
-    runAndSync(ws, (objs) => onChangeRef.current?.(objs), registryRef.current)
+    runAndSync(ws, onObjectsChange, registryRef.current)
 
     // Adaptive size
     const cleanupResize = attachResizeObserver(hostRef.current, ws)
@@ -88,20 +74,18 @@ export default function BlocksCanvas({
       cleanupResize()
       ws.dispose()
     }
-    // IMPORTANT: empty deps => init once; onObjectsChange updates via ref
   }, [])
 
-  // Load example XML without re-initializing workspace
+  // Load example XML
   useEffect(() => {
-    const ws = workspaceRef.current
-    if (!ws || !exampleXml) return
+    if (!workspace || !exampleXml) return
 
-    const ok = applyExampleXml(ws, exampleXml)
+    const ok = applyExampleXml(workspace, exampleXml)
     if (ok) {
-      runAndSync(ws, (objs) => onChangeRef.current?.(objs), registryRef.current)
+      runAndSync(workspace, onObjectsChange, registryRef.current)
     }
-    onExampleConsumed?.()
-  }, [exampleXml, onExampleConsumed])
+    clearExampleXml()
+  }, [exampleXml, workspace])
 
   return (
     <div className="panel panel-left" id="blocks-canvas">
@@ -110,12 +94,12 @@ export default function BlocksCanvas({
       </div>
       <div className="blocks-content" ref={hostRef} />
 
-      {/* Pop-up window is hanging here */}
       <Obj3DDialog
         open={dialogOpen}
-        onOpenChange={setDialogOpen} 
+        onOpenChange={(open) => setDialogOpen(open)}
         workspace={workspace}
       />
     </div>
   )
 }
+
