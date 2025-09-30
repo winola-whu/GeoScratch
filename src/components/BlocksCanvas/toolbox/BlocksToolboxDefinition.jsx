@@ -7,11 +7,6 @@ const TOOLBOX_XML = `
             <block type="geo_plane"></block>
             <block type="geo_sphere"></block>
         </category>
-        <category name="Geometric Object Variables" custom="OBJS_3D" colour=140>
-            <button text="Create 3D Object..." callbackKey="createObj3DButtonCallback"></button>
-            <block type="variables_get_obj3D"></block>
-            <block type="variables_set_obj3D"></block>
-        </category>
         <category name="Linear Algebra Primitives" categorystyle="text_category">
             <block type="linalg_vec3"></block>
             <block type="linalg_vec4"></block>
@@ -34,8 +29,6 @@ const TOOLBOX_XML = `
             <block type="determinant"></block>
             <block type="dot_product"></block>            
         </category>
-        <category name="Variables" custom="VARIABLE" colour=330>
-        </category>
         <category name="Measurements" categorystyle="list_category">
             <block type="debug"></block>
         </category>
@@ -43,3 +36,12 @@ const TOOLBOX_XML = `
     `
 
 export default TOOLBOX_XML
+
+{/* <category name="Geometric Object Variables" custom="OBJS_3D" colour=140>
+    <button text="Create 3D Object..." callbackKey="createObj3DButtonCallback"></button>
+    <block type="variables_get_obj3D"></block>
+    <block type="variables_set_obj3D"></block>
+</category> */}
+
+{/* <category name="Variables" custom="VARIABLE" colour=330>
+</category> */}
