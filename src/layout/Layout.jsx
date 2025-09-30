@@ -51,6 +51,7 @@ import Header from '@/components/Header/Header'
 import BlocksCanvas from '@/components/BlocksCanvas/BlocksCanvas'
 import Scene3D from '@/components/Scene3D/Scene3D'
 import useSceneStore from '@/store/useSceneStore'
+import useWorkspaceStore from '@/store/useWorkspaceStore'
 
 const Layout = () => {
   const { 
@@ -80,6 +81,14 @@ const Layout = () => {
           autoRender={autoRender}
           onAutoRenderChange={toggleAutoRender}
           onRun={handleRun}
+          onLoadExample={(xml) => {
+            console.log('Layout收到XML:', xml)
+            // 使用workspace store来加载示例
+            const { setExampleXml } = useWorkspaceStore.getState()
+            console.log('调用setExampleXml')
+            setExampleXml(xml)
+            console.log('已设置exampleXml')
+          }}
         />
       </div>
       <div className="h-[90%] w-full flex">

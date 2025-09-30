@@ -10,6 +10,7 @@ import runAndSync from '../../utils/runAndSync'
 import attachResizeObserver from '@/utils/attachResizeOberver'
 import setupChangeListener from '@/utils/setupChangeListener'
 import initWorkSpace from '@/components/BlocksCanvas/core/Workspace'
+import applyExampleXml from '@/utils/applyExampleXml'
 
 import './BlocksCanvas.css'
 
@@ -75,10 +76,14 @@ export default function BlocksCanvas({ onObjectsChange }) {
 
   // Load example XML
   useEffect(() => {
+    console.log('BlocksCanvas useEffect触发, workspace:', !!workspace, 'exampleXml:', !!exampleXml)
     if (!workspace || !exampleXml) return
 
+    console.log('开始应用XML到workspace')
     const ok = applyExampleXml(workspace, exampleXml)
+    console.log('applyExampleXml结果:', ok)
     if (ok) {
+      console.log('开始runAndSync')
       runAndSync(workspace, onObjectsChange, registryRef.current)
     }
     clearExampleXml()
