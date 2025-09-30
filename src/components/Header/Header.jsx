@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { loadWorkspace, saveWorkspace } from '../../utils/serialization'
 import GuidePopup from '../GuidePopup' 
+import useWorkspaceStore from '../../store/useWorkspaceStore'
 
 // Example XMLs (Blockly)
 const tutorialExamples = [
@@ -61,6 +63,9 @@ export default function Header({ onRun, onLoadExample, autoRender, onToggleAutoR
   const [guides, setGuides] = useState(fallbackGuides)
   const [selectedGuide, setSelectedGuide] = useState(null)
   const popupRef = useRef(null)
+
+  //grab workspace from zustand store for use with save/load calls
+  const ws = useWorkspaceStore((state) => state.workspace)
 
   // Load external guides.json if available
   useEffect(() => {
@@ -169,12 +174,11 @@ export default function Header({ onRun, onLoadExample, autoRender, onToggleAutoR
           onClick={() => onRun?.()}
         /> */}
 
-        <FontAwesomeIcon icon="fa-solid fa-gear" className="text-2xl cursor-pointer hover:text-sky-700" />
-        <FontAwesomeIcon icon="fa-solid fa-circle-info" className="text-2xl cursor-pointer hover:text-sky-700" />
-        <FontAwesomeIcon icon="fa-solid fa-folder-open" className="text-2xl cursor-pointer hover:text-sky-700" />
+        <FontAwesomeIcon icon="fa-solid fa-gear" className="text-2xl cursor-pointer hover:text-sky-700"/>
+        <FontAwesomeIcon icon="fa-solid fa-circle-info" className="text-2xl cursor-pointer hover:text-sky-700"/>
+        <FontAwesomeIcon icon="fa-solid fa-file-import" className="text-2xl cursor-pointer hover:text-sky-700" onClick={() => loadWorkspace(ws)} title="Import code"/>
+        <FontAwesomeIcon icon="fa-solid fa-file-export" className="text-2xl cursor-pointer hover:text-sky-700" onClick={() => saveWorkspace(ws)} title="Export code"/>
       </div>
-
-      
     </div>
   )
 }
