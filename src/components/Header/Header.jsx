@@ -42,6 +42,180 @@ const tutorialExamples = [
       </xml>
     `,
   },
+  {
+    label: 'Example: random points',
+    xml: `
+      <xml xmlns="https://developers.google.com/blockly/xml">
+        <variables>
+          <variable obj3D="true" id="p1">point1</variable>
+          <variable obj3D="true" id="p2">point2</variable>
+          <variable obj3D="true" id="p3">point3</variable>
+        </variables>
+        <block type="variables_set_obj3D" x="24" y="24">
+          <field name="VAR">point1</field>
+          <value name="VALUE">
+            <block type="geo_point">
+              <value name="pos">
+                <block type="linalg_vec3">
+                  <field name="X">2</field>
+                  <field name="Y">1</field>
+                  <field name="Z">0</field>
+                </block>
+              </value>
+            </block>
+          </value>
+        </block>
+        <block type="variables_set_obj3D" x="24" y="80">
+          <field name="VAR">point2</field>
+          <value name="VALUE">
+            <block type="geo_point">
+              <value name="pos">
+                <block type="linalg_vec3">
+                  <field name="X">-1</field>
+                  <field name="Y">3</field>
+                  <field name="Z">2</field>
+                </block>
+              </value>
+            </block>
+          </value>
+        </block>
+        <block type="variables_set_obj3D" x="24" y="136">
+          <field name="VAR">point3</field>
+          <value name="VALUE">
+            <block type="geo_point">
+              <value name="pos">
+                <block type="linalg_vec3">
+                  <field name="X">1</field>
+                  <field name="Y">-2</field>
+                  <field name="Z">1</field>
+                </block>
+              </value>
+            </block>
+          </value>
+        </block>
+      </xml>
+    `,
+  },
+  {
+    label: 'Example: random spheres',
+    xml: `
+      <xml xmlns="https://developers.google.com/blockly/xml">
+        <variables>
+          <variable obj3D="true" id="s1">sphere1</variable>
+          <variable obj3D="true" id="s2">sphere2</variable>
+        </variables>
+        <block type="variables_set_obj3D" x="24" y="24">
+          <field name="VAR">sphere1</field>
+          <value name="VALUE">
+            <block type="geo_sphere">
+              <value name="center">
+                <block type="linalg_vec3">
+                  <field name="X">0</field>
+                  <field name="Y">0</field>
+                  <field name="Z">0</field>
+                </block>
+              </value>
+              <value name="radius">
+                <block type="scalar">
+                  <field name="VAL">1.5</field>
+                </block>
+              </value>
+            </block>
+          </value>
+        </block>
+        <block type="variables_set_obj3D" x="24" y="80">
+          <field name="VAR">sphere2</field>
+          <value name="VALUE">
+            <block type="geo_sphere">
+              <value name="center">
+                <block type="linalg_vec3">
+                  <field name="X">3</field>
+                  <field name="Y">2</field>
+                  <field name="Z">1</field>
+                </block>
+              </value>
+              <value name="radius">
+                <block type="scalar">
+                  <field name="VAL">0.8</field>
+                </block>
+              </value>
+            </block>
+          </value>
+        </block>
+      </xml>
+    `,
+  },
+  {
+    label: 'Example: mixed objects',
+    xml: `
+      <xml xmlns="https://developers.google.com/blockly/xml">
+        <variables>
+          <variable obj3D="true" id="obj1">point</variable>
+          <variable obj3D="true" id="obj2">sphere</variable>
+          <variable obj3D="true" id="obj3">vector</variable>
+        </variables>
+        <block type="variables_set_obj3D" x="24" y="24">
+          <field name="VAR">point</field>
+          <value name="VALUE">
+            <block type="geo_point">
+              <value name="pos">
+                <block type="linalg_vec3">
+                  <field name="X">1</field>
+                  <field name="Y">1</field>
+                  <field name="Z">1</field>
+                </block>
+              </value>
+            </block>
+          </value>
+        </block>
+        <block type="variables_set_obj3D" x="24" y="80">
+          <field name="VAR">sphere</field>
+          <value name="VALUE">
+            <block type="geo_sphere">
+              <value name="center">
+                <block type="linalg_vec3">
+                  <field name="X">-2</field>
+                  <field name="Y">0</field>
+                  <field name="Z">0</field>
+                </block>
+              </value>
+              <value name="radius">
+                <block type="scalar">
+                  <field name="VAL">1.2</field>
+                </block>
+              </value>
+            </block>
+          </value>
+        </block>
+        <block type="variables_set_obj3D" x="24" y="136">
+          <field name="VAR">vector</field>
+          <value name="VALUE">
+            <block type="geo_vector">
+              <value name="pos">
+                <block type="linalg_vec3">
+                  <field name="X">0</field>
+                  <field name="Y">0</field>
+                  <field name="Z">0</field>
+                </block>
+              </value>
+              <value name="dir">
+                <block type="linalg_vec3">
+                  <field name="X">2</field>
+                  <field name="Y">-1</field>
+                  <field name="Z">1</field>
+                </block>
+              </value>
+              <value name="scale">
+                <block type="scalar">
+                  <field name="VAL">2.5</field>
+                </block>
+              </value>
+            </block>
+          </value>
+        </block>
+      </xml>
+    `,
+  },
 ]
 
 // Default guides (used if JSON not found)
@@ -58,7 +232,7 @@ const fallbackGuides = [
   },
 ]
 
-export default function Header({ onRun, onLoadExample, autoRender, onToggleAutoRender }) {
+export default function Header({ onRun, onLoadExample, autoRender, onAutoRenderChange }) {
   const [showMenu, setShowMenu] = useState(false)
   const [showCalculator, setShowCalculator] = useState(false)
   const [calculatorPosition, setCalculatorPosition] = useState({ x: 320, y: 80 })
@@ -126,6 +300,95 @@ export default function Header({ onRun, onLoadExample, autoRender, onToggleAutoR
 
   const handlePickExample = (xml) => {
     onLoadExample?.(xml)
+    setShowMenu(false)
+  }
+
+  const handleShowSimpleExample = (exampleType) => {
+    console.log('点击了示例:', exampleType)
+    console.log('onLoadExample函数:', onLoadExample)
+    // 简单的Blockly XML示例
+    const simpleBlockExamples = {
+      vector: `
+        <xml xmlns="https://developers.google.com/blockly/xml">
+          <block type="geo_vector" x="24" y="24">
+            <value name="pos">
+              <block type="linalg_vec3">
+                <field name="X">0</field>
+                <field name="Y">0</field>
+                <field name="Z">0</field>
+              </block>
+            </value>
+            <value name="dir">
+              <block type="linalg_vec3">
+                <field name="X">1</field>
+                <field name="Y">2</field>
+                <field name="Z">0</field>
+              </block>
+            </value>
+            <value name="scale">
+              <block type="scalar">
+                <field name="VAL">3</field>
+              </block>
+            </value>
+          </block>
+        </xml>
+      `,
+      points: `
+        <xml xmlns="https://developers.google.com/blockly/xml">
+          <block type="geo_point" x="24" y="24">
+            <value name="pos">
+              <block type="linalg_vec3">
+                <field name="X">1</field>
+                <field name="Y">1</field>
+                <field name="Z">1</field>
+              </block>
+            </value>
+          </block>
+        </xml>
+      `,
+      spheres: `
+        <xml xmlns="https://developers.google.com/blockly/xml">
+          <block type="geo_sphere" x="24" y="24">
+            <value name="center">
+              <block type="linalg_vec3">
+                <field name="X">0</field>
+                <field name="Y">0</field>
+                <field name="Z">0</field>
+              </block>
+            </value>
+            <value name="radius">
+              <block type="scalar">
+                <field name="VAL">1.5</field>
+              </block>
+            </value>
+          </block>
+        </xml>
+      `,
+      mixed: `
+        <xml xmlns="https://developers.google.com/blockly/xml">
+          <block type="geo_point" x="24" y="24">
+            <value name="pos">
+              <block type="linalg_vec3">
+                <field name="X">1</field>
+                <field name="Y">1</field>
+                <field name="Z">1</field>
+              </block>
+            </value>
+          </block>
+        </xml>
+      `
+    }
+
+    const xml = simpleBlockExamples[exampleType]
+    console.log('XML内容:', xml)
+    if (xml) {
+      // 加载Blockly XML到工作区
+      console.log('准备调用onLoadExample')
+      onLoadExample?.(xml)
+      console.log('已调用onLoadExample')
+    } else {
+      console.log('没有找到对应的XML')
+    }
     setShowMenu(false)
   }
 
@@ -356,7 +619,7 @@ export default function Header({ onRun, onLoadExample, autoRender, onToggleAutoR
           <input
             type="checkbox"
             checked={autoRender}
-            onChange={(e) => onToggleAutoRender?.(e.target.checked)}
+            onChange={(e) => onAutoRenderChange?.(e.target.checked)}
             className="cursor-pointer"
           />
           Auto Render
@@ -374,17 +637,32 @@ export default function Header({ onRun, onLoadExample, autoRender, onToggleAutoR
           />
           {showMenu && (
             <div className="absolute right-0 mt-2 w-72 rounded bg-white text-slate-900 shadow-lg z-10">
-              {/* Examples */}
-              <div className="border-b px-3 py-2 font-semibold text-sm">Examples</div>
-              {tutorialExamples.map((item) => (
-                <button
-                  key={item.label}
-                  className="flex w-full px-4 py-2 text-left text-sm hover:bg-slate-100"
-                  onClick={() => handlePickExample(item.xml)}
-                >
-                  {item.label}
-                </button>
-              ))}
+              {/* Simple Examples */}
+              <div className="border-b px-3 py-2 font-semibold text-sm">Simple Examples</div>
+              <button
+                className="flex w-full px-4 py-2 text-left text-sm hover:bg-slate-100"
+                onClick={() => handleShowSimpleExample('vector')}
+              >
+                🔵 Vector Example
+              </button>
+              <button
+                className="flex w-full px-4 py-2 text-left text-sm hover:bg-slate-100"
+                onClick={() => handleShowSimpleExample('points')}
+              >
+                🔴 Points Example
+              </button>
+              <button
+                className="flex w-full px-4 py-2 text-left text-sm hover:bg-slate-100"
+                onClick={() => handleShowSimpleExample('spheres')}
+              >
+                🟢 Spheres Example
+              </button>
+              <button
+                className="flex w-full px-4 py-2 text-left text-sm hover:bg-slate-100"
+                onClick={() => handleShowSimpleExample('mixed')}
+              >
+                🟣 Mixed Objects Example
+              </button>
 
               {/* Guides */}
               <div className="border-t border-b px-3 py-2 font-semibold text-sm">Math Guides</div>
