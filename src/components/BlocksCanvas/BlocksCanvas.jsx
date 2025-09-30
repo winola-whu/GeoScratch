@@ -4,10 +4,7 @@ import { BlockRegistry } from '@/components/BlocksCanvas/state/BlockRegistry'
 import useWorkspaceStore from '@/store/useWorkspaceStore'
 import useThreeStore from '@/store/useThreeStore'
 import 'blockly/blocks'
-import {
-  createObj3DButtonHandler,
-  obj3DFlyoutCallback,
-} from '@/utils/callbacks'
+import { createObj3DButtonHandler, obj3DFlyoutCallback } from '@/utils/callbacks'
 import Obj3DDialog from '../CreateObj3DDiaglog'
 import runAndSync from '../../utils/runAndSync'
 import attachResizeObserver from '@/utils/attachResizeOberver'
