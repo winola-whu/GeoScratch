@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { loadWorkspace, saveWorkspace } from '../../utils/serialization'
 import GuidePopup from '../GuidePopup' 
 import useWorkspaceStore from '../../store/useWorkspaceStore'
+import Title from '@/components/Title'
 
 // Example XMLs (Blockly)
 const tutorialExamples = [
@@ -607,7 +608,7 @@ export default function Header({ onRun, onLoadExample, autoRender, onAutoRenderC
 
       {/* Title */}
       <div className="text-center">
-        <p className="font-bold text-3xl">Untitled</p>
+        <Title />
       </div>
 
       {/* Right controls */}
