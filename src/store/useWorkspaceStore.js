@@ -8,7 +8,7 @@ const useWorkspaceStore = create((set) => ({
   // Example XML
   exampleXml: null,
   // Title Status
-  title: 'Untitled',
+  title: 'GeoScratch',
   
   setWorkspace: (ws) => set({ workspace: ws }),
   setDialogOpen: (open) => set({ dialogOpen: open }),
