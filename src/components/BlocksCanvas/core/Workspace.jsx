@@ -15,7 +15,6 @@ const Workspace = (hostElement) => {
     trashcan: true,
     theme: Blockly.Themes.Classic,
     move: { scrollbars: true, drag: true, wheel: true },
-    scrollbars: true,
   })
 }
 

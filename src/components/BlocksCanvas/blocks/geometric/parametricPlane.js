@@ -11,8 +11,8 @@ const initParametricPlaneBlock = () => {
   Blockly.Blocks['parametric_plane'] = {
     init() {
       this.appendDummyInput().appendField('Plane (Parametric)')
-      this.appendValueInput('norm').appendField('norm:')
-      this.appendValueInput('dist').appendField('dist:')
+      this.appendValueInput('norm').appendField('norm:').setCheck('vector3')
+      this.appendValueInput('dist').appendField('dist:').setCheck('scalar')
       this.setStyle('math_blocks')
       this.setTooltip('Plane with normal n, at distance d from the origin.')
       this.setDeletable(true)
