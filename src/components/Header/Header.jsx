@@ -527,7 +527,7 @@ export default function Header({ onRun, onLoadExample, autoRender, onAutoRenderC
 
       {/* Title */}
       <div className="text-center">
-        <p className="font-bold text-3xl">GeoScratch</p>
+        <Title />
       </div>
 
       {/* Right controls */}
