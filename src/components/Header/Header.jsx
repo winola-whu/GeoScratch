@@ -4,6 +4,7 @@ import { loadWorkspace, saveWorkspace } from '../../utils/serialization'
 import GuidePopup from '../GuidePopup' 
 import useWorkspaceStore from '../../store/useWorkspaceStore'
 import Title from '@/components/Title'
+import * as Blockly from 'blockly/core'
 
 // Example XMLs (Blockly)
 const tutorialExamples = [
@@ -305,9 +306,9 @@ export default function Header({ onRun, onLoadExample, autoRender, onAutoRenderC
   }
 
   const handleShowSimpleExample = (exampleType) => {
-    console.log('点击了示例:', exampleType)
-    console.log('onLoadExample函数:', onLoadExample)
-    // 简单的Blockly XML示例
+    console.log('Clicked example:', exampleType)
+    console.log('onLoadExample function:', onLoadExample)
+    // Simple Blockly XML examples
     const simpleBlockExamples = {
       vector: `
         <xml xmlns="https://developers.google.com/blockly/xml">
@@ -365,14 +366,19 @@ export default function Header({ onRun, onLoadExample, autoRender, onAutoRenderC
           </block>
         </xml>
       `,
-      mixed: `
+      plane: `
         <xml xmlns="https://developers.google.com/blockly/xml">
-          <block type="geo_point" x="24" y="24">
-            <value name="pos">
+          <block type="geo_plane" x="24" y="24">
+            <value name="normal">
               <block type="linalg_vec3">
-                <field name="X">1</field>
+                <field name="X">0</field>
                 <field name="Y">1</field>
-                <field name="Z">1</field>
+                <field name="Z">0</field>
+              </block>
+            </value>
+            <value name="distance">
+              <block type="scalar">
+                <field name="VAL">2</field>
               </block>
             </value>
           </block>
@@ -381,14 +387,14 @@ export default function Header({ onRun, onLoadExample, autoRender, onAutoRenderC
     }
 
     const xml = simpleBlockExamples[exampleType]
-    console.log('XML内容:', xml)
+    console.log('XML content:', xml)
     if (xml) {
-      // 加载Blockly XML到工作区
-      console.log('准备调用onLoadExample')
+      // Load Blockly XML to workspace
+      console.log('About to call onLoadExample')
       onLoadExample?.(xml)
-      console.log('已调用onLoadExample')
+      console.log('Called onLoadExample')
     } else {
-      console.log('没有找到对应的XML')
+      console.log('No corresponding XML found')
     }
     setShowMenu(false)
   }
@@ -397,6 +403,7 @@ export default function Header({ onRun, onLoadExample, autoRender, onAutoRenderC
     setSelectedGuide(guide)
     setShowMenu(false)
   }
+
 
   const handleCalculatorMouseDown = (e) => {
     if (e.target.closest('button') && !e.target.closest('button[onClick]')) {
@@ -503,6 +510,107 @@ export default function Header({ onRun, onLoadExample, autoRender, onAutoRenderC
       {/* Left controls */}
       <div className="flex gap-8 items-center relative">
         {/* Main Menu */}
+
+        {/* Navigation */}
+        <FontAwesomeIcon 
+          icon="fa-solid fa-angle-left" 
+          className="text-2xl cursor-pointer hover:text-sky-700" 
+          title="Previous Lesson"
+        />
+        <FontAwesomeIcon 
+          icon="fa-solid fa-angle-right" 
+          className="text-2xl cursor-pointer hover:text-sky-700" 
+          title="Next Lesson"
+        />
+        
+      </div>
+
+      {/* Title */}
+      <div className="text-center">
+        <p className="font-bold text-3xl">GeoScratch</p>
+      </div>
+
+      {/* Right controls */}
+      <div className="flex gap-6 justify-end items-center relative">
+      
+      <GuidePopup guide={selectedGuide} onClose={() => setSelectedGuide(null)} />
+        {/* Auto Render toggle */}
+        <label className="flex items-center gap-2 text-sm cursor-pointer select-none">
+          <input
+            type="checkbox"
+            checked={autoRender}
+            onChange={(e) => onAutoRenderChange?.(e.target.checked)}
+            className="cursor-pointer"
+          />
+          Auto Render
+        </label>
+
+        {/* Lightbulb Menu */}
+        <div className="relative">
+          <FontAwesomeIcon
+            icon="fa-solid fa-lightbulb"
+            className="text-2xl cursor-pointer hover:text-sky-700"
+            onClick={() => {
+              setShowMenu((open) => !open)
+              setSelectedGuide(null) // reset guide when reopening menu
+            }}
+          />
+          {showMenu && (
+            <div className="absolute right-0 mt-2 w-72 rounded bg-white text-slate-900 shadow-lg z-10">
+              {/* Simple Examples */}
+              <div className="border-b px-3 py-2 font-semibold text-sm">Simple Examples</div>
+              <button
+                className="flex w-full px-4 py-2 text-left text-sm hover:bg-slate-100"
+                onClick={() => handleShowSimpleExample('vector')}
+              >
+                🔵 Vector Example
+              </button>
+              <button
+                className="flex w-full px-4 py-2 text-left text-sm hover:bg-slate-100"
+                onClick={() => handleShowSimpleExample('points')}
+              >
+                🔴 Points Example
+              </button>
+              <button
+                className="flex w-full px-4 py-2 text-left text-sm hover:bg-slate-100"
+                onClick={() => handleShowSimpleExample('spheres')}
+              >
+                🟢 Spheres Example
+              </button>
+                <button
+                  className="flex w-full px-4 py-2 text-left text-sm hover:bg-slate-100"
+                onClick={() => handleShowSimpleExample('plane')}
+                >
+                🟦 Plane Example
+                </button>
+
+              {/* Guides */}
+              <div className="border-t border-b px-3 py-2 font-semibold text-sm">Math Guides</div>
+              {guides.map((g) => (
+                <button
+                  key={g.label}
+                  className="flex w-full px-4 py-2 text-left text-sm hover:bg-slate-100"
+                  onClick={() => handlePickGuide(g)}
+                >
+                  {g.label}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Run Button */}
+        {/* <FontAwesomeIcon
+          icon="fa-solid fa-play"
+          className="text-2xl cursor-pointer hover:text-sky-700"
+          onClick={() => onRun?.()}
+        /> */}
+
+        
+        <FontAwesomeIcon icon="fa-solid fa-file-import" className="text-2xl cursor-pointer hover:text-sky-700" onClick={() => loadWorkspace(ws)} title="Import code"/>
+        <FontAwesomeIcon icon="fa-solid fa-file-export" className="text-2xl cursor-pointer hover:text-sky-700" onClick={() => saveWorkspace(ws)} title="Export code"/>
+        
+        {/* Calculator */}
         <div className="relative">
           <FontAwesomeIcon 
             icon="fa-solid fa-calculator" 
@@ -578,118 +686,6 @@ export default function Header({ onRun, onLoadExample, autoRender, onAutoRenderC
             </div>
           )}
         </div>
-
-        {/* Navigation */}
-        <FontAwesomeIcon 
-          icon="fa-solid fa-angle-left" 
-          className="text-2xl cursor-pointer hover:text-sky-700" 
-          title="Previous Lesson"
-        />
-        <FontAwesomeIcon 
-          icon="fa-solid fa-angle-right" 
-          className="text-2xl cursor-pointer hover:text-sky-700" 
-          title="Next Lesson"
-        />
-        
-        {/* Chapter Info */}
-        <div className="flex flex-col">
-          <p className="text-sm font-medium">{currentChapter}</p>
-          <div className="flex items-center gap-2">
-            <div className="w-24 bg-gray-200 rounded-full h-2">
-              <div 
-                className="bg-blue-600 h-2 rounded-full transition-all duration-300" 
-                style={{width: `${learningProgress}%`}}
-              ></div>
-            </div>
-            <span className="text-xs text-gray-600">{learningProgress}%</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Title */}
-      <div className="text-center">
-        <Title />
-      </div>
-
-      {/* Right controls */}
-      <div className="flex gap-6 justify-end items-center relative">
-      
-      <GuidePopup guide={selectedGuide} onClose={() => setSelectedGuide(null)} />
-        {/* Auto Render toggle */}
-        <label className="flex items-center gap-2 text-sm cursor-pointer select-none">
-          <input
-            type="checkbox"
-            checked={autoRender}
-            onChange={(e) => onAutoRenderChange?.(e.target.checked)}
-            className="cursor-pointer"
-          />
-          Auto Render
-        </label>
-
-        {/* Lightbulb Menu */}
-        <div className="relative">
-          <FontAwesomeIcon
-            icon="fa-solid fa-lightbulb"
-            className="text-2xl cursor-pointer hover:text-sky-700"
-            onClick={() => {
-              setShowMenu((open) => !open)
-              setSelectedGuide(null) // reset guide when reopening menu
-            }}
-          />
-          {showMenu && (
-            <div className="absolute right-0 mt-2 w-72 rounded bg-white text-slate-900 shadow-lg z-10">
-              {/* Simple Examples */}
-              <div className="border-b px-3 py-2 font-semibold text-sm">Simple Examples</div>
-              <button
-                className="flex w-full px-4 py-2 text-left text-sm hover:bg-slate-100"
-                onClick={() => handleShowSimpleExample('vector')}
-              >
-                🔵 Vector Example
-              </button>
-              <button
-                className="flex w-full px-4 py-2 text-left text-sm hover:bg-slate-100"
-                onClick={() => handleShowSimpleExample('points')}
-              >
-                🔴 Points Example
-              </button>
-              <button
-                className="flex w-full px-4 py-2 text-left text-sm hover:bg-slate-100"
-                onClick={() => handleShowSimpleExample('spheres')}
-              >
-                🟢 Spheres Example
-              </button>
-              <button
-                className="flex w-full px-4 py-2 text-left text-sm hover:bg-slate-100"
-                onClick={() => handleShowSimpleExample('mixed')}
-              >
-                🟣 Mixed Objects Example
-              </button>
-
-              {/* Guides */}
-              <div className="border-t border-b px-3 py-2 font-semibold text-sm">Math Guides</div>
-              {guides.map((g) => (
-                <button
-                  key={g.label}
-                  className="flex w-full px-4 py-2 text-left text-sm hover:bg-slate-100"
-                  onClick={() => handlePickGuide(g)}
-                >
-                  {g.label}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Run Button */}
-        {/* <FontAwesomeIcon
-          icon="fa-solid fa-play"
-          className="text-2xl cursor-pointer hover:text-sky-700"
-          onClick={() => onRun?.()}
-        /> */}
-
-        <FontAwesomeIcon icon="fa-solid fa-gear" className="text-2xl cursor-pointer hover:text-sky-700"/>
-        <FontAwesomeIcon icon="fa-solid fa-file-import" className="text-2xl cursor-pointer hover:text-sky-700" onClick={() => loadWorkspace(ws)} title="Import code"/>
-        <FontAwesomeIcon icon="fa-solid fa-file-export" className="text-2xl cursor-pointer hover:text-sky-700" onClick={() => saveWorkspace(ws)} title="Export code"/>
       </div>
     </div>
   )

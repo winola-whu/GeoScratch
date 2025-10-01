@@ -82,12 +82,12 @@ const Layout = () => {
           onAutoRenderChange={toggleAutoRender}
           onRun={handleRun}
           onLoadExample={(xml) => {
-            console.log('Layout收到XML:', xml)
-            // 使用workspace store来加载示例
+            console.log('Layout received XML:', xml)
+            // Use workspace store to load example
             const { setExampleXml } = useWorkspaceStore.getState()
-            console.log('调用setExampleXml')
+            console.log('Calling setExampleXml')
             setExampleXml(xml)
-            console.log('已设置exampleXml')
+            console.log('Set exampleXml')
           }}
         />
       </div>

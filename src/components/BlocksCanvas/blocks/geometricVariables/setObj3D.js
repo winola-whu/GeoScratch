@@ -1,6 +1,6 @@
 import * as Blockly from 'blockly/core'
 import { javascriptGenerator, Order } from 'blockly/javascript'
-// import { threeObjStore } from '@/utils/store' // 持久化 THREE 对象的全局 store
+// import { threeObjStore } from '@/utils/store' // Global store for persisting THREE objects
 
 let REGISTERED = false
 
@@ -41,10 +41,10 @@ export function initSetObj3DBlock() {
     const argument0 =
       generator.valueToCode(block, 'VALUE', Order.NONE) || 'null'
 
-    // 确保变量只声明一次
+    // Ensure variable is declared only once
     generator.definitions_[varName] = `let ${varName};`
 
-    // 在 eval 作用域赋值，同时更新 threeObjStore
+    // Assign in eval scope, also update threeObjStore
     const setLocal = `${varName} = ${argument0};\n`
     const persist = `threeObjStore["${varName}"] = ${argument0};\n`
 

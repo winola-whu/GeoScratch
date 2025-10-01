@@ -57,7 +57,7 @@ export default function BlocksCanvas({ onObjectsChange }) {
 
     // Change listener -> run + sync
     const cleanupListener = setupChangeListener(ws, (w) => {
-      clearObjects() // 清理旧对象
+      clearObjects() // Clear old objects
       runAndSync(w, onObjectsChange, registryRef.current)
     })
 
@@ -76,14 +76,14 @@ export default function BlocksCanvas({ onObjectsChange }) {
 
   // Load example XML
   useEffect(() => {
-    console.log('BlocksCanvas useEffect触发, workspace:', !!workspace, 'exampleXml:', !!exampleXml)
+    console.log('BlocksCanvas useEffect triggered, workspace:', !!workspace, 'exampleXml:', !!exampleXml)
     if (!workspace || !exampleXml) return
 
-    console.log('开始应用XML到workspace')
+    console.log('Starting to apply XML to workspace')
     const ok = applyExampleXml(workspace, exampleXml)
-    console.log('applyExampleXml结果:', ok)
+    console.log('applyExampleXml result:', ok)
     if (ok) {
-      console.log('开始runAndSync')
+      console.log('Starting runAndSync')
       runAndSync(workspace, onObjectsChange, registryRef.current)
     }
     clearExampleXml()
