@@ -6,20 +6,23 @@ import useSceneStore from '@/store/useSceneStore'
 import useWorkspaceStore from '@/store/useWorkspaceStore'
 
 const Layout = () => {
-  const { 
+  const {
     objects,
-    autoRender, 
-    pendingObjects, 
-    setPendingObjects, 
-    setObjects, 
-    toggleAutoRender 
+    autoRender,
+    pendingObjects,
+    setPendingObjects,
+    setObjects,
+    toggleAutoRender,
   } = useSceneStore()
 
   // Stable callback so BlocksCanvas doesn't remount the workspace
-  const handleObjectsChange = useCallback((objs) => {
-    setPendingObjects(objs)
-    if (autoRender) setObjects(objs)
-  }, [autoRender, setPendingObjects, setObjects])
+  const handleObjectsChange = useCallback(
+    (objs) => {
+      setPendingObjects(objs)
+      if (autoRender) setObjects(objs)
+    },
+    [autoRender, setPendingObjects, setObjects]
+  )
 
   // Run commits the last pending scene only when autoRender is OFF
   const handleRun = useCallback(() => {
@@ -43,11 +46,13 @@ const Layout = () => {
           }}
         />
       </div>
-      <div className="h-[90%] w-full flex">
-        <div className="w-1/2 h-full">
+
+      <div className="grid 2xl:grid-cols-[40%_60%] xl:grid-cols-[40%_60%] lg:grid-cols-[50%_50%] h-[90%]">
+        <div>
           <BlocksCanvas onObjectsChange={handleObjectsChange} />
         </div>
-        <div className="w-1/2 h-full">
+
+        <div>
           <Scene3D objects={objects} />
         </div>
       </div>

@@ -1,10 +1,13 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import defineBlocks from '@/components/BlocksCanvas/blocks/index'
 import { BlockRegistry } from '@/components/BlocksCanvas/state/BlockRegistry'
 import useWorkspaceStore from '@/store/useWorkspaceStore'
 import useThreeStore from '@/store/useThreeStore'
 import 'blockly/blocks'
-import { createObj3DButtonHandler, obj3DFlyoutCallback } from '@/utils/callbacks'
+import {
+  createObj3DButtonHandler,
+  obj3DFlyoutCallback,
+} from '@/utils/callbacks'
 import Obj3DDialog from '../CreateObj3DDiaglog'
 import runAndSync from '../../utils/runAndSync'
 import attachResizeObserver from '@/utils/attachResizeOberver'
@@ -18,6 +21,7 @@ export default function BlocksCanvas({ onObjectsChange }) {
   const hostRef = useRef(null)
   const workspaceRef = useRef(null)
   const registryRef = useRef(null)
+  const [collapsed, setCollapsed] = useState(false)
 
   const {
     workspace,
@@ -44,6 +48,21 @@ export default function BlocksCanvas({ onObjectsChange }) {
     ws.registerToolboxCategoryCallback('OBJS_3D', obj3DFlyoutCallback)
   }
 
+  // Collapse & Expand Function
+  const toggleToolbox = () => {
+    const toolboxEl = document.querySelector('.blocklyToolbox')
+    if (toolboxEl) {
+      if (!collapsed) {
+        // Collapse
+        toolboxEl.style.width = '9px'
+      } else {
+        // Expand
+        toolboxEl.style.width = ''
+      }
+      setCollapsed(!collapsed)
+    }
+  }
+
   // Initialize Blockly once
   useEffect(() => {
     defineBlocks()
@@ -51,6 +70,8 @@ export default function BlocksCanvas({ onObjectsChange }) {
 
     const ws = initWorkSpace(hostRef.current)
     setWorkspace(ws)
+
+    ws.getToolbox().setVisible(true)
 
     // Register Callbacks
     registerCallbacks(ws)
@@ -76,7 +97,12 @@ export default function BlocksCanvas({ onObjectsChange }) {
 
   // Load example XML
   useEffect(() => {
-    console.log('BlocksCanvas useEffect triggered, workspace:', !!workspace, 'exampleXml:', !!exampleXml)
+    console.log(
+      'BlocksCanvas useEffect triggered, workspace:',
+      !!workspace,
+      'exampleXml:',
+      !!exampleXml
+    )
     if (!workspace || !exampleXml) return
 
     console.log('Starting to apply XML to workspace')
@@ -93,15 +119,14 @@ export default function BlocksCanvas({ onObjectsChange }) {
     <div className="panel panel-left" id="blocks-canvas">
       <div className="blocks-toolbar">
         <span style={{ opacity: 0.8 }}>Blocks</span>
+        <button
+          onClick={toggleToolbox}
+          className="ml-2 px-2 py-1 text-xs bg-gray-400 rounded hover:bg-gray-500"
+        >
+          {collapsed ? 'EXPAND' : 'COLLAPSE'}
+        </button>
       </div>
-      <div className="blocks-content" ref={hostRef} />
-
-      <Obj3DDialog
-        open={dialogOpen}
-        onOpenChange={(open) => setDialogOpen(open)}
-        workspace={workspace}
-      />
+      <div className="blocks-content" ref={hostRef}></div>
     </div>
   )
 }
-
