@@ -27,6 +27,7 @@ export function initVec3Block() {
       this.setDeletable(true)
       this.setMovable(true)
       this.setOutput(true, 'vector3')
+      this.setColour(85)
     },
   }
 

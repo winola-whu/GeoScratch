@@ -15,6 +15,7 @@ const initPointBlock = () => {
       this.setStyle('math_blocks')
       this.setTooltip('Point with position p.')
       this.setOutput(true, 'obj3D')
+      this.setColour(205)
     },
   }
 

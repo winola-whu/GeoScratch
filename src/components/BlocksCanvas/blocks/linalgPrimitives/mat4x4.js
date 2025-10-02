@@ -36,6 +36,7 @@ export function initMat4x4Block() {
       this.setDeletable(true)
       this.setMovable(true)
       this.setOutput(true, 'matrix4')
+      this.setColour(85)
     }
   }
 

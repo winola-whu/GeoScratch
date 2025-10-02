@@ -1,24 +1,26 @@
+
 import * as Blockly from 'blockly/core'
 import { javascriptGenerator, Order } from 'blockly/javascript'
 
 let REGISTERED = false
 
 const initParametricPlaneBlock = () => {
-  if (REGISTERED) return
-  REGISTERED = true
+    if (REGISTERED) return
+    REGISTERED = true
 
   // Describes a plane in 3D space using the plane's equation in Hessian form
-  Blockly.Blocks['parametric_plane'] = {
-    init() {
-      this.appendDummyInput().appendField('Plane (Parametric)')
+    Blockly.Blocks['parametric_plane'] = {
+      init() {
+          this.appendDummyInput().appendField('Plane (Parametric)')
       this.appendValueInput('norm').appendField('norm:').setCheck('vector3')
       this.appendValueInput('dist').appendField('dist:').setCheck('scalar')
-      this.setStyle('math_blocks')
-      this.setTooltip('Plane with normal n, at distance d from the origin.')
-      this.setDeletable(true)
-      this.setMovable(true)
-      this.setOutput(true, 'obj3D')
-    },
+          this.setStyle('math_blocks')
+          this.setTooltip('Plane with normal n, at distance d from the origin.')
+          this.setDeletable(true)
+          this.setMovable(true)
+          this.setOutput(true, 'obj3D')
+          this.setColour(205)
+      }
   }
 
   javascriptGenerator.forBlock['parametric_plane'] = function (

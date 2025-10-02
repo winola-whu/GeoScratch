@@ -32,6 +32,7 @@ export function initMat3x3Block() {
       this.setDeletable(true)
       this.setMovable(true)
       this.setOutput(true, 'matrix3')
+      this.setColour(85)
     },
   }
 

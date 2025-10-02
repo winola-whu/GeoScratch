@@ -21,6 +21,7 @@ export function initGetObj3DBlock() {
       this.setOutput(true, 'obj3D')
       this.setStyle('variable_blocks')
       this.setTooltip('Get a 3D object variable')
+      this.setColour(255)
     },
   }
 

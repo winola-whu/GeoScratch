@@ -17,6 +17,7 @@ export function initNormInplaceBlock() {
       this.setTooltip('Render v and its normalized version as a single group.')
       this.setDeletable(true)
       this.setMovable(true)
+      this.setColour(155)
     },
   }
 

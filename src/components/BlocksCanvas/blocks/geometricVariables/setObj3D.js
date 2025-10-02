@@ -29,6 +29,7 @@ export function initSetObj3DBlock() {
       this.setNextStatement(true, null)
       this.setStyle('variable_blocks')
       this.setTooltip('Set a 3D object variable')
+      this.setColour(255)
     },
   }
 

@@ -27,6 +27,7 @@ export function initObjectTransformBlock() {
       this.setMovable(true)
       this.setInputsInline(false)
       this.setOutput(true, 'obj3D')
+      this.setColour(155)
     },
   }
   

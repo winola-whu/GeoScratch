@@ -40,6 +40,7 @@ export function initRotMatrixBlock() {
       this.setDeletable(true)
       this.setMovable(true)
       this.setOutput(true, 'rotMat')
+      this.setColour(85)
     },
   }
 

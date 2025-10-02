@@ -28,6 +28,7 @@ export function initVectorArithmeticBlock() {
       this.setTooltip('Compute u ± v and return a group with arrows for u, v, and the result (registered).')
       this.setDeletable(true)
       this.setMovable(true)
+      this.setColour(155)
     },
   }
 

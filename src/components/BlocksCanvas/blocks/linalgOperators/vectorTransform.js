@@ -24,6 +24,7 @@ export function initVectorTransformBlock() {
       this.setMovable(true)
       this.setInputsInline(false)
       this.setOutput(true, 'obj3D')
+      this.setColour(155)
     },
   }
 

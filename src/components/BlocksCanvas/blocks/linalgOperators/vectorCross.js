@@ -19,6 +19,7 @@ export function initCrossProductBlock() {
       this.setTooltip('Compute u × v and return a new geo_vector (registered to render).')
       this.setDeletable(true)
       this.setMovable(true)
+      this.setColour(155)
     },
   }
 

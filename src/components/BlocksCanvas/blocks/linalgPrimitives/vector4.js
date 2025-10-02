@@ -19,6 +19,7 @@ export function initVec4Block() {
       this.setDeletable(true)
       this.setMovable(true)
       this.setOutput(true, 'vector4')
+      this.setColour(85)
     }
   }
 

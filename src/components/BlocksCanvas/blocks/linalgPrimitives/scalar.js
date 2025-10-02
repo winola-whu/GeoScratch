@@ -17,6 +17,7 @@ export function initScalarBlock() {
       this.setDeletable(true)
       this.setMovable(true)
       this.setOutput(true, 'scalar')
+      this.setColour(85)
     },
   }
 

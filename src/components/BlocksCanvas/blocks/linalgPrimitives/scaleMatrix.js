@@ -35,6 +35,7 @@ export function initScaleMatrixBlock() {
       this.setDeletable(true)
       this.setMovable(true)
       this.setOutput(true, 'scaleMat')
+      this.setColour(85)
     },
   }
 

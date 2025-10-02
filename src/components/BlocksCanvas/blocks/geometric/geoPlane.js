@@ -17,6 +17,7 @@ const initGeoPlaneBlock = () => {
       this.setDeletable(true)
       this.setMovable(true)
       this.setOutput(true, 'obj3D')
+      this.setColour(205)
     }
   }
 

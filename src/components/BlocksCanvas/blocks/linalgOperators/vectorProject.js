@@ -19,6 +19,7 @@ export function initVectorProjectBlock() {
       this.setTooltip('Compute projection of U onto V')
       this.setDeletable(true)
       this.setMovable(true)
+      this.setColour(155)
     },
   }
 

@@ -35,6 +35,7 @@ export function initTransMatrixBlock() {
       this.setDeletable(true)
       this.setMovable(true)
       this.setOutput(true, 'transMat')
+      this.setColour(85)
     },
   }
 

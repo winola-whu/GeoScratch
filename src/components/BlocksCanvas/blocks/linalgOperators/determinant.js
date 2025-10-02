@@ -18,6 +18,7 @@ export function initDeterminantBlock() {
       this.setDeletable(true)
       this.setMovable(true)
       this.setOutput(true)
+      this.setColour(155)
     },
   }
 

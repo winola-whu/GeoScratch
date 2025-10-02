@@ -4,7 +4,6 @@ import { OrbitControls, Text, Billboard } from '@react-three/drei'
 import * as THREE from 'three'
 import './Scene3D.css'
 
-
 function AxisArrow({ dir = [1,0,0], color = 'red', length = 3 }) {
     // Build a THREE.ArrowHelper once
     const arrow = useMemo(() => {
