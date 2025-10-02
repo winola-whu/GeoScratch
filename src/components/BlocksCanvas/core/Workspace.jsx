@@ -14,7 +14,7 @@ const Workspace = (hostElement) => {
     zoom: { controls: true, wheel: true, startScale: 0.9 },
     trashcan: true,
     theme: Blockly.Themes.Classic,
-    move: { scrollbars: true, drag: true, wheel: true },
+    move: { scrollbars: false, drag: true, wheel: true },
   })
 }
 

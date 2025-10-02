@@ -3,6 +3,7 @@ import defineBlocks from '@/components/BlocksCanvas/blocks/index'
 import { BlockRegistry } from '@/components/BlocksCanvas/state/BlockRegistry'
 import useWorkspaceStore from '@/store/useWorkspaceStore'
 import useThreeStore from '@/store/useThreeStore'
+import * as Blockly from 'blockly/core' 
 import 'blockly/blocks'
 import {
   createObj3DButtonHandler,
@@ -48,19 +49,28 @@ export default function BlocksCanvas({ onObjectsChange }) {
     ws.registerToolboxCategoryCallback('OBJS_3D', obj3DFlyoutCallback)
   }
 
-  // Collapse & Expand Function
-  const toggleToolbox = () => {
-    const toolboxEl = document.querySelector('.blocklyToolbox')
-    if (toolboxEl) {
-      if (!collapsed) {
-        // Collapse
-        toolboxEl.style.width = '9px'
+  // Collapse & Expand function
+  const applyCollapse = (collapse) => {
+    const toolboxGroup = document.querySelector('.blocklyToolboxCategoryGroup')
+    if (toolboxGroup) {
+      if (collapse) {
+        toolboxGroup.style.setProperty('width', '9px', 'important')
+        // toolboxGroup.style.overflow = 'hidden'
       } else {
-        // Expand
-        toolboxEl.style.width = ''
+        toolboxGroup.style.removeProperty('width')
+        // toolboxGroup.style.setProperty('width', '200px', 'important')
+        // toolboxGroup.style.overflow = ''
       }
-      setCollapsed(!collapsed)
     }
+    if (workspace) {
+      Blockly.svgResize(workspace)
+    }
+  }
+
+  const toggleToolbox = () => {
+    const newState = !collapsed
+    setCollapsed(newState)
+    applyCollapse(newState)
   }
 
   // Initialize Blockly once
@@ -94,6 +104,13 @@ export default function BlocksCanvas({ onObjectsChange }) {
       ws.dispose()
     }
   }, [])
+
+  // After workspace ready, apply initial collapse
+  useEffect(() => {
+    if (workspace) {
+      applyCollapse(collapsed)
+    }
+  }, [workspace])
 
   // Load example XML
   useEffect(() => {
