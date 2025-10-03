@@ -15,7 +15,7 @@ export function initVec3Block() {
   Blockly.Blocks['linalg_vec3'] = {
     init() {
       this.appendDummyInput()
-        .appendField('Vector3: (')
+        .appendField('R³: (')
         .appendField(new Blockly.FieldNumber(1), 'X')
         .appendField(',')
         .appendField(new Blockly.FieldNumber(1), 'Y')
@@ -23,7 +23,7 @@ export function initVec3Block() {
         .appendField(new Blockly.FieldNumber(1), 'Z')
         .appendField(')')
       this.setStyle('math_blocks')
-      this.setTooltip('3D Vector')
+      this.setTooltip('3D coordinate')
       this.setDeletable(true)
       this.setMovable(true)
       this.setOutput(true, 'vector3')

@@ -9,13 +9,13 @@ const TOOLBOX_XML = `
         </category>
         <category name="Linear Algebra Primitives" categorystyle="text_category">
             <block type="linalg_vec3"></block>
-            <block type="linalg_vec4"></block>
-            <block type="linalg_mat3x3"></block>
-            <block type="linalg_mat4x4"></block>
+<!--            <block type="linalg_vec4"></block>-->
+<!--            <block type="linalg_mat3x3"></block>-->
+<!--            <block type="linalg_mat4x4"></block>-->
+            <block type="scalar"></block>
             <block type="rot_matrix"></block>
             <block type="trans_matrix"></block>
-            <block type="scale_matrix"></block>
-            <block type="scalar"></block>
+            <block type="scale_matrix"></block>            
         </category>
         <category name="Linear Algebra Operators" categorystyle="logic_category">
             <block type="object_transform"></block>
@@ -24,9 +24,9 @@ const TOOLBOX_XML = `
             <block type="vector_cross_product"></block>
             <block type="vector_normalise"></block>
             <block type="vector_project"></block>
-            <block type="multiply_inplace"></block>
-            <block type="inverse_inplace"></block>
-            <block type="determinant"></block>
+<!--            <block type="multiply_inplace"></block>-->
+<!--            <block type="inverse_inplace"></block>-->
+<!--            <block type="determinant"></block>-->
             <block type="dot_product"></block>            
         </category>
         <category name="Measurements" categorystyle="list_category">
