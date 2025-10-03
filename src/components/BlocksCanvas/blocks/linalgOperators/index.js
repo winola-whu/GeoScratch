@@ -8,6 +8,7 @@ import { initInverseInplaceBlock } from "./inverseInplace"
 import { initDeterminantBlock } from "./determinant"
 import { initNormInplaceBlock } from "./vectorNormalise.js"
 import { initVectorProjectBlock } from "./vectorProject.js"
+import { initVectorMagnitude } from "./vectorMagnitude.js"
 
 export function initLinalgOperatorsBlocks() {
   initObjectTransformBlock()
@@ -20,4 +21,5 @@ export function initLinalgOperatorsBlocks() {
   initDeterminantBlock()
   initNormInplaceBlock()
   initVectorProjectBlock()
+  initVectorMagnitude()
 }

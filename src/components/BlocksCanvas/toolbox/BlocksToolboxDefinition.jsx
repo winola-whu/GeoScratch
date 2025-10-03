@@ -19,15 +19,16 @@ const TOOLBOX_XML = `
         </category>
         <category name="Linear Algebra Operators" categorystyle="logic_category">
             <block type="object_transform"></block>
-            <block type="vector_transform"></block>      
+<!--            <block type="vector_transform"></block>      -->
             <block type="vector_arithmetic"></block>
             <block type="vector_cross_product"></block>
             <block type="vector_normalise"></block>
             <block type="vector_project"></block>
+            <block type="vector_magnitude"></block>
 <!--            <block type="multiply_inplace"></block>-->
 <!--            <block type="inverse_inplace"></block>-->
 <!--            <block type="determinant"></block>-->
-            <block type="dot_product"></block>            
+<!--            <block type="dot_product"></block>            -->
         </category>
         <category name="Measurements" categorystyle="list_category">
             <block type="debug"></block>

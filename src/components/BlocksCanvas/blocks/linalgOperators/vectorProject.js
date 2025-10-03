@@ -24,8 +24,8 @@ export function initVectorProjectBlock() {
   }
 
   javascriptGenerator.forBlock['vector_project'] = function (block, g) {
-    const u = g.valueToCode(block, 'U', Order.FUNCTION_CALL) || 'null'
-    const v = g.valueToCode(block, 'V', Order.FUNCTION_CALL) || 'null'
+    const u = g.valueToCode(block, 'U', Order.FUNCTION_CALL) || 'null';
+    const v = g.valueToCode(block, 'V', Order.FUNCTION_CALL) || 'null';
 
     const code = `(function(){
     const uVal = ${u};
@@ -34,49 +34,35 @@ export function initVectorProjectBlock() {
 
     const headLenRatio = 0.25, headWidthRatio = 0.10;
     const safeLen = (x) => (isFinite(x) && x > 0 ? x : 1);
+    const fmt = (vec) => '[' + [vec.x, vec.y, vec.z].map(n => Number(n.toFixed(3))).join(', ') + ']';
 
-    // Input arrows (origin)
+    // Inputs
     const lenU = uVal.length();
     const lenV = vVal.length();
 
     const arrowU = new THREE.ArrowHelper(
-      (lenU > 0 ? uVal.clone().normalize() : new THREE.Vector3(1,0,0)),
-      new THREE.Vector3(0,0,0),
-      safeLen(lenU),
-      0x1d4ed8,
-      headLenRatio,
-      headWidthRatio
+      (lenU>0?uVal.clone().normalize():new THREE.Vector3(1,0,0)),
+      new THREE.Vector3(0,0,0), safeLen(lenU), 0x1d4ed8, headLenRatio, headWidthRatio
     );
 
     const arrowV = new THREE.ArrowHelper(
-      (lenV > 0 ? vVal.clone().normalize() : new THREE.Vector3(1,0,0)),
-      new THREE.Vector3(0,0,0),
-      safeLen(lenV),
-      0xdc2626,
-      headLenRatio,
-      headWidthRatio
+      (lenV>0?vVal.clone().normalize():new THREE.Vector3(1,0,0)),
+      new THREE.Vector3(0,0,0), safeLen(lenV), 0xdc2626, headLenRatio, headWidthRatio
     );
 
-    // Projection of u onto v: proj = (u·v / ||v||^2) * v
-    let projObj, projVec = new THREE.Vector3(), projLen = 0;
+    // Projection u onto v
+    let projObj, projVec=new THREE.Vector3(), projLen=0;
     const denom = vVal.lengthSq();
-
-    if (denom > 1e-12) {
+    if (denom>1e-12) {
       const scale = uVal.dot(vVal) / denom;
-      projVec = vVal.clone().multiplyScalar(scale); // tip position of projection
+      projVec = vVal.clone().multiplyScalar(scale);
       projLen = projVec.length();
-
-      if (projLen > 1e-8) {
+      if (projLen>1e-8) {
         projObj = new THREE.ArrowHelper(
-          projVec.clone().normalize(),
-          new THREE.Vector3(0,0,0),
-          safeLen(projLen),
-          0x7c3aed,
-          headLenRatio,
-          headWidthRatio
+          projVec.clone().normalize(), new THREE.Vector3(0,0,0),
+          safeLen(projLen), 0x7c3aed, headLenRatio, headWidthRatio
         );
       } else {
-        // projection ~ zero → point at origin
         projVec.set(0,0,0);
         projObj = new THREE.Mesh(
           new THREE.SphereGeometry(0.08, 8, 8),
@@ -84,7 +70,6 @@ export function initVectorProjectBlock() {
         );
       }
     } else {
-      // v is zero → undefined projection → point at origin
       projVec.set(0,0,0);
       projObj = new THREE.Mesh(
         new THREE.SphereGeometry(0.08, 8, 8),
@@ -92,46 +77,46 @@ export function initVectorProjectBlock() {
       );
     }
 
-    const tag = (obj, len) => {
-      obj.userData.geoType        = 'geo_vector';
-      obj.userData.length         = safeLen(len);
-      obj.userData.headLenRatio   = headLenRatio;
-      obj.userData.headWidthRatio = headWidthRatio;
-      obj.userData.srcBlockId     = ${JSON.stringify(block.id)};
-      return obj;
-    };
-    tag(arrowU, lenU);
-    tag(arrowV, lenV);
-    tag(projObj, projLen);
+    const tag=(o,l)=>{o.userData.geoType='geo_vector';o.userData.length=safeLen(l);o.userData.headLenRatio=headLenRatio;o.userData.headWidthRatio=headWidthRatio;o.userData.srcBlockId=${JSON.stringify(block.id)};return o;};
+    tag(arrowU,lenU); tag(arrowV,lenV); tag(projObj,projLen);
 
-    // ---- Guide line: tip(u) → tip(projection) ----
-    const uTip = uVal.clone();            // since origin + dir*len == original vector
-    const pTip = projVec.clone();         // computed above (origin if zero/undefined)
+    // Guide: tip(u) -> tip(proj)
+    const uTip = uVal.clone();
+    const pTip = projVec.clone();
     const guideGeom = new THREE.BufferGeometry().setFromPoints([uTip, pTip]);
-    const guideMat  = new THREE.LineBasicMaterial({ color: 0xffff00, transparent: true, opacity: 1 });
+    const guideMat  = new THREE.LineBasicMaterial({ color: 0xffff00, transparent:true, opacity:1 });
     const guideLine = new THREE.Line(guideGeom, guideMat);
-    guideLine.userData.geoType    = 'geo_helper';
-    guideLine.userData.srcBlockId = ${JSON.stringify(block.id)};
+    guideLine.userData.geoType='geo_helper';
+    guideLine.userData.srcBlockId=${JSON.stringify(block.id)};
 
-    // Group return
     const group = new THREE.Group();
     group.add(arrowU, arrowV, projObj, guideLine);
-    group.userData.geoType    = 'geo_vector_group';
-    group.userData.srcBlockId = ${JSON.stringify(block.id)};
+    group.userData.geoType='geo_vector_group';
+    group.userData.srcBlockId=${JSON.stringify(block.id)};
 
-    // Register: separately + group
-    if (typeof threeObjStore === 'object' && threeObjStore) {
-      const base = ${JSON.stringify(block.id)};
+    // Labels at tips
+    group.userData.labelAnchors = {
+      uTip:{type:'world', position:[uVal.x,     uVal.y,     uVal.z    ]},
+      vTip:{type:'world', position:[vVal.x,     vVal.y,     vVal.z    ]},
+      pTip:{type:'world', position:[projVec.x,  projVec.y,  projVec.z ]},
+    };
+    group.userData.labels = [
+      { anchor:'uTip', text:'u = ' + fmt(uVal),      distanceFactor:8, offset:[0.12,0.12,0] },
+      { anchor:'vTip', text:'v = ' + fmt(vVal),      distanceFactor:8, offset:[0.12,0.12,0] },
+      { anchor:'pTip', text:'result = ' + fmt(projVec), distanceFactor:8, offset:[0.12,0.12,0] },
+    ];
+
+    if (typeof threeObjStore==='object' && threeObjStore){
+      const base=${JSON.stringify(block.id)};
       threeObjStore[base + '_u']     = arrowU;
       threeObjStore[base + '_v']     = arrowV;
       threeObjStore[base + '_proj']  = projObj;
       threeObjStore[base + '_guide'] = guideLine;
       threeObjStore[base]            = group;
     }
-
     return group;
-  })()`
+  })()`;
 
-    return [code, Order.FUNCTION_CALL]
-  }
+    return [code, Order.FUNCTION_CALL];
+  };
 }
