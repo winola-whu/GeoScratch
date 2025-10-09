@@ -512,7 +512,7 @@ export default function Header({ onRun, onLoadExample, autoRender, onAutoRenderC
         {/* Main Menu */}
 
         {/* Navigation */}
-        <FontAwesomeIcon 
+        {/* <FontAwesomeIcon 
           icon="fa-solid fa-angle-left" 
           className="text-2xl cursor-pointer hover:text-sky-700" 
           title="Previous Lesson"
@@ -521,7 +521,7 @@ export default function Header({ onRun, onLoadExample, autoRender, onAutoRenderC
           icon="fa-solid fa-angle-right" 
           className="text-2xl cursor-pointer hover:text-sky-700" 
           title="Next Lesson"
-        />
+        /> */}
         
       </div>
 
