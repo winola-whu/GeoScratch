@@ -8,8 +8,6 @@
   }
 }
 
-/* Framer Motion handles the animation now */
-
 @media (prefers-reduced-motion: no-preference) {
   a:nth-of-type(2) .logo {
     animation: logo-spin infinite 20s linear;
@@ -78,4 +76,4 @@ html, body, #root {
     background: #ffffff;
 }
 
-/* Will delete this file */
+// Will delete this file
