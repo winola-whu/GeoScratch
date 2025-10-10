@@ -15,13 +15,48 @@
     "link": "https://mathworld.wolfram.com/Plane.html"
   },
   {
-    "label": "Plane (Geometric)",
-    "content": "A plane can also be defined by a point and its side length in geometry.",
-    "link": "https://en.wikipedia.org/wiki/Plane_(geometry)"
-  },
-  {
     "label": "Sphere",
     "content": "A sphere is the set of all points equidistant from a center. Formula: (x-a)^2+(y-b)^2+(z-c)^2=r^2.",
     "link": "https://mathworld.wolfram.com/Sphere.html"
+  },
+  {
+    "label": "Linear Transformation",
+    "content": "A linear transformation is a function that preserves vector addition and scalar multiplication. It can be represented as a matrix multiplication: T(v) = Av. Common types include rotation, scaling, and reflection.",
+    "link": "https://mathworld.wolfram.com/LinearTransformation.html"
+  },
+  {
+    "label": "Translation",
+    "content": "Translation is a type of transformation that moves objects in space without changing their size or orientation. A 4x4 translation matrix: [[1,0,0,tx], [0,1,0,ty], [0,0,1,tz], [0,0,0,1]] where tx,ty,tz are translation distances.",
+    "link": "https://mathworld.wolfram.com/Translation.html"
+  },
+  {
+    "label": "Rotation",
+    "content": "Rotation is a type of transformation that rotates vectors around an axis. For 2D rotation by angle θ: R = [[cos(θ), -sin(θ)], [sin(θ), cos(θ)]]. For 3D, use rotation matrices around X, Y, or Z axes.",
+    "link": "https://mathworld.wolfram.com/RotationMatrix.html"
+  },
+  {
+    "label": "Scaling",
+    "content": "Scaling is a type of transformation that changes the size of objects. Uniform scaling by factor s: S = [[s, 0, 0], [0, s, 0], [0, 0, s]]. Non-uniform scaling allows different factors for each axis.",
+    "link": "https://mathworld.wolfram.com/Scaling.html"
+  },
+  {
+    "label": "Homogeneous Coordinates",
+    "content": "Homogeneous coordinates use 4D vectors (x, y, z, w) to represent 3D points. This allows combining translation with rotation/scaling in a single 4x4 matrix transformation.",
+    "link": "https://mathworld.wolfram.com/HomogeneousCoordinates.html"
+  },
+  {
+    "label": "Cross Product",
+    "content": "The cross product of two 3D vectors a and b results in a vector perpendicular to both. Its magnitude is ||a|| ||b|| sin(θ), useful for finding surface normals.",
+    "link": "https://mathworld.wolfram.com/CrossProduct.html"
+  },
+  {
+    "label": "Vector Magnitude",
+    "content": "The magnitude (length) of a vector v = (x, y, z) is ||v|| = √(x² + y² + z²). It represents the distance from origin to the vector's endpoint.",
+    "link": "https://mathworld.wolfram.com/VectorMagnitude.html"
+  },
+  {
+    "label": "Cube",
+    "content": "A cube is a 3D geometric object with 6 square faces, 12 edges, and 8 vertices. It can be defined by its center point and side length.",
+    "link": "https://mathworld.wolfram.com/Cube.html"
   }
 ]
