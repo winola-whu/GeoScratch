@@ -203,8 +203,8 @@ export default function Header({ onRun, onLoadExample, autoRender, onAutoRenderC
   const [waitingForOperand, setWaitingForOperand] = useState(false)
   const [guides, setGuides] = useState(fallbackGuides)
   const [selectedGuide, setSelectedGuide] = useState(null)
-  // const [currentChapter, setCurrentChapter] = useState("Chapter 1 - Basic Geometry")
-  // const [learningProgress, setLearningProgress] = useState(25)
+  const [currentChapter, setCurrentChapter] = useState("Chapter 1 - Basic Geometry")
+  const [learningProgress, setLearningProgress] = useState(25)
   const popupRef = useRef(null)
 
   //grab workspace from zustand store for use with save/load calls
