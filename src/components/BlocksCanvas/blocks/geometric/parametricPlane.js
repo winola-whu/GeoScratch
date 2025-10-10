@@ -1,71 +1,142 @@
-
 import * as Blockly from 'blockly/core'
 import { javascriptGenerator, Order } from 'blockly/javascript'
 
 let REGISTERED = false
 
 const initParametricPlaneBlock = () => {
-    if (REGISTERED) return
-    REGISTERED = true
+  if (REGISTERED) return
+  REGISTERED = true
 
-  // Describes a plane in 3D space using the plane's equation in Hessian form
-    Blockly.Blocks['parametric_plane'] = {
-      init() {
-          this.appendDummyInput().appendField('Plane (Parametric)')
-      this.appendValueInput('norm').appendField('norm:').setCheck('vector3')
-      this.appendValueInput('dist').appendField('dist:').setCheck('scalar')
-          this.setStyle('math_blocks')
-          this.setTooltip('Plane with normal n, at distance d from the origin.')
-          this.setDeletable(true)
-          this.setMovable(true)
-          this.setOutput(true, 'obj3D')
-          this.setColour(205)
-      }
+  // Plane in point–normal form: {point p ∈ R^3, unit normal n ∈ R^3}
+  Blockly.Blocks['parametric_plane'] = {
+    init() {
+      this.appendDummyInput().appendField('Plane (Point–Normal)')
+      this.appendValueInput('point').appendField('Point:').setCheck('vector3')
+      this.appendValueInput('norm').appendField('Normal:').setCheck('vector3')
+      this.setStyle('math_blocks')
+      this.setTooltip('Plane defined by a point p and a normal n (normalized internally).')
+      this.setDeletable(true)
+      this.setMovable(true)
+      this.setOutput(true, 'obj3D')
+      this.setColour(205)
+    },
   }
 
-  javascriptGenerator.forBlock['parametric_plane'] = function (
-    block,
-    generator
-  ) {
-    const norm =
-      generator.valueToCode(block, 'norm', Order.FUNCTION_CALL) ||
-      'new THREE.Vector3(0,1,0)'
-    const dist =
-      generator.valueToCode(block, 'dist', Order.FUNCTION_CALL) || '0'
+  javascriptGenerator.forBlock['parametric_plane'] = function (block, g) {
+    const point = g.valueToCode(block, 'point', Order.FUNCTION_CALL) || 'new THREE.Vector3()';
+    const norm  = g.valueToCode(block, 'norm',  Order.FUNCTION_CALL) || 'new THREE.Vector3(0,1,0)';
+
+    // Try to infer label for the normal input (fallback to 'n')
+    const getNormLabel = (() => {
+      try {
+        const tgt = block.getInputTargetBlock && block.getInputTargetBlock('norm');
+        if (!tgt || typeof tgt.getFieldValue !== 'function') return 'n';
+        const fields = ['NAME','Label','LABEL','VAR','Var','ID','TITLE','TEXT'];
+        for (const f of fields) {
+          const v = tgt.getFieldValue(f);
+          if (v) return String(v);
+        }
+        return tgt.type || 'n';
+      } catch { return 'n'; }
+    })();
 
     const code = `(function(){
-    const normal = (${norm}).clone().normalize();
-    const distance = Number(${dist});
-    
-    // Generate geometry
-    const geom = new THREE.PlaneGeometry(5, 5);
-    const mat = new THREE.MeshStandardMaterial({
-      color: 0x00ff00,
+    const pIn = (${point});
+    const nIn = (${norm});
+
+    const p     = (pIn && pIn.isVector3) ? pIn.clone()   : new THREE.Vector3();
+    let nRaw    = (nIn && nIn.isVector3) ? nIn.clone()   : new THREE.Vector3(0,1,0);
+    let normLen = nRaw.length();
+    if (!isFinite(normLen) || normLen === 0) { nRaw.set(0,1,0); normLen = 1; }
+    const nUnit = nRaw.clone().normalize(); // for plane orientation
+
+    // Extent (as before)
+    let EXTENT = 1000;
+    if (typeof SCENE_EXTENT !== 'undefined' && isFinite(SCENE_EXTENT)) {
+      EXTENT = Math.abs(SCENE_EXTENT);
+    } else if (typeof scene !== 'undefined' && scene && scene.userData && isFinite(scene.userData.extent)) {
+      EXTENT = Math.abs(scene.userData.extent);
+    }
+    const SIZE = EXTENT * 2;
+
+    // Plane (light pink)
+    const geom = new THREE.PlaneGeometry(SIZE, SIZE, 1, 1);
+    const mat  = new THREE.MeshStandardMaterial({
+      color: 0xffb6c1,
       side: THREE.DoubleSide,
       transparent: true,
-      opacity: 0.5
+      opacity: 0.35
     });
-    const mesh = new THREE.Mesh(geom, mat);
+    const plane = new THREE.Mesh(geom, mat);
+    const quat  = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0,0,1), nUnit);
+    plane.setRotationFromQuaternion(quat);
+    plane.position.copy(p);
 
-    // Align according to normal
-    const plane = new THREE.Plane(normal, distance);
-    const coplanarPoint = plane.coplanarPoint(new THREE.Vector3());
-    mesh.position.copy(coplanarPoint);
+    // Optional outline
+    plane.add(new THREE.LineSegments(
+      new THREE.EdgesGeometry(geom),
+      new THREE.LineBasicMaterial({ color: 0xffb6c1, transparent: true, opacity: 0.5 })
+    ));
 
-    // Set orientation
-    const quat = new THREE.Quaternion();
-    quat.setFromUnitVectors(new THREE.Vector3(0,0,1), plane.normal);
-    mesh.setRotationFromQuaternion(quat);
+    // Point marker (same style as before)
+    const pointMesh = new THREE.Mesh(
+      new THREE.SphereGeometry(0.08, 16, 12),
+      new THREE.MeshStandardMaterial({ color: 0x22d3ee, roughness: 0.4, metalness: 0.1 })
+    );
+    pointMesh.position.copy(p);
 
-    mesh.userData.geoType = 'parametric_plane';
-    mesh.userData.srcBlockId = ${JSON.stringify(block.id)};
-    threeObjStore[${JSON.stringify(block.id)}] = mesh;
+    // Normal arrow === uses *input length*
+    const headLenRatio = 0.25, headWidthRatio = 0.10;   // ratios
+    const headLen   = Math.max(0.001, normLen * headLenRatio);
+    const headWidth = Math.max(0.001, normLen * headWidthRatio);
+    const arrow     = new THREE.ArrowHelper(nUnit.clone(), p.clone(), normLen, 0x1d4ed8, headLen, headWidth);
 
-    return mesh;
-  })()`
+    // Labels — arrow shows the *raw input*; plane uses nUnit internally
+    const fmt  = (vec) => '[' + [vec.x, vec.y, vec.z].map(v => Number(v.toFixed(3))).join(', ') + ']';
+    const nTip = p.clone().add(nRaw); // tip at p + nRaw (matches input length)
 
-    return [code, Order.ATOMIC]
-  }
+    const group = new THREE.Group();
+    group.add(plane, pointMesh, arrow);
+
+    group.userData.geoType     = 'point_normal_plane_group';
+    group.userData.srcBlockId  = ${JSON.stringify(block.id)};
+    group.userData.point       = p.clone();
+    group.userData.normalRaw   = nRaw.clone();  // input
+    group.userData.normalUnit  = nUnit.clone(); // used for orientation
+    group.userData.planeSize   = SIZE;
+
+    group.userData.labelAnchors = {
+      pAnchor: { type:'world', position:[p.x,    p.y,    p.z   ] },
+      nTip:    { type:'world', position:[nTip.x, nTip.y, nTip.z] },
+    };
+    group.userData.labels = [
+      { anchor:'pAnchor', text:'point = ' + fmt(p),                        distanceFactor:8, offset:[0.12,0.12,0] },
+      { anchor:'nTip',    text:'normal = ' + fmt(nRaw), distanceFactor:8, offset:[0.12,0.12,0] },
+    ];
+
+    // Tag children
+    plane.userData     = Object.assign(plane.userData||{},     { geoType:'plane_mesh',   srcBlockId:${JSON.stringify(block.id)} });
+    pointMesh.userData = Object.assign(pointMesh.userData||{}, { geoType:'point_marker', srcBlockId:${JSON.stringify(block.id)} });
+    arrow.userData     = Object.assign(arrow.userData||{},     {
+      geoType:'normal_arrow',
+      name:${JSON.stringify(getNormLabel)},
+      headLenRatio, headWidthRatio,
+      srcBlockId:${JSON.stringify(block.id)}
+    });
+
+    // Registry
+    if (typeof threeObjStore==='object' && threeObjStore){
+      const base=${JSON.stringify(block.id)};
+      threeObjStore[base + '_plane']  = plane;
+      threeObjStore[base + '_point']  = pointMesh;
+      threeObjStore[base + '_normal'] = arrow;
+      threeObjStore[base]             = group;
+    }
+
+    return group;
+  })()`;
+    return [code, Order.ATOMIC];
+  };
 }
 
 export default initParametricPlaneBlock

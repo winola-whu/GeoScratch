@@ -3,6 +3,7 @@ import { initVector3Block } from './geoVectorLine.js'
 import initGeoPlaneBlock from './geoPlane'
 import initParametricPlaneBlock from './parametricPlane'
 import { initGeoSphereBlock } from './geoSphere'
+import initGeoCubeBlock from './geoCube.js'
 
 export function initGeometricBlocks() {
   initPointBlock()
@@ -10,4 +11,5 @@ export function initGeometricBlocks() {
   initGeoPlaneBlock()
   initParametricPlaneBlock()
   initGeoSphereBlock()
+  initGeoCubeBlock()
 }

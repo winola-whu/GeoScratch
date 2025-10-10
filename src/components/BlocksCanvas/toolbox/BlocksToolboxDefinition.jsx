@@ -4,7 +4,8 @@ const TOOLBOX_XML = `
             <block type="geo_point"></block>
             <block type="geo_vector"></block>
             <block type="parametric_plane"></block>
-            <block type="geo_plane"></block>
+<!--            <block type="geo_plane"></block>-->
+            <block type="geo_cube"></block>
             <block type="geo_sphere"></block>
         </category>
         <category name="Linear Algebra Primitives" categorystyle="text_category">
