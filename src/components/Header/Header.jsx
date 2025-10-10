@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { motion } from 'framer-motion'
 import { loadWorkspace, saveWorkspace } from '../../utils/serialization'
 import GuidePopup from '../GuidePopup' 
 import useWorkspaceStore from '../../store/useWorkspaceStore'
@@ -248,7 +249,8 @@ export default function Header({ onRun, onLoadExample, autoRender, onAutoRenderC
   const [selectedGuide, setSelectedGuide] = useState(null)
   const [currentChapter, setCurrentChapter] = useState("Chapter 1 - Basic Geometry")
   const [learningProgress, setLearningProgress] = useState(25)
-  const popupRef = useRef(null)
+  const [isBlinking, setIsBlinking] = useState(true)
+  const popupRef = useRef(null) 
 
   //grab workspace from zustand store for use with save/load calls
   const ws = useWorkspaceStore((state) => state.workspace)
@@ -261,6 +263,17 @@ export default function Header({ onRun, onLoadExample, autoRender, onAutoRenderC
       .catch(() => {
         console.warn('Using fallback guides')
       })
+  }, [])
+
+  // Auto-stop jumping after 10 seconds when user visits the page
+  useEffect(() => {
+    console.log('Jumping started:', isBlinking) // Debug log
+    const timer = setTimeout(() => {
+      console.log('Stopping jump after 10 seconds') // Debug log
+      setIsBlinking(false)
+    }, 10000) // Stop jumping after 10 seconds
+
+    return () => clearTimeout(timer)
   }, [])
 
   // Close popup when clicking outside
@@ -546,15 +559,32 @@ export default function Header({ onRun, onLoadExample, autoRender, onAutoRenderC
         </label>
 
         {/* Lightbulb Menu */}
-        <div className="relative">
-          <FontAwesomeIcon
-            icon="fa-solid fa-lightbulb"
-            className="text-2xl cursor-pointer hover:text-sky-700"
+        <div className="relative" style={{ marginTop: '10px' }}>
+          <motion.div
+            animate={isBlinking ? {
+              y: [0, -15, 0],
+            } : {}}
+            transition={{
+              duration: 0.8,
+              repeat: isBlinking ? Infinity : 0,
+              ease: "easeInOut",
+            }}
             onClick={() => {
               setShowMenu((open) => !open)
               setSelectedGuide(null) // reset guide when reopening menu
+              setIsBlinking(false) // Stop jumping when user clicks
             }}
-          />
+            style={{ cursor: 'pointer' }}
+          >
+            <FontAwesomeIcon
+              icon="fa-solid fa-lightbulb"
+              className="text-3xl hover:scale-110"
+              style={{
+                color: '#fbbf24',
+                filter: 'drop-shadow(0 0 8px rgba(251, 191, 36, 0.6))'
+              }}
+            />
+          </motion.div>
           {showMenu && (
             <div className="absolute right-0 mt-2 w-72 rounded bg-white text-slate-900 shadow-lg z-10">
               {/* Simple Examples */}
