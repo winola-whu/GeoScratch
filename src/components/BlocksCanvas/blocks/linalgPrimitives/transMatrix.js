@@ -9,60 +9,28 @@ export function initTransMatrixBlock() {
 
   Blockly.Blocks['trans_matrix'] = {
     init() {
-      this.appendDummyInput().appendField('Translation Matrix')
+      this.appendDummyInput().appendField('Translate (x, y, z)')
       this.appendDummyInput()
-        .appendField('1')
-        .appendField('0')
-        .appendField('0')
-        .appendField(new Blockly.FieldNumber(0), 'r1c4')
-      this.appendDummyInput()
-        .appendField('0')
-        .appendField('1')
-        .appendField('0')
-        .appendField(new Blockly.FieldNumber(0), 'r2c4')
-      this.appendDummyInput()
-        .appendField('0')
-        .appendField('0')
-        .appendField('1')
-        .appendField(new Blockly.FieldNumber(0), 'r3c4')
-      this.appendDummyInput()
-        .appendField('0')
-        .appendField('0')
-        .appendField('0')
-        .appendField('1')
+        .appendField('x')
+        .appendField(new Blockly.FieldNumber(0), 'TX')
+        .appendField('y')
+        .appendField(new Blockly.FieldNumber(0), 'TY')
+        .appendField('z')
+        .appendField(new Blockly.FieldNumber(0), 'TZ')
       this.setStyle('math_blocks')
-      this.setTooltip('Homogeneous Translation Matrix')
-      this.setDeletable(true)
-      this.setMovable(true)
+      this.setTooltip('Homogeneous translation by (x,y,z).')
       this.setOutput(true, 'transMat')
       this.setColour(85)
     },
   }
 
-  javascriptGenerator.forBlock['trans_matrix'] = function (block, generator) {
-    const vals = [
-      1,
-      0,
-      0,
-      block.getFieldValue('r1c4'),
-      0,
-      1,
-      0,
-      block.getFieldValue('r2c4'),
-      0,
-      0,
-      1,
-      block.getFieldValue('r3c4'),
-      0,
-      0,
-      0,
-      1,
-    ]
+  javascriptGenerator.forBlock['trans_matrix'] = function (block) {
+    const tx = Number(block.getFieldValue('TX')) || 0
+    const ty = Number(block.getFieldValue('TY')) || 0
+    const tz = Number(block.getFieldValue('TZ')) || 0
     const code = `(function(){
-    const M = new THREE.Matrix4();
-    M.set(${vals.join(',')});
-    return M;
-  })()`
+      return new THREE.Matrix4().makeTranslation(${tx}, ${ty}, ${tz});
+    })()`
     return [code, Order.ATOMIC]
   }
 }

@@ -14,60 +14,38 @@ export function initRotMatrixBlock() {
 
   Blockly.Blocks['rot_matrix'] = {
     init() {
-      this.appendDummyInput().appendField('Rotation Matrix')
+      this.appendDummyInput().appendField('Rotation (degrees)')
+      this.appendDummyInput().appendField('Around Axis:')
       this.appendDummyInput()
-        .appendField(new Blockly.FieldNumber(1), 'r1c1')
-        .appendField(new Blockly.FieldNumber(0), 'r1c2')
-        .appendField(new Blockly.FieldNumber(0), 'r1c3')
-        .appendField('0')
-      this.appendDummyInput()
-        .appendField(new Blockly.FieldNumber(0), 'r2c1')
-        .appendField(new Blockly.FieldNumber(1), 'r2c2')
-        .appendField(new Blockly.FieldNumber(0), 'r2c3')
-        .appendField('0')
-      this.appendDummyInput()
-        .appendField(new Blockly.FieldNumber(0), 'r3c1')
-        .appendField(new Blockly.FieldNumber(0), 'r3c2')
-        .appendField(new Blockly.FieldNumber(1), 'r3c3')
-        .appendField('0')
-      this.appendDummyInput()
-        .appendField('0')
-        .appendField('0')
-        .appendField('0')
-        .appendField('1')
+        .appendField('x')
+        .appendField(new Blockly.FieldNumber(0, -360, 360, 1), 'RX')
+        .appendField('y')
+        .appendField(new Blockly.FieldNumber(0, -360, 360, 1), 'RY')
+        .appendField('z')
+        .appendField(new Blockly.FieldNumber(0, -360, 360, 1), 'RZ')
       this.setStyle('math_blocks')
-      this.setTooltip('Homogeneous Rotation Matrix')
-      this.setDeletable(true)
-      this.setMovable(true)
+      this.setTooltip('Homogeneous rotation about X, then Y, then Z (degrees).')
       this.setOutput(true, 'rotMat')
       this.setColour(85)
     },
   }
 
-  javascriptGenerator.forBlock['rot_matrix'] = function (block, generator) {
-    const vals = [
-      block.getFieldValue('r1c1'),
-      block.getFieldValue('r1c2'),
-      block.getFieldValue('r1c3'),
-      0,
-      block.getFieldValue('r2c1'),
-      block.getFieldValue('r2c2'),
-      block.getFieldValue('r2c3'),
-      0,
-      block.getFieldValue('r3c1'),
-      block.getFieldValue('r3c2'),
-      block.getFieldValue('r3c3'),
-      0,
-      0,
-      0,
-      0,
-      1,
-    ]
+  javascriptGenerator.forBlock['rot_matrix'] = function (block) {
+    const rx = Number(block.getFieldValue('RX')) || 0
+    const ry = Number(block.getFieldValue('RY')) || 0
+    const rz = Number(block.getFieldValue('RZ')) || 0
+
     const code = `(function(){
-  const M = new THREE.Matrix4();
-  M.set(${vals.join(',')});
-  return M;
-})()`
+      const Rx = new THREE.Matrix4().makeRotationX(THREE.MathUtils.degToRad(${rx}));
+      const Ry = new THREE.Matrix4().makeRotationY(THREE.MathUtils.degToRad(${ry}));
+      const Rz = new THREE.Matrix4().makeRotationZ(THREE.MathUtils.degToRad(${rz}));
+      // Apply X, then Y, then Z: R = Rz * Ry * Rx
+      const R = new THREE.Matrix4().multiplyMatrices(
+        new THREE.Matrix4().multiplyMatrices(Rz, Ry),
+        Rx
+      );
+      return R;
+    })()`
     return [code, Order.ATOMIC]
   }
 }

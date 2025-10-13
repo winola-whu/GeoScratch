@@ -9,65 +9,26 @@ export function initScaleMatrixBlock() {
 
   Blockly.Blocks['scale_matrix'] = {
     init() {
-      this.appendDummyInput().appendField('Scaling Matrix')
+      this.appendDummyInput().appendField('Scale (sx, sy, sz)')
       this.appendDummyInput()
-        .appendField(new Blockly.FieldNumber(1), 'r1c1')
-        .appendField('0')
-        .appendField('0')
-        .appendField('0')
-      this.appendDummyInput()
-        .appendField('0')
-        .appendField(new Blockly.FieldNumber(1), 'r2c2')
-        .appendField('0')
-        .appendField('0')
-      this.appendDummyInput()
-        .appendField('0')
-        .appendField('0')
-        .appendField(new Blockly.FieldNumber(1), 'r3c3')
-        .appendField('0')
-      this.appendDummyInput()
-        .appendField('0')
-        .appendField('0')
-        .appendField('0')
-        .appendField('1')
+        .appendField('sx')
+        .appendField(new Blockly.FieldNumber(1, -Infinity, Infinity, 0.1), 'SX')
+        .appendField('sy')
+        .appendField(new Blockly.FieldNumber(1, -Infinity, Infinity, 0.1), 'SY')
+        .appendField('sz')
+        .appendField(new Blockly.FieldNumber(1, -Infinity, Infinity, 0.1), 'SZ')
       this.setStyle('math_blocks')
-      this.setTooltip('Homogeneous Scaling Matrix')
-      this.setDeletable(true)
-      this.setMovable(true)
+      this.setTooltip('Homogeneous scaling by (sx, sy, sz).')
       this.setOutput(true, 'scaleMat')
       this.setColour(85)
     },
   }
 
-  javascriptGenerator.forBlock['scale_matrix'] = function (block, generator) {
-    const vals = [
-      block.getFieldValue('r1c1'),
-      0,
-      0,
-      0,
-      0,
-      block.getFieldValue('r2c2'),
-      0,
-      0,
-      0,
-      0,
-      block.getFieldValue('r3c3'),
-      0,
-      0,
-      0,
-      0,
-      1,
-    ]
+  javascriptGenerator.forBlock['scale_matrix'] = function (block) {
+    const sx = Number(block.getFieldValue('SX')); const sy = Number(block.getFieldValue('SY')); const sz = Number(block.getFieldValue('SZ'));
     const code = `(function(){
-    const M = new THREE.Matrix4();
-    M.set(${vals.join(',')});
-    return M;
-  })()`
+      return new THREE.Matrix4().makeScale(${sx}, ${sy}, ${sz});
+    })()`
     return [code, Order.ATOMIC]
-  }
-
-  javascriptGenerator.forBlock['scalar'] = function (block, generator) {
-    const v = Number(block.getFieldValue('scalar'))
-    return [String(isFinite(v) ? v : 1), Order.ATOMIC]
   }
 }

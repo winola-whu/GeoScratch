@@ -147,7 +147,6 @@ function Scene({ objects = [] }) {
         );
       })}
 
-      <OrbitControls makeDefault />
     </>
   );
 }
@@ -156,10 +155,11 @@ export default function Scene3D({ objects = [] }) {
   return (
     <div className="panel panel-right">
       <Canvas
-        camera={{ position: [20, 20, 8], fov: 50, near: 0.1, far: 5000 }}
+        camera={{ position: [25, 25, 8], fov: 45, near: 0.1, far: 5000 }}
         dpr={[1, 2]}
         style={{ width: '100%', height: '100%' }}
       >
+        <OrbitControls/>
         <Scene objects={objects} />
         <color attach="background" args={['#0e0e12']} />
       </Canvas>
