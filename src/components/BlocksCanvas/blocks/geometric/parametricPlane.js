@@ -50,17 +50,8 @@ const initParametricPlaneBlock = () => {
     if (!isFinite(normLen) || normLen === 0) { nRaw.set(0,1,0); normLen = 1; }
     const nUnit = nRaw.clone().normalize(); // for plane orientation
 
-    // Extent (as before)
-    let EXTENT = 1000;
-    if (typeof SCENE_EXTENT !== 'undefined' && isFinite(SCENE_EXTENT)) {
-      EXTENT = Math.abs(SCENE_EXTENT);
-    } else if (typeof scene !== 'undefined' && scene && scene.userData && isFinite(scene.userData.extent)) {
-      EXTENT = Math.abs(scene.userData.extent);
-    }
-    const SIZE = EXTENT * 2;
-
     // Plane (light pink)
-    const geom = new THREE.PlaneGeometry(SIZE, SIZE, 1, 1);
+    const geom = new THREE.PlaneGeometry(40, 40, 1, 1);
     const mat  = new THREE.MeshStandardMaterial({
       color: 0xffb6c1,
       side: THREE.DoubleSide,
@@ -71,12 +62,6 @@ const initParametricPlaneBlock = () => {
     const quat  = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0,0,1), nUnit);
     plane.setRotationFromQuaternion(quat);
     plane.position.copy(p);
-
-    // Optional outline
-    plane.add(new THREE.LineSegments(
-      new THREE.EdgesGeometry(geom),
-      new THREE.LineBasicMaterial({ color: 0xffb6c1, transparent: true, opacity: 0.5 })
-    ));
 
     // Point marker (same style as before)
     const pointMesh = new THREE.Mesh(
@@ -103,7 +88,7 @@ const initParametricPlaneBlock = () => {
     group.userData.point       = p.clone();
     group.userData.normalRaw   = nRaw.clone();  // input
     group.userData.normalUnit  = nUnit.clone(); // used for orientation
-    group.userData.planeSize   = SIZE;
+    group.userData.planeSize   = 20;
 
     group.userData.labelAnchors = {
       pAnchor: { type:'world', position:[p.x,    p.y,    p.z   ] },

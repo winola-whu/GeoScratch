@@ -134,8 +134,8 @@ function Scene({ objects = [] }) {
     <>
       <ambientLight intensity={0.6} />
       <directionalLight position={[3, 5, 2]} intensity={1} />
-      <gridHelper args={[20, 20, 0x444444, 0x222222]} />
-      <Axes length={10} />
+      <gridHelper args={[40, 40, 0x444444, 0x222222]} />
+      <Axes length={20} />
 
       {objects.map((o, i) => {
         if (!o) return null;
@@ -155,7 +155,7 @@ export default function Scene3D({ objects = [] }) {
   return (
     <div className="panel panel-right">
       <Canvas
-        camera={{ position: [25, 25, 8], fov: 45, near: 0.1, far: 5000 }}
+        camera={{ position: [45, 45, 8], fov: 45, near: 0.1, far: 5000 }}
         dpr={[1, 2]}
         style={{ width: '100%', height: '100%' }}
       >

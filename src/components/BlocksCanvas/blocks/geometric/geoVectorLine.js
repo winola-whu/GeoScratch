@@ -52,19 +52,11 @@ export function initVector3Block() {
       v = new THREE.Vector3(1,0,0);
     }
 
-    // Build the "infinite" line using normalized direction for stable rendering
+    // Build line using normalized direction for stable rendering
     const n = v.clone().normalize();
 
-    // Allow a global or scene-level extent override; default to 1000
-    let LINE_EXTENT = 1000;
-    if (typeof SCENE_EXTENT !== 'undefined' && isFinite(SCENE_EXTENT)) {
-      LINE_EXTENT = Math.abs(SCENE_EXTENT);
-    } else if (typeof scene !== 'undefined' && scene && scene.userData && isFinite(scene.userData.extent)) {
-      LINE_EXTENT = Math.abs(scene.userData.extent);
-    }
-
-    const p1 = origin.clone().addScaledVector(n, -LINE_EXTENT);
-    const p2 = origin.clone().addScaledVector(n,  LINE_EXTENT);
+    const p1 = origin.clone().addScaledVector(n, -20);
+    const p2 = origin.clone().addScaledVector(n,  20);
 
     const lineGeom = new THREE.BufferGeometry().setFromPoints([p1, p2]);
     const lineMat  = new THREE.LineBasicMaterial({ linewidth: 1 });
@@ -104,7 +96,7 @@ export function initVector3Block() {
     group.userData.geoType    = 'geo_vector_line';
     group.userData.origin     = origin.clone(); // r0
     group.userData.direction  = v.clone();      // raw v
-    group.userData.lineExtent = LINE_EXTENT;
+    group.userData.lineExtent = 20;
     group.userData.srcBlockId = ${JSON.stringify(block.id)};
 
     // Optional registry
