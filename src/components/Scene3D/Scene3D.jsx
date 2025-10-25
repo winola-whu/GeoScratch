@@ -1,8 +1,34 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useRef, useEffect } from 'react'
+import { useThree } from "@react-three/fiber"
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls, Text, Billboard, Html } from '@react-three/drei'
 import * as THREE from 'three'
 import './Scene3D.css'
+
+
+function CameraHandle({ onReady }) {
+  const { camera } = useThree();
+  useEffect(() => { onReady?.(camera); }, [camera, onReady]);
+  return null;
+}
+
+const AxisLabels = ({ size = 40, step = 1, y = 0.01, fontSize = 0.25, color = '#9aa0a6', showZero = true }) => {
+  const ticks = useMemo(() => Array.from({ length: Math.floor(size / step) + 1 }, (_, i) => i * step - size / 2), [size, step]);
+  return (
+    <group>
+      {ticks.map(t => (showZero || t !== 0) && (
+        <Billboard key={`x-${t}`} position={[t, y, 0]}>
+          <Text fontSize={fontSize} color={color} anchorX="center" anchorY="middle">{t}</Text>
+        </Billboard>
+      ))}
+      {ticks.map(t => (showZero || t !== 0) && (
+        <Billboard key={`z-${t}`} position={[0, y, t]}>
+          <Text fontSize={fontSize} color={color} anchorX="center" anchorY="middle">{t}</Text>
+        </Billboard>
+      ))}
+    </group>
+  );
+};
 
 function AxisArrow({ dir = [1,0,0], color = 'red', length = 3 }) {
     // Build a THREE.ArrowHelper once
@@ -134,8 +160,9 @@ function Scene({ objects = [] }) {
     <>
       <ambientLight intensity={0.6} />
       <directionalLight position={[3, 5, 2]} intensity={1} />
-      <gridHelper args={[40, 40, 0x444444, 0x222222]} />
-      <Axes length={20} />
+      <gridHelper args={[40, 40, 0x444444, 0x222222]} position={[0, -0.01, 0]} />
+      <AxisLabels size={40} step={1} />
+      <Axes length={20} position={[0, 0, 0]}/>
 
       {objects.map((o, i) => {
         if (!o) return null;
@@ -152,6 +179,19 @@ function Scene({ objects = [] }) {
 }
 
 export default function Scene3D({ objects = [] }) {
+
+  const controlsRef = useRef(null);
+  const cameraRef = useRef(null);
+
+  const initialCamPos = useMemo(() => new THREE.Vector3(45, 45, 8), []);
+  const initialTarget = useMemo(() => new THREE.Vector3(0, 0, 0), []);
+
+  const recenter = () => {
+    if (!cameraRef.current || !controlsRef.current) return;
+    cameraRef.current.position.copy(initialCamPos);
+    controlsRef.current.target.copy(initialTarget);
+    controlsRef.current.update();
+  };
   return (
     <div className="panel panel-right">
       <Canvas
@@ -159,10 +199,16 @@ export default function Scene3D({ objects = [] }) {
         dpr={[1, 2]}
         style={{ width: '100%', height: '100%' }}
       >
-        <OrbitControls/>
+        <OrbitControls ref={controlsRef}/>
+        <CameraHandle onReady={(cam) => (cameraRef.current = cam)} />
         <Scene objects={objects} />
         <color attach="background" args={['#0e0e12']} />
       </Canvas>
+      <button className="recenter-btn" onClick={recenter} aria-label="Recenter camera" title="Recenter">
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+          <path d="M12 2v3M12 19v3M2 12h3M19 12h3M12 7a5 5 0 1 1 0 10a5 5 0 0 1 0-10Z" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
+        </svg>
+      </button>
     </div>
   );
 }

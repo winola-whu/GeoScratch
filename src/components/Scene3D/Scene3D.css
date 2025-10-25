@@ -95,3 +95,30 @@ html, body, #root {
     height: calc(100% - 40px); /* fills remaining height */
     background: #ffffff;
 }
+
+.recenter-btn {
+    position: absolute;
+    right: 12px;
+    bottom: 12px;
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 9999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.10);
+    color: #fff;
+    cursor: pointer;
+    z-index: 10;
+    backdrop-filter: blur(6px);
+}
+
+
+.recenter-btn:hover {
+    background: rgba(255, 255, 255, 0.18);
+}
+
+.recenter-btn:active {
+    transform: translateY(1px);
+}
