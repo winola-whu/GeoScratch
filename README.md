@@ -19,7 +19,7 @@ npm run dev
 ```
 
 ## ⭐Architecture Overview
-
+![image alt](https://github.com/winola-whu/GeoScratch/blob/df920a902a9297827534a3f5303a8a299529b9bf/Screenshot%202025-10-25%20164246.png)
    
 
 We recommend using **Visual Studio Code (VS Code)** for development and debugging.
