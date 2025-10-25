@@ -31,7 +31,8 @@ Currently, two official plugins are available:
 - [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
 ## ⭐Design 
-![image alt](https://github.com/winola-whu/GeoScratch/blob/c15fb9d93a509c56216e73aff8c0aea6549cebe3/Block%20Design.png)
+![image alt](https://github.com/winola-whu/GeoScratch/blob/c15fb9d93a509c56216e73aff8c0aea6549cebe3/Block%20Design.png)  
+
 Blocks encode 373 topics—vector ops, line/plane forms—so each block maps 1-to-1 to a concept. This lets learners build scenes by snapping together concept-blocks instead of writing formulas.
 
 ## ⭐Expanding the ESLint configuration
